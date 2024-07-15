@@ -1,7 +1,18 @@
+import React from 'react';
 import { Paper } from '@mui/material';
 import Modal from '@mui/material/Modal';
 
-function CustomModal({ isOpen, closeModal, children }) {
+interface CustomModalProps {
+  isOpen: boolean;
+  closeModal: () => void;
+  children: React.ReactNode;
+}
+
+const CustomModal: React.FC<CustomModalProps> = ({
+  isOpen,
+  closeModal,
+  children,
+}) => {
   return (
     <Modal open={isOpen} onClose={closeModal}>
       <Paper
@@ -26,6 +37,6 @@ function CustomModal({ isOpen, closeModal, children }) {
       </Paper>
     </Modal>
   );
-}
+};
 
 export default CustomModal;

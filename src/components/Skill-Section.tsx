@@ -1,5 +1,5 @@
+import React from 'react';
 import Box from '@mui/material/Box';
-import CustomModal from '../components/Modal';
 import nestjsImage from '../styles/images/NestJS.png';
 import reactjsImage from '../styles/images/Reactjs.png';
 import typescriptImage from '../styles/images/TypeScript.png';
@@ -7,16 +7,32 @@ import mongodbImage from '../styles/images/mongodb.png';
 import mysqlImage from '../styles/images/mysql.png';
 import nodejsImage from '../styles/images/nodejs.png';
 import postgresqlImage from '../styles/images/postgresql.png';
+import CustomModal from './Modal';
 
-function Skill() {
-  <div className='h-14 w-52 md:w-80 mx-auto absolute inset-0 m-auto transform translate-y-44 translate-x-32  p-3 z-10'>
-    <div className='max-w-xs mx-auto border-none'>
-      <span
-        className='inline-block text-center px-2 py-2 text-blue-700 font-semibold rounded-lg shadow-2xl cursor-pointer transition duration-300 text-xl md:text-4xl'
+interface SkillProps {
+  openSkillModal: () => void;
+  isSkillModalOpen: boolean;
+  closeSkillModal: () => void;
+}
+
+const Skill: React.FC<SkillProps> = ({
+  openSkillModal,
+  isSkillModalOpen,
+  closeSkillModal,
+}) => {
+  return (
+    <div>
+      <div
+        className='w-11/12 rounded-2xl md:w-full mx-auto shadow-2xl cursor-pointer overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-95 flex flex-col'
         onClick={openSkillModal}
       >
-        What skills do you have?
-      </span>
+        <span className='ml-5 text-2xl font-extrabold'>Skill</span>
+        <img
+          className='object-cover h-64'
+          src='https://www.talentlms.com/blog/wp-content/uploads/2022/10/difference-knowledge-vs-skill.png'
+          alt='Skill-Section'
+        />
+      </div>
       <CustomModal isOpen={isSkillModalOpen} closeModal={closeSkillModal}>
         <Box sx={{ border: 'none' }}>
           <div>
@@ -149,7 +165,7 @@ function Skill() {
         </Box>
       </CustomModal>
     </div>
-  </div>;
-}
+  );
+};
 
 export default Skill;

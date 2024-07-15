@@ -2,6 +2,14 @@
 
 @tailwind components;
 
+.btn {
+  @apply mt-3 text-lg font-medium text-white py-4 bg-gray-600 hover:bg-gray-700 transition-colors;
+}
+
+.input {
+  @apply focus:outline-none focus:border-gray-500 p-3 border-2 text-lg font-light border-gray-200  transition-colors;
+}
+
 @tailwind utilities;
 
 @font-face {
