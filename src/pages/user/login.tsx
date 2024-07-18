@@ -1,24 +1,25 @@
 // login.tsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { FormError } from '../components/form-error';
+import { FormError } from '../../components/form-error';
 import { gql, useMutation } from '@apollo/client';
-import { LoginMutation, LoginMutationVariables } from '../gql/graphql';
-import MyLogo from '../styles/images/wavenexus.png';
+import { LoginMutation, LoginMutationVariables } from '../../gql/graphql';
+import MyLogo from '../../styles/images/wavenexus.png';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
-import Favicon from '../styles/images/wavenexus-logo-two.png';
+import Favicon from '../../styles/images/wavenexus-logo-two.png';
+
+import { Button } from '../../components/button';
+import { useNavigate } from 'react-router-dom';
+import {
+  authAccessToken,
+  authRefreshToken,
+  isLoggedInAcessTokenVar,
+  isLoggedInRefresTokenVar,
+} from '../../apollo';
 import {
   LOCALSTORAGE_ACCESSTOKEN,
   LOCALSTORAGE_REFRESHTOKEN,
-} from '../constants';
-import {
-  accessAuthToken,
-  isLoggedInAccessTokenVar,
-  isLoggedInRefreshTokenVar,
-  refreshAuthToken,
-} from '../apollo';
-import { Button } from '../components/button';
-import { useNavigate } from 'react-router-dom';
+} from '../../constants';
 
 /* mutation 적용하기 */
 const LOGIN_MUTATION = gql`
@@ -54,10 +55,10 @@ export const Login = () => {
     if (ok && accessToken && refreshToken) {
       localStorage.setItem(LOCALSTORAGE_ACCESSTOKEN, accessToken);
       localStorage.setItem(LOCALSTORAGE_REFRESHTOKEN, refreshToken);
-      accessAuthToken(accessToken);
-      refreshAuthToken(refreshToken);
-      isLoggedInAccessTokenVar(true);
-      isLoggedInRefreshTokenVar(true);
+      authAccessToken(accessToken);
+      authRefreshToken(refreshToken);
+      isLoggedInAcessTokenVar(true);
+      isLoggedInRefresTokenVar(true);
       navigate('/');
     }
   };

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Skill from '../components/Skill-Section';
-import Price from '../components/Price';
-import Intro from '../components/Intro-Section';
+import Skill from '../../components/Skill-Section';
+import Price from '../../components/Price';
+import Intro from '../../components/Intro-Section';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
-import Favicon from '../styles/images/wavenexus-logo-two.png';
-import MyLogo from '../styles/images/wavenexus.png';
+import Favicon from '../../styles/images/wavenexus-logo-two.png';
+import { useCookies } from 'react-cookie';
+import { ClipLoader } from 'react-spinners';
 
 function Home() {
+  const [cookies] = useCookies(['accesstoken']);
   /* Intro Modal */
   const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
 
@@ -35,20 +36,6 @@ function Home() {
 
       {/* 로딩이 완료되면 실제 애플리케이션을 렌더링합니다. */}
       <div>
-        <header className='py-4'>
-          <div className='w-full px-5 xl:px-0 max-w-screen-2xl mx-auto flex justify-between items-center'>
-            <Link to='/'>
-              <img src={MyLogo} className='h-16 max-h-full py-2' />
-            </Link>
-            <span className='text-xs'>
-              <Link to='/edit-profile'>
-                {/* FontAwesome 사용법 */}
-                {/* <FontAwesomeIcon icon={faUser} className='text-xl' /> */}
-              </Link>
-            </span>
-          </div>
-        </header>
-
         <img
           src='https://cdn.pixabay.com/photo/2023/11/18/19/06/futuristic-home-8397004_1280.jpg'
           alt='MainImage'

@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { HelmetProvider, Helmet } from 'react-helmet-async';
-import Favicon from '../styles/images/wavenexus-logo-two.png';
-import MyLogo from '../styles/images/wavenexus.png';
+import Favicon from '../../styles/images/wavenexus-logo-two.png';
+import MyLogo from '../../styles/images/wavenexus.png';
 
 function Qna() {
   return (

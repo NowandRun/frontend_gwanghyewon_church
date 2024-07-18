@@ -1,16 +1,18 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, TextareaAutosize } from '@mui/material';
 import CustomModal from './Modal';
 import MyLogo from '../styles/images/wavenexus-logo-two.png';
 import { useForm } from 'react-hook-form';
-import { gql, useApolloClient, useMutation } from '@apollo/client';
+import { ApolloError, gql, useMutation } from '@apollo/client';
 import {
   CreateNoticeMutation,
   CreateNoticeMutationVariables,
+  UserRole,
 } from '../gql/graphql';
-import { NOTICE_QUERY } from '../pages/notice';
 import { Button } from './button';
 import { FormError } from './form-error';
+import { useNavigate } from 'react-router-dom';
+import { useMe } from '../hooks/useMe';
 
 interface NoticeProps {
   openNoticeModal: () => void;
@@ -39,6 +41,12 @@ const NoticeWrite: React.FC<NoticeProps> = ({
   openNoticeModal,
   closeNoticeModal,
 }) => {
+  const {
+    data: identifyData,
+    loading: identifyLoading,
+    error: identifyError,
+  } = useMe();
+
   const onCompleted = (data: CreateNoticeMutation) => {
     const {
       createNotice: { ok, error, noticeId },
@@ -48,12 +56,18 @@ const NoticeWrite: React.FC<NoticeProps> = ({
       closeNoticeModal();
     }
   };
-
-  const [createNoticeMutation, { data, loading }] = useMutation<
+  const navigate = useNavigate();
+  const [createNoticeMutation, { data, loading, error }] = useMutation<
     CreateNoticeMutation,
     CreateNoticeMutationVariables
   >(NOTICE_WRITE_MUTATION, {
     onCompleted,
+    onError: (error: ApolloError) => {
+      if (error.message === 'Forbidden resource') {
+        alert('다시 시도해주세요');
+        navigate('/notice'); // '/notice' 페이지로 리다이렉트
+      }
+    },
   });
 
   const [uploading, setUploading] = useState(false);
@@ -82,12 +96,15 @@ const NoticeWrite: React.FC<NoticeProps> = ({
 
   return (
     <div>
-      <div
-        className='cursor-pointer text-right hover:scale-95 '
-        onClick={openNoticeModal}
-      >
-        <span className='ml-5 text-2xl font-extrabold'>글작성</span>
-      </div>
+      {identifyData && identifyData.me.role === UserRole.Manager && (
+        <div
+          className='cursor-pointer text-right hover:scale-95 '
+          onClick={openNoticeModal}
+        >
+          <span className='ml-5 text-2xl font-extrabold'>글작성</span>
+        </div>
+      )}
+
       <CustomModal isOpen={isNoticeModalOpen} closeModal={closeNoticeModal}>
         <Box sx={{ border: 'none' }}>
           <div className='flex px-10 items-end  mt-5 pb-4 '>

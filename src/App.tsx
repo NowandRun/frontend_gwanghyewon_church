@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { LoggedOutRouter } from './routers/logged-out-router';
-import { useReactiveVar } from '@apollo/client';
-import { isLoggedInAccessTokenVar, isLoggedInRefreshTokenVar } from './apollo';
 import { LoggedInRouter } from './routers/logged-in-router';
+import { useMe } from './hooks/useMe';
+import { gql, useQuery, useReactiveVar } from '@apollo/client';
+import { isLoggedInAcessTokenVar, isLoggedInRefresTokenVar } from './apollo';
 
 export const App = () => {
-  const isLoggedInAccessToken = useReactiveVar(isLoggedInAccessTokenVar);
-  console.log(isLoggedInAccessToken);
-  const isLoggedInRefreshToken = useReactiveVar(isLoggedInRefreshTokenVar);
+  const isLoggedInAceessToken = useReactiveVar(isLoggedInAcessTokenVar);
+  const isLoggedInRefreshToken = useReactiveVar(isLoggedInRefresTokenVar);
+  const isLoggedIn = isLoggedInAceessToken && isLoggedInRefreshToken;
 
-  const isLoggedIn = isLoggedInAccessToken && isLoggedInRefreshToken;
   return isLoggedIn ? <LoggedInRouter /> : <LoggedOutRouter />;
 };

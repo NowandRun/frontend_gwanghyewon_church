@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
-import Favicon from '../styles/images/wavenexus-logo-two.png';
-import MyLogo from '../styles/images/wavenexus.png';
+import Favicon from '../../styles/images/wavenexus-logo-two.png';
+import MyLogo from '../../styles/images/wavenexus.png';
 import { gql, useApolloClient, useQuery } from '@apollo/client';
-import { NoticesQuery, NoticesQueryVariables } from '../gql/graphql';
-import NoticeWrite from '../components/notice-write';
+import { NoticesQuery, NoticesQueryVariables } from '../../gql/graphql';
+import NoticeWrite from '../../components/notice-write';
 
 export const NOTICE_QUERY = gql`
   query notices($input: NoticesInput!) {

@@ -15,9 +15,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  mutation createNotice($input: CreateNoticeInput!) {\n    createNotice(input: $input) {\n      error\n      ok\n      noticeId\n    }\n  }\n": types.CreateNoticeDocument,
     "\n  query me {\n    me {\n      id\n      userName\n      role\n    }\n  }\n": types.MeDocument,
+    "\n  mutation createAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n": types.CreateAccountDocument,
     "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      refreshToken\n      error\n    }\n  }\n": types.LoginDocument,
     "\n  query notices($input: NoticesInput!) {\n    notices(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n      }\n    }\n  }\n": types.NoticesDocument,
-    "\n  mutation createAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n": types.CreateAccountDocument,
 };
 
 /**
@@ -45,15 +45,15 @@ export function graphql(source: "\n  query me {\n    me {\n      id\n      userN
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  mutation createAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation createAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      refreshToken\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      refreshToken\n      error\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query notices($input: NoticesInput!) {\n    notices(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n      }\n    }\n  }\n"): (typeof documents)["\n  query notices($input: NoticesInput!) {\n    notices(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation createAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation createAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
