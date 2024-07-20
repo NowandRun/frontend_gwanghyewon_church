@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import { useMe } from '../hooks/useMe';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faRightFromBracket,
-  faRightToBracket,
-  faUser,
-  faUserCircle,
-  faUserPlus,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import MyLogo from '../styles/images/wavenexus.png';
 
 export const Header: React.FC = () => {
-  const { data } = useMe();
+  const { data: identifyData } = useMe();
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -49,11 +43,7 @@ export const Header: React.FC = () => {
 
           <div className='flex justify-center text-lg text-gray-800 font-semibold'>
             <FontAwesomeIcon icon={faUserCircle} className='text-2xl' />
-            <span className=' pl-2'>{data?.me.userName}</span>
-            <FontAwesomeIcon
-              icon={faRightFromBracket}
-              className='pl-5 text-3xl'
-            />
+            <span className=' pl-2'>{identifyData?.me.userName}</span>
           </div>
         </div>
       </header>

@@ -63,4 +63,9 @@ export const client = new ApolloClient({
       },
     },
   }),
+  defaultOptions: {
+    mutate: {
+      errorPolicy: 'all',
+    },
+  },
 });

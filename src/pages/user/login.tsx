@@ -1,8 +1,8 @@
 // login.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormError } from '../../components/form-error';
-import { gql, useMutation } from '@apollo/client';
+import { ApolloError, gql, useMutation } from '@apollo/client';
 import { LoginMutation, LoginMutationVariables } from '../../gql/graphql';
 import MyLogo from '../../styles/images/wavenexus.png';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
@@ -20,6 +20,7 @@ import {
   LOCALSTORAGE_ACCESSTOKEN,
   LOCALSTORAGE_REFRESHTOKEN,
 } from '../../constants';
+import { useMe } from '../../hooks/useMe';
 
 /* mutation 적용하기 */
 const LOGIN_MUTATION = gql`
@@ -63,12 +64,26 @@ export const Login = () => {
     }
   };
 
+  const [buttonText, setButtonText] = useState('Login');
+
+  const onError = (error: ApolloError) => {
+    console.log(error.message);
+    if (error.message === 'Response not successful: Received status code 500') {
+      localStorage.removeItem(LOCALSTORAGE_ACCESSTOKEN);
+      localStorage.removeItem(LOCALSTORAGE_REFRESHTOKEN);
+      isLoggedInAcessTokenVar(false);
+      isLoggedInRefresTokenVar(false);
+      setButtonText('다시 시도해주세요'); // 버튼 텍스트를 '다시 시도해주세요'로 변경
+    }
+  };
+
   // codegen을 활용한 type 검증
   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
     LoginMutation,
     LoginMutationVariables
   >(LOGIN_MUTATION, {
     onCompleted,
+    onError,
   });
 
   const onSubmit = () => {
@@ -142,10 +157,12 @@ export const Login = () => {
             /* Function을 통한 error 처리하는 방법  */
             <FormError errorMessage='Password must be more than 10 chars.' />
           )}
-          {/* <button className='btn rounded-md'>
-            {loading ? <SyncLoader /> : 'Login'}
-          </button> */}
-          <Button canClick={isValid} loading={loading} actionText={'Login'} />
+
+          <Button
+            canClick={isValid}
+            loading={loading}
+            actionText={buttonText}
+          />
           <div className='text-center'>
             {loginMutationResult?.login.error && (
               <FormError errorMessage={loginMutationResult.login.error} />

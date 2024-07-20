@@ -7,8 +7,13 @@ import Notice from '../pages/user/notice';
 import { Login } from '../pages/user/login';
 import { Link } from 'react-router-dom';
 import MyLogo from '../styles/images/wavenexus.png';
+import { useMe } from '../hooks/useMe';
+import { ClipLoader } from 'react-spinners';
 
 export const LoggedOutRouter = () => {
+  const { data: identifyData, loading, error } = useMe();
+  /* 데이터가 없거나 로딩중이거나 에러가 있으면 if문 진행 */
+
   return (
     <>
       <div>
