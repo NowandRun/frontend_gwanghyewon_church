@@ -1,155 +1,267 @@
+import { gql, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import {
+  NoticeQuery,
+  NoticeQueryVariables,
+  NoticesQuery,
+  NoticesQueryVariables,
+} from '../../gql/graphql';
 import { format } from 'date-fns';
-import { HelmetProvider, Helmet } from 'react-helmet-async';
-import Favicon from '../../styles/images/wavenexus-logo-two.png';
-import MyLogo from '../../styles/images/wavenexus.png';
-import { gql, useApolloClient, useQuery } from '@apollo/client';
-import { NoticesQuery, NoticesQueryVariables } from '../../gql/graphql';
-import NoticeWrite from '../../components/notice-write';
+import { client } from '../../apollo';
+import { NOTICES_QUERY } from '../client/notices';
+import { Link } from 'react-router-dom';
 
-export const NOTICE_QUERY = gql`
-  query notices($input: NoticesInput!) {
-    notices(input: $input) {
+const NOTICE_QUERY = gql`
+  query notice($input: NoticeInput!) {
+    notice(input: $input) {
       error
       ok
-      totalPages
-      totalResults
-      results {
+      notice {
         id
         createdAt
-        userId
         userName
         title
         description
+        views
       }
     }
   }
 `;
 
+type TNoticeParams = {
+  id: string;
+};
+
 export const Notice = () => {
-  const client = useApolloClient();
+  const { id } = useParams() as TNoticeParams;
 
-  useEffect(() => {
-    const queryResult = client.readQuery({ query: NOTICE_QUERY });
-    console.log(queryResult);
-  }, []);
+  const noticeId = Number(id);
 
-  const [page, setPage] = useState(1);
-  const { loading, error, data } = useQuery<
-    NoticesQuery,
-    NoticesQueryVariables
-  >(NOTICE_QUERY, {
+  const { data } = useQuery<NoticeQuery, NoticeQueryVariables>(NOTICE_QUERY, {
     variables: {
       input: {
-        page,
+        noticeId,
       },
     },
   });
-  const onNextPageClick = () => setPage((current) => current + 1);
-  const onPrevPageClick = () => setPage((current) => current - 1);
 
-  const formatDate = (createdAt: string) => {
-    const date = new Date(createdAt);
-    return format(date, 'yyyy.MM.dd');
+  const formatDate = (createdAt: string | undefined) => {
+    if (!createdAt) return ''; // Handle undefined case or other invalid values
+
+    try {
+      const date = new Date(createdAt);
+      if (isNaN(date.getTime())) {
+        throw new Error('Invalid date');
+      }
+      return format(date, 'yyyy.MM.dd');
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return ''; // Handle error case gracefully
+    }
   };
 
-  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
-  const openNoticeModal = () => setIsNoticeModalOpen(true);
-  const closeNoticeModal = () => setIsNoticeModalOpen(false);
+  const [prevNoticeId, setPrevNoticeId] = useState<number | null>(null);
+  const [prevNoticeTitle, setPrevNoticeTitle] = useState<string | null>(null);
+  const [prevNoticeCreateAt, setPrevNoticeCreateAt] = useState<string | null>(
+    null
+  );
+
+  const [nextNoticeId, setNextNoticeId] = useState<number | null>(null);
+  const [nextNoticeTitle, setNextNoticeTitle] = useState<string | null>(null);
+  const [nextNoticeCreateAt, setNextNoticeCreateAt] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    const fetchNearbyNotices = async () => {
+      try {
+        const result = await client.query<NoticesQuery, NoticesQueryVariables>({
+          query: NOTICES_QUERY,
+          variables: {
+            input: {
+              page: 1,
+            },
+          },
+        });
+
+        const notices = result.data.notices.results;
+
+        if (!notices) {
+          // Handle case where notices array is not available
+          setPrevNoticeId(null);
+          setNextNoticeId(null);
+          return;
+        }
+
+        const currentIndex = notices?.findIndex(
+          (notice) => notice.id === noticeId
+        );
+        if (currentIndex !== -1) {
+          if (currentIndex > 0) {
+            setPrevNoticeId(notices[currentIndex - 1]?.id);
+            setPrevNoticeTitle(notices[currentIndex - 1]?.title);
+            setPrevNoticeCreateAt(notices[currentIndex - 1]?.createdAt);
+          } else {
+            setPrevNoticeId(null);
+          }
+
+          if (currentIndex < notices.length - 1) {
+            setNextNoticeId(notices[currentIndex + 1].id);
+            setNextNoticeTitle(notices[currentIndex + 1].title);
+            setNextNoticeCreateAt(notices[currentIndex + 1]?.createdAt);
+          } else {
+            setNextNoticeId(null);
+          }
+        } else {
+          setPrevNoticeId(null);
+          setNextNoticeId(null);
+        }
+      } catch (error) {
+        console.error('Error fetching nearby notices:', error);
+      }
+    };
+
+    fetchNearbyNotices();
+  }, [noticeId]);
+
+  const shortenText = (text: string | null | undefined) => {
+    if (!text) return '';
+
+    if (text.length > 10) {
+      return `${text.substring(0, 15)}...`;
+    } else {
+      return text;
+    }
+  };
 
   return (
     <>
-      <HelmetProvider>
-        <Helmet>
-          <link rel='icon' type='image/png' href={Favicon} />
-          <title>Home | WAVENEXUS</title>
-        </Helmet>
-      </HelmetProvider>
-
-      {/* 로딩이 완료되면 실제 애플리케이션을 렌더링합니다. */}
       <div>
-        <header className='py-4'>
-          <div className='w-full px-5 xl:px-0 max-w-screen-2xl mx-auto flex justify-between items-center'>
-            <Link to='/'>
-              <img src={MyLogo} className='h-16 max-h-full py-2' />
-            </Link>
-            <span className='text-xs'>
-              <Link to='/edit-profile'>
-                {/* FontAwesome 사용법 */}
-                {/* <FontAwesomeIcon icon={faUser} className='text-xl' /> */}
-              </Link>
-            </span>
-          </div>
-        </header>
-
         <div className=' w-full  mx-auto  flex flex-col items-center bg-center px-10'>
           {/* Intro section */}
-          <div className='w-full max-w-screen-2xl xl:px-0'>
-            <div className='max-w-screen-2xl pb-5 mx-auto mt-8'>
-              <div className='text-5xl font-bold text-gray-600 grid mt-16 md:grid-cols-2 justify-between gap-y-10 '>
-                <span>공지사항</span>
-                <NoticeWrite
-                  isNoticeModalOpen={isNoticeModalOpen}
-                  openNoticeModal={openNoticeModal}
-                  closeNoticeModal={closeNoticeModal}
-                />
+          <div className='w-full max-w-screen-2xl xl:px-40 mb-20'>
+            <div className='max-w-screen-2xl pb-14 mx-auto mt-8 '>
+              <div className='text-2xl md:text-4xl font-bold text-gray-600 flex justify-between mt-16   gap-y-10'>
+                <span>{data?.notice.notice?.title}</span>
               </div>
             </div>
             <table className='table-auto w-full mx-auto '>
-              <thead>
-                <tr className='bg-gray-700 text-white'>
-                  <th className='border border-gray-400 px-2 py-2 '>글번호</th>
-                  <th className='border border-gray-400 px-2 py-2 '>제목</th>
-                  <th className='border border-gray-400 px-2 py-2 '>등록일</th>
-                  <th className='border border-gray-400 px-2 py-2 '>조회수</th>
-                </tr>
-              </thead>
               <tbody>
-                {data?.notices.results
-                  ?.map((notice, index) => (
-                    <tr key={index}>
-                      <td className='border border-gray-400 px-2 py-2 font-bold text-center'>
-                        {index + 1}
-                      </td>
-                      <td className='border border-gray-400 px-2 py-2'>
-                        {notice.title}
-                      </td>
-                      <td className='border border-gray-400 px-2 py-2 text-center'>
-                        {formatDate(notice.createdAt)}
-                      </td>
-                      <td className='text-center border border-gray-400 px-2 py-2'>
-                        6
-                      </td>
-                    </tr>
-                  ))
-                  .reverse()}
+                <tr>
+                  <td className='text-xs md:text-lg border border-t-0 border-b-0 border-l-0 border-gray-400 md:px-2 md:py-2  font-bold w-52 md:w-12'>
+                    작성자
+                  </td>
+                  <td className='text-xs md:text-lg border border-t-0 border-b-0 border-r-0 border-gray-400 md:px-2 md:py-2  font-bold w-52 md:w-28'>
+                    {data?.notice.notice?.userName}
+                  </td>
+                  <td className=' md:px-2 md:py-2  font-bold text-center w-0 md:w-10'></td>
+                  <td className='text-xs md:text-lg border border-t-0 border-b-0 border-l-0 border-gray-400  px-2 py-2  font-bold w-56  md:w-12'>
+                    작성일
+                  </td>
+                  <td className='text-xs border md:text-lg border-t-0 border-b-0 border-r-0 border-gray-400 px-2 py-2  font-bold  w-14'>
+                    {formatDate(data?.notice.notice?.createdAt)}
+                  </td>
+                  <td className=' md:px-2 md:py-2  font-bold text-center w-0 md:w-10'></td>
+                  <td className='w-56 text-xs border md:text-lg border-t-0 border-b-0 border-l-0 border-gray-400 px-2 py-2  font-bold  md:w-12'>
+                    조회수
+                  </td>
+                  <td className='text-xs px-2 py-2 md:text-lg font-bold text-center w-14'>
+                    {data?.notice.notice?.views}
+                  </td>
+                  <td className=' px-2 py-2  font-bold text-center w-20 md:w-64'></td>
+                </tr>
+                <tr>
+                  <td colSpan={9} className=' px-2 py-2  font-bold '></td>
+                </tr>
+                <tr>
+                  <td
+                    colSpan={9}
+                    className=' px-2 py-2  font-bold text-lg md:text-xl md:text-2xl'
+                  >
+                    {data?.notice.notice?.description}
+                  </td>
+                </tr>
               </tbody>
             </table>
-            <div className='grid grid-cols-3 text-center max-w-md items-center mx-auto mt-10'>
-              {page > 1 ? (
-                <button
-                  onClick={onPrevPageClick}
-                  className='focus:outline-none font-medium text-2xl'
-                >
-                  &larr;
-                </button>
-              ) : (
-                <div></div>
-              )}
-              <span>
-                Page {page} of {data?.notices.totalPages}
-              </span>
-              {page !== data?.notices.totalPages ? (
-                <button
-                  onClick={onNextPageClick}
-                  className='focus:outline-none font-medium text-2xl'
-                >
-                  &rarr;
-                </button>
-              ) : (
-                <div></div>
-              )}
+            <div className='flex justify-between w-full mx-auto pt-20  '>
+              <div
+                className={`w-full border border-gray-400 ${
+                  prevNoticeId === null
+                    ? 'bg-gray-200 bg-opacity-90 disabled-link text'
+                    : ''
+                }`}
+              >
+                {prevNoticeId === null ? (
+                  <div
+                    className='flex flex-col h-28 justify-center ml-5'
+                    style={{ userSelect: 'none' }}
+                  >
+                    <div className='flex flex-row justify-start'>
+                      <div className='flex flex-col ml-3'>
+                        <span className='md:text-xl'>첫번째 글</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    to={`/notice/${prevNoticeId}`}
+                    className='flex flex-col h-28 justify-center ml-5'
+                  >
+                    <div className='flex flex-row justify-start'>
+                      <span>&larr;</span>
+                      <div className='flex flex-col ml-3'>
+                        <span>이전글</span>
+                        <span className='md:text-xl py-1'>
+                          {shortenText(prevNoticeTitle)}
+                        </span>
+                        <span>
+                          {prevNoticeCreateAt && formatDate(prevNoticeCreateAt)}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                )}
+              </div>
+
+              <div
+                className={`w-full text-right border border-gray-400 ${
+                  nextNoticeId === null
+                    ? 'bg-gray-200 bg-opacity-90 disabled-link text'
+                    : ''
+                }`}
+              >
+                {nextNoticeId === null ? (
+                  <div
+                    className='flex flex-col h-28 justify-center mr-5 '
+                    style={{ userSelect: 'none' }}
+                  >
+                    <div className='flex flex-row justify-end'>
+                      <div className='flex flex-col mr-3'>
+                        <span className='md:text-xl '>마지막 글</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    to={`/notice/${nextNoticeId}`}
+                    className='flex flex-col h-28 justify-center mr-5'
+                  >
+                    <div className='flex flex-row justify-end'>
+                      <div className='flex flex-col mr-3'>
+                        <span>다음글</span>
+                        <span className='md:text-xl text-sm py-1'>
+                          {shortenText(nextNoticeTitle)}
+                        </span>
+                        <span>
+                          {nextNoticeCreateAt && formatDate(nextNoticeCreateAt)}
+                        </span>
+                      </div>
+                      <span>&rarr;</span>
+                    </div>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -157,5 +269,3 @@ export const Notice = () => {
     </>
   );
 };
-
-export default Notice;

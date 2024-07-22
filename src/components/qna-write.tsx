@@ -7,40 +7,40 @@ import { ApolloError, gql, useApolloClient, useMutation } from '@apollo/client';
 import {
   CreateNoticeMutation,
   CreateNoticeMutationVariables,
+  CreateQnaMutation,
+  CreateQnaMutationVariables,
   UserRole,
 } from '../gql/graphql';
-import { Button } from './button';
 import { FormError } from './form-error';
 import { useNavigate } from 'react-router-dom';
 import { useMe } from '../hooks/useMe';
-import { NOTICES_QUERY } from '../pages/client/notices';
 
-interface NoticeProps {
-  openNoticeModal: () => void;
-  isNoticeModalOpen: boolean;
-  closeNoticeModal: () => void;
+interface QnaProps {
+  openQnaModal: () => void;
+  isQnaModalOpen: boolean;
+  closeQnaModal: () => void;
 }
 
-interface INoticeWriteForm {
+interface IQnaWriteForm {
   title: string;
   description: string;
 }
 
 /* mutation 적용하기 */
-const NOTICE_WRITE_MUTATION = gql`
-  mutation createNotice($input: CreateNoticeInput!) {
-    createNotice(input: $input) {
+const QNA_WRITE_MUTATION = gql`
+  mutation createQna($input: CreateQnaInput!) {
+    createQna(input: $input) {
       error
       ok
-      noticeId
+      qnaId
     }
   }
 `;
 
-const NoticeWrite: React.FC<NoticeProps> = ({
-  isNoticeModalOpen,
-  openNoticeModal,
-  closeNoticeModal,
+const QnaWrite: React.FC<QnaProps> = ({
+  isQnaModalOpen,
+  openQnaModal,
+  closeQnaModal,
 }) => {
   const client = useApolloClient();
 
@@ -50,26 +50,27 @@ const NoticeWrite: React.FC<NoticeProps> = ({
     error: identifyError,
   } = useMe();
 
-  const onCompleted = (data: CreateNoticeMutation) => {
+  const onCompleted = (data: CreateQnaMutation) => {
     const {
-      createNotice: { ok, error, noticeId },
+      createQna: { ok, qnaId, error },
     } = data;
     if (ok) {
+      const { description, title } = getValues();
       setUploading(false);
-      closeNoticeModal();
+      closeQnaModal();
       window.location.reload();
     }
   };
   const navigate = useNavigate();
-  const [createNoticeMutation, { data, loading, error }] = useMutation<
-    CreateNoticeMutation,
-    CreateNoticeMutationVariables
-  >(NOTICE_WRITE_MUTATION, {
+  const [createQnaMutation, { data, loading, error }] = useMutation<
+    CreateQnaMutation,
+    CreateQnaMutationVariables
+  >(QNA_WRITE_MUTATION, {
     onCompleted,
     onError: (error: ApolloError) => {
       if (error.message === 'Forbidden resource') {
         alert('다시 시도해주세요');
-        navigate('/notice'); // '/notice' 페이지로 리다이렉트
+        navigate('/qna'); //
       }
     },
   });
@@ -79,7 +80,7 @@ const NoticeWrite: React.FC<NoticeProps> = ({
   const onSubmit = () => {
     setUploading(true);
     const { title, description } = getValues();
-    createNoticeMutation({
+    createQnaMutation({
       variables: {
         input: {
           title,
@@ -94,32 +95,32 @@ const NoticeWrite: React.FC<NoticeProps> = ({
     getValues,
     formState: { errors, isValid },
     handleSubmit,
-  } = useForm<INoticeWriteForm>({
+  } = useForm<IQnaWriteForm>({
     mode: 'onChange',
   });
 
   return (
     <div>
-      {identifyData && identifyData.me.role === UserRole.Manager && (
-        <div className='cursor-pointer text-right' onClick={openNoticeModal}>
+      {identifyData && (
+        <div className='cursor-pointer text-right' onClick={openQnaModal}>
           <span className='text-lg md:text-2xl font-extrabold'>글작성</span>
         </div>
       )}
 
-      <CustomModal isOpen={isNoticeModalOpen} closeModal={closeNoticeModal}>
+      <CustomModal isOpen={isQnaModalOpen} closeModal={closeQnaModal}>
         <Box sx={{ border: 'none' }}>
           <div className='md:py-20 md:px-16 py-10 px-8'>
             <div className='flex px-10 items-end   pb-4 '>
               <img src={MyLogo} className='w-10  py-2' />
               <div className='mb-2 '>
-                <span className='md:text-2xl text-xl   md:w-11/12 mx-auto px-2 pb-3 font-bold '>
-                  공지사항 작성하기
+                <span className='md:text-2xl text-xl  md:w-11/12 mx-auto px-2 pb-3 font-bold '>
+                  QNA 작성하기
                 </span>
               </div>
             </div>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className='flex flex-col text-xl  font-semibold'
+              className='flex flex-col text-xl font-semibold'
             >
               <div className='flex justify-center '>
                 <div className='flex items-center w-20'>
@@ -159,8 +160,8 @@ const NoticeWrite: React.FC<NoticeProps> = ({
                 >
                   {loading ? 'Loading...' : '확인'}
                 </button>
-                {data?.createNotice.error && (
-                  <FormError errorMessage={data.createNotice.error} />
+                {data?.createQna.error && (
+                  <FormError errorMessage={data.createQna.error} />
                 )}
               </div>
             </form>
@@ -171,4 +172,4 @@ const NoticeWrite: React.FC<NoticeProps> = ({
   );
 };
 
-export default NoticeWrite;
+export default QnaWrite;

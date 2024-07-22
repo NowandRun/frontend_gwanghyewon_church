@@ -2,8 +2,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from '../pages/user/home';
-import Qna from '../pages/user/qna';
-import Notice from '../pages/user/notice';
 import { Login } from '../pages/user/login';
 import { Link } from 'react-router-dom';
 import MyLogo from '../styles/images/wavenexus.png';
@@ -32,12 +30,10 @@ export const LoggedOutRouter = () => {
       <Routes>
         <Route path='/login' element={<Login />} />
       </Routes>
-      <Routes>
-        <Route path='/qna' element={<Qna />} />
-      </Routes>
-      <Routes>
+
+      {/* <Routes>
         <Route path='/notice' element={<Notice />} />
-      </Routes>
+      </Routes> */}
     </Router>
   );
 };
