@@ -67,12 +67,9 @@ export const Login = () => {
   const [buttonText, setButtonText] = useState('Login');
 
   const onError = (error: ApolloError) => {
-    console.log(error.message);
     if (error.message === 'Response not successful: Received status code 500') {
       localStorage.removeItem(LOCALSTORAGE_ACCESSTOKEN);
       localStorage.removeItem(LOCALSTORAGE_REFRESHTOKEN);
-      isLoggedInAcessTokenVar(false);
-      isLoggedInRefresTokenVar(false);
       setButtonText('다시 시도해주세요'); // 버튼 텍스트를 '다시 시도해주세요'로 변경
     }
   };

@@ -8,6 +8,8 @@ import mysqlImage from '../styles/images/mysql.png';
 import nodejsImage from '../styles/images/nodejs.png';
 import postgresqlImage from '../styles/images/postgresql.png';
 import CustomModal from './Modal';
+import skillDiv from '../styles/images/project.png';
+import wavenexusLogo from '../styles/images/wavenexus-logo-two.png';
 
 interface SkillProps {
   openSkillModal: () => void;
@@ -26,21 +28,17 @@ const Skill: React.FC<SkillProps> = ({
         className='w-11/12 rounded-2xl md:w-full mx-auto shadow-2xl cursor-pointer overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-95 flex flex-col'
         onClick={openSkillModal}
       >
-        <span className='ml-5 text-2xl font-extrabold'>Skill</span>
-        <img
-          className='object-cover h-64'
-          src='https://www.talentlms.com/blog/wp-content/uploads/2022/10/difference-knowledge-vs-skill.png'
-          alt='Skill-Section'
-        />
+        <span className='ml-5 text-2xl font-extrabold'>Portfolio</span>
+        <img className='object-cover h-64' src={skillDiv} alt='Skill-Section' />
       </div>
       <CustomModal isOpen={isSkillModalOpen} closeModal={closeSkillModal}>
         <Box sx={{ border: 'none' }}>
           <div>
-            <div className='bg-blue-100 py-2 flex items-center w-full  h-full'>
+            {/* <div className='bg-blue-100 py-2 flex items-center w-full  h-full'>
               <span className='text-2xl font-bold ml-5 md:text-5xl'>Skill</span>
-            </div>
-            <div className='flex flex-col items-center p-6'>
-              <div className='flex flex-col  w-full justify-center h-full'>
+            </div> */}
+            <div className='flex flex-col items-center py-24 px-10'>
+              {/*<div className='flex flex-col  w-full justify-center h-full'>
                 <span className=' break-words mb-5 font-semibold text-xl'>
                   프론트엔드
                 </span>
@@ -130,23 +128,16 @@ const Skill: React.FC<SkillProps> = ({
                     </span>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className='flex flex-col  w-full justify-center h-full'>
-                <span className=' break-words mb-5 font-semibold mt-5 text-2xl'>
-                  프로젝트
-                </span>
+                <div className='flex items-center '>
+                  <img src={wavenexusLogo} alt='React' className='w-6 h-auto' />
+                  <span className=' break-words mb-5 font-semibold mt-5 text-2xl ml-2'>
+                    포트폴리오
+                  </span>
+                </div>
+
                 <ul>
-                  <li className='pb-1'>
-                    <h1 className='mt-2 break-words font-semibold text-lg'>
-                      레스토랑서비스:
-                    </h1>
-                    <a
-                      className='mt-2 break-words mb-5  text-lg'
-                      href='https://splendorous-florentine-db3f35.netlify.app/'
-                    >
-                      https://splendorous-florentine-db3f35.netlify.app/
-                    </a>
-                  </li>
                   <li className='pb-1'>
                     <h1 className='mt-2 break-words font-semibold text-lg'>
                       영화추천서비스:

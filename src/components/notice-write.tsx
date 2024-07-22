@@ -115,26 +115,40 @@ const NoticeWrite: React.FC<NoticeProps> = ({
               </span>
             </div>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <input
-              className='input'
-              placeholder='제목'
-              {...register('title', { required: '제목을 입력해주세요.' })}
-            />
-            <TextareaAutosize
-              {...register('description', {
-                required: '메시지를 입력해주세요.',
-              })}
-              minRows={3} // 최소 행 수 설정
-              maxRows={6} // 최대 행 수 설정
-              placeholder='메시지를 입력하세요.'
-              className='input'
-            />
+          <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col'>
+            <div className='flex justify-center '>
+              <div className='flex items-center'>
+                <span className='mr-3'>제목:</span>
+              </div>
+              <input
+                className='input w-11/12'
+                placeholder='제목'
+                {...register('title', { required: '제목을 입력해주세요.' })}
+              />
+            </div>
+
+            <div className='flex justify-center '>
+              <div>
+                <span className='mr-3'>내용:</span>
+              </div>
+              <TextareaAutosize
+                {...register('description', {
+                  required: '메시지를 입력해주세요.',
+                })}
+                minRows={3} // 최소 행 수 설정
+                maxRows={6} // 최대 행 수 설정
+                placeholder='메시지를 입력하세요.'
+                className='input  w-11/12'
+              />
+            </div>
+
             <br />
-            <Button loading={loading} canClick={isValid} actionText='확인' />
-            {data?.createNotice.error && (
-              <FormError errorMessage={data.createNotice.error} />
-            )}
+            <div className='flex justify-center '>
+              <Button loading={loading} canClick={isValid} actionText='확인' />
+              {data?.createNotice.error && (
+                <FormError errorMessage={data.createNotice.error} />
+              )}
+            </div>
           </form>
         </Box>
       </CustomModal>

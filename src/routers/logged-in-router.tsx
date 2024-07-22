@@ -8,12 +8,12 @@ import Qna from '../pages/user/qna';
 import { Header } from '../components/header';
 import Client from '../pages/client/client';
 import { ClipLoader } from 'react-spinners';
+import { Signup } from '../pages/client/signup';
 
 export const LoggedInRouter = () => {
   /* hook을 활용한 user data 사용 */
   const { data: identifyData, loading, error } = useMe();
   /* 데이터가 없거나 로딩중이거나 에러가 있으면 if문 진행 */
-
   if (!identifyData || loading || error) {
     return (
       <div className='h-screen flex justify-center items-center'>
@@ -28,8 +28,8 @@ export const LoggedInRouter = () => {
       component: <Notice />,
     },
     {
-      path: '/qna',
-      component: <Qna />,
+      path: '/signup',
+      component: <Signup />,
     },
     {
       path: '/',
@@ -37,13 +37,13 @@ export const LoggedInRouter = () => {
     },
   ];
   return (
-    <>
+    <Router>
       <div>
         <h1>Logged IN</h1>
       </div>
       <Header />
       <Routes>
-        {identifyData.me.role === UserRole.Manager &&
+        {identifyData &&
           commonRoutes.map((route) => (
             <Route
               key={route.path}
@@ -51,9 +51,8 @@ export const LoggedInRouter = () => {
               element={route.component}
             />
           ))}
-
         <Route path='*' element={<NotFound />} />
       </Routes>
-    </>
+    </Router>
   );
 };

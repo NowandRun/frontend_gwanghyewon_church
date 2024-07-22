@@ -18,28 +18,32 @@ export const ME_QUERY = gql`
 `;
 
 export const useMe = () => {
-  const navicate = useNavigate();
   const data = useQuery<MeQuery>(ME_QUERY, {
     onError: (error) => {
-      console.log(error.message);
-      if (error.message === 'Forbidden resource') {
-        window.location.reload();
+      console.log(error);
+      if (
+        error.message === 'Forbidden resource' ||
+        error.message === 'Response not successful: Received status code 500'
+      ) {
+        window.location.replace(
+          `${'http' ? 'http' : 'https'}://localhost:3000/`
+        );
       }
       if (
-        error.message === 'Response not successful: Received status code 500' ||
         error.message ===
           "Cannot read properties of undefined (reading 'user')" ||
         error.message === 'User not authorized'
       ) {
+        alert('Session이 만료되었습니다.');
+        window.location.replace(
+          `${'http' ? 'http' : 'https'}://localhost:3000/login`
+        );
         localStorage.removeItem(LOCALSTORAGE_ACCESSTOKEN);
         localStorage.removeItem(LOCALSTORAGE_REFRESHTOKEN);
         isLoggedInAcessTokenVar(false);
         isLoggedInRefresTokenVar(false);
-        alert('Session이 만료되었습니다.');
-        navicate('/login');
       }
     },
   });
-
   return data;
 };

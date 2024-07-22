@@ -1,17 +1,18 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { FormError } from '../components/form-error';
+import { FormError } from '../../components/form-error';
 import { gql, useMutation } from '@apollo/client';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+
+import Favicon from '../../styles/images/wavenexus-logo-two.png';
+import MyLogo from '../../styles/images/wavenexus.png';
+import { Button } from '../../components/button';
 import {
   CreateAccountMutation,
   CreateAccountMutationVariables,
   UserRole,
-} from '../gql/graphql';
-import Favicon from '../styles/images/wavenexus-logo-two.png';
-import MyLogo from '../styles/images/wavenexus.png';
-import { Button } from '../components/button';
+} from '../../gql/graphql';
 
 /* mutation 적용하기 */
 export const CREATE_ACCOUNT_MUTATION = gql`

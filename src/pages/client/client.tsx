@@ -35,11 +35,22 @@ function Client() {
 
       {/* 로딩이 완료되면 실제 애플리케이션을 렌더링합니다. */}
       <div>
-        <img
-          src='https://cdn.pixabay.com/photo/2023/11/18/19/06/futuristic-home-8397004_1280.jpg'
+        {/* <img
+          src={MainImage}
           alt='MainImage'
           className=' w-full object-cover h-96 mx-auto flex flex-col items-center bg-gray-700 bg-center'
-        />
+        /> */}
+        <div
+          className='w-full text-gray-700 object-cover h-96 mx-auto flex flex-col items-center justify-center bg-gradient-to-tl from-pink-200 bg-center '
+          style={{ userSelect: 'none' }}
+        >
+          <div className='text-3xl md:text-5xl font-extrabold mb-5 '>
+            WAVENEXUS는
+          </div>
+          <div className='text-3xl md:text-5xl font-extrabold'>
+            자체 웹개발 서비스입니다
+          </div>
+        </div>
 
         <div className='max-w-screen-2xl pb-14 mx-auto mt-8'>
           <div className='grid mt-16 md:grid-cols-3 gap-x-8 gap-y-10'>

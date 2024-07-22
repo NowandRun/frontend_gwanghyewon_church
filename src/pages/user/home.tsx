@@ -4,6 +4,7 @@ import Price from '../../components/Price';
 import Intro from '../../components/Intro-Section';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Favicon from '../../styles/images/wavenexus-logo-two.png';
+import MainImage from '../../styles/images/mainscreen.png';
 import { useCookies } from 'react-cookie';
 import { ClipLoader } from 'react-spinners';
 
@@ -37,7 +38,7 @@ function Home() {
       {/* 로딩이 완료되면 실제 애플리케이션을 렌더링합니다. */}
       <div>
         <img
-          src='https://cdn.pixabay.com/photo/2023/11/18/19/06/futuristic-home-8397004_1280.jpg'
+          src={MainImage}
           alt='MainImage'
           className=' w-full object-cover h-96 mx-auto flex flex-col items-center bg-gray-700 bg-center'
         />
