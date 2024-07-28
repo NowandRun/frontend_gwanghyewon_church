@@ -1,6 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
 import { MeQuery } from '../gql/graphql';
-import { useNavigate } from 'react-router-dom';
 import { isLoggedInAcessTokenVar, isLoggedInRefresTokenVar } from '../apollo';
 import {
   LOCALSTORAGE_ACCESSTOKEN,
@@ -20,7 +19,7 @@ export const ME_QUERY = gql`
 export const useMe = () => {
   const data = useQuery<MeQuery>(ME_QUERY, {
     onError: (error) => {
-      console.log(error);
+      console.log(error.message);
       if (
         error.message === 'Forbidden resource' ||
         error.message === 'Response not successful: Received status code 500'
@@ -29,11 +28,7 @@ export const useMe = () => {
           `${'http' ? 'http' : 'https'}://localhost:3000/`
         );
       }
-      if (
-        error.message ===
-          "Cannot read properties of undefined (reading 'user')" ||
-        error.message === 'User not authorized'
-      ) {
+      if (error.message === 'User not authorized') {
         alert('Session이 만료되었습니다.');
         window.location.replace(
           `${'http' ? 'http' : 'https'}://localhost:3000/login`

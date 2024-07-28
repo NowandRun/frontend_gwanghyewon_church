@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { format, isToday } from 'date-fns';
+import { format } from 'date-fns';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Favicon from '../../styles/images/wavenexus-logo-two.png';
-import MyLogo from '../../styles/images/wavenexus.png';
-import { gql, useApolloClient, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { NoticesQuery, NoticesQueryVariables } from '../../gql/graphql';
 import NoticeWrite from '../../components/notice-write';
 
@@ -58,8 +57,23 @@ export const Notices = () => {
 
   const isTitleNew = (createdAt: string | undefined) => {
     if (!createdAt) return false;
-    const date = new Date(createdAt);
-    return isToday(date);
+
+    try {
+      const createdAtDate = new Date(createdAt);
+      const currentTime = new Date();
+
+      // 게시물 생성 시간에서 현재 시간까지의 시간 차이를 밀리초로 계산
+      const timeDifference = currentTime.getTime() - createdAtDate.getTime();
+
+      // 시간 차이를 시간 단위로 변환하여 계산
+      const hoursDifference = timeDifference / (1000 * 3600);
+
+      // 생성된 시간이 0에서 24시간 사이면 "New" 표시
+      return hoursDifference >= 0 && hoursDifference <= 24;
+    } catch (error) {
+      console.error('제목이 새로운지 확인하는 도중 에러 발생:', error);
+      return false; // 에러 발생 시 gracefully하게 처리
+    }
   };
 
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
@@ -71,7 +85,7 @@ export const Notices = () => {
       <HelmetProvider>
         <Helmet>
           <link rel='icon' type='image/png' href={Favicon} />
-          <title>Home | WAVENEXUS</title>
+          <title>Notice | WAVENEXUS</title>
         </Helmet>
       </HelmetProvider>
 

@@ -4,13 +4,7 @@ import CustomModal from './Modal';
 import MyLogo from '../styles/images/wavenexus-logo-two.png';
 import { useForm } from 'react-hook-form';
 import { ApolloError, gql, useApolloClient, useMutation } from '@apollo/client';
-import {
-  CreateNoticeMutation,
-  CreateNoticeMutationVariables,
-  CreateQnaMutation,
-  CreateQnaMutationVariables,
-  UserRole,
-} from '../gql/graphql';
+import { CreateQnaMutation, CreateQnaMutationVariables } from '../gql/graphql';
 import { FormError } from './form-error';
 import { useNavigate } from 'react-router-dom';
 import { useMe } from '../hooks/useMe';
@@ -55,7 +49,6 @@ const QnaWrite: React.FC<QnaProps> = ({
       createQna: { ok, qnaId, error },
     } = data;
     if (ok) {
-      const { description, title } = getValues();
       setUploading(false);
       closeQnaModal();
       window.location.reload();
@@ -137,14 +130,13 @@ const QnaWrite: React.FC<QnaProps> = ({
                 <div className='w-20'>
                   <span className='mr-3'>내용:</span>
                 </div>
-                <TextareaAutosize
+                <textarea
                   {...register('description', {
                     required: '메시지를 입력해주세요.',
                   })}
-                  minRows={3} // 최소 행 수 설정
-                  maxRows={6} // 최대 행 수 설정
+                  rows={3}
                   placeholder='메시지를 입력하세요.'
-                  className='input  w-11/12'
+                  className='input  w-11/12 resize-none'
                 />
               </div>
 

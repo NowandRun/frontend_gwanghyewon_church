@@ -56,7 +56,7 @@ export const Signup = () => {
     if (ok) {
       /* 로그인 페이지로 이동했다는 것을 알려주기 */
       alert('Account Created! Log in now!');
-      navigate('/login', { replace: true });
+      navigate('/', { replace: true });
     }
   };
 

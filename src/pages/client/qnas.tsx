@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { format, isToday } from 'date-fns';
+import { format } from 'date-fns';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Favicon from '../../styles/images/wavenexus-logo-two.png';
 import { gql, useQuery } from '@apollo/client';
@@ -74,13 +74,48 @@ export const Qnas = () => {
 
   const isTitleNew = (createdAt: string | undefined) => {
     if (!createdAt) return false;
-    const date = new Date(createdAt);
-    return isToday(date);
+
+    try {
+      const createdAtDate = new Date(createdAt);
+      const currentTime = new Date();
+
+      // 게시물 생성 시간에서 현재 시간까지의 시간 차이를 밀리초로 계산
+      const timeDifference = currentTime.getTime() - createdAtDate.getTime();
+
+      // 시간 차이를 시간 단위로 변환하여 계산
+      const hoursDifference = timeDifference / (1000 * 3600);
+
+      // 생성된 시간이 0에서 24시간 사이면 "New" 표시
+      return hoursDifference >= 0 && hoursDifference <= 24;
+    } catch (error) {
+      console.error('제목이 새로운지 확인하는 도중 에러 발생:', error);
+      return false; // 에러 발생 시 gracefully하게 처리
+    }
   };
 
-  const hasCommentsToday = (comments: any[] | undefined) => {
-    if (!comments) return false;
-    return comments.some((comment) => isToday(new Date(comment.createdAt)));
+  const hasCommentsToday = (
+    comments: any[] | undefined,
+    postCreatedAt: string | undefined
+  ) => {
+    if (!comments || !postCreatedAt) return false;
+
+    try {
+      const postCreatedDate = new Date(postCreatedAt);
+      const currentTime = new Date();
+
+      // 24시간 이내의 댓글 여부를 확인
+      const hasRecentComment = comments.some((comment) => {
+        const commentDate = new Date(comment.createdAt);
+        const timeDifference = currentTime.getTime() - commentDate.getTime();
+        const hoursDifference = timeDifference / (1000 * 3600);
+        return hoursDifference >= 0 && hoursDifference <= 24;
+      });
+
+      return hasRecentComment;
+    } catch (error) {
+      console.error('댓글이 오늘 생성되었는지 확인하는 도중 에러 발생:', error);
+      return false; // 에러 발생 시 gracefully하게 처리
+    }
   };
 
   const [isQnaModalOpen, setIsQnaModalOpen] = useState(false);
@@ -92,7 +127,7 @@ export const Qnas = () => {
       <HelmetProvider>
         <Helmet>
           <link rel='icon' type='image/png' href={Favicon} />
-          <title>Home | WAVENEXUS</title>
+          <title>Qna | WAVENEXUS</title>
         </Helmet>
       </HelmetProvider>
 
@@ -155,7 +190,7 @@ export const Qnas = () => {
                           )}{' '}
                           {qna.title}{' '}
                           {qna.qnaComment &&
-                            hasCommentsToday(qna.qnaComment) && (
+                            hasCommentsToday(qna.qnaComment, qna.createdAt) && (
                               <span className='text-xs text-red-500 font-bold'>
                                 댓글
                               </span>

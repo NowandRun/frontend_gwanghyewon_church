@@ -4,8 +4,6 @@ import { useParams } from 'react-router-dom';
 import {
   CreateQnaCommentMutation,
   CreateQnaCommentMutationVariables,
-  CreateQnaMutation,
-  CreateQnaMutationVariables,
   QnaQuery,
   QnaQueryVariables,
   QnasQuery,
@@ -13,11 +11,13 @@ import {
 } from '../../gql/graphql';
 import { format } from 'date-fns';
 import { client } from '../../apollo';
-import { NOTICES_QUERY } from '../client/notices';
 import { Link } from 'react-router-dom';
 import { QNAS_QUERY } from './qnas';
-import { TextareaAutosize } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import { useMe } from '../../hooks/useMe';
+import { HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
+import Favicon from '../../styles/images/wavenexus-logo-two.png';
 
 const QNA_QUERY = gql`
   query qna($input: QnaInput!) {
@@ -71,6 +71,12 @@ export const Qna = () => {
   const { id } = useParams() as TNoticeParams;
 
   const qnaId = Number(id);
+
+  const {
+    data: identifyData,
+    loading: identifyLoading,
+    error: identifyError,
+  } = useMe();
 
   const { data, refetch } = useQuery<QnaQuery, QnaQueryVariables>(QNA_QUERY, {
     variables: {
@@ -178,7 +184,7 @@ export const Qna = () => {
   const shortenText = (text: string | null | undefined) => {
     if (!text) return '';
 
-    if (text.length > 10) {
+    if (text.length > 17) {
       return `${text.substring(0, 15)}...`;
     } else {
       return text;
@@ -217,6 +223,12 @@ export const Qna = () => {
 
   return (
     <>
+      <HelmetProvider>
+        <Helmet>
+          <link rel='icon' type='image/png' href={Favicon} />
+          <title>WAVENEXUS</title>
+        </Helmet>
+      </HelmetProvider>
       <div>
         <div className=' w-full  mx-auto  flex flex-col items-center bg-center px-10'>
           {/* Intro section */}
@@ -257,44 +269,46 @@ export const Qna = () => {
                 <tr>
                   <td
                     colSpan={9}
-                    className=' px-2 py-2  font-bold text-lg md:text-2xl'
+                    className=' px-2 py-2  font-bold text-lg md:text-2xl whitespace-pre-wrap'
                   >
                     {data?.qna.qna?.description}
                   </td>
                 </tr>
               </tbody>
             </table>
-            <form onSubmit={handleSubmit(onSubmit)} className='flex mt-5'>
-              <div className='relative flex-1 '>
-                <textarea
-                  {...register('description', {
-                    required: '댓글을 작성하세요.',
-                    maxLength: {
-                      value: 60,
-                      message: '댓글은 60자 이내로 작성해주세요.', // 최대 글자 수 초과 시 에러 메시지
-                    },
-                  })}
-                  rows={3}
-                  placeholder='댓글을 작성하세요.'
-                  className={`input  w-full resize-none h-full pr-20 md:pr-32 ${
-                    errors.description ? 'border-red-500' : ''
-                  }`}
-                  onChange={handleChange}
-                />
-                {errors.description && (
-                  <div className='text-center text-lg '>
-                    <p className='text-red-500  mt-1'>
-                      {errors.description.message}
-                    </p>
-                  </div>
-                )}
+            {identifyData && (
+              <form onSubmit={handleSubmit(onSubmit)} className='flex mt-5'>
+                <div className='relative flex-1 '>
+                  <textarea
+                    {...register('description', {
+                      required: '댓글을 작성하세요.',
+                      maxLength: {
+                        value: 60,
+                        message: '댓글은 60자 이내로 작성해주세요.', // 최대 글자 수 초과 시 에러 메시지
+                      },
+                    })}
+                    rows={3}
+                    placeholder='댓글을 작성하세요.'
+                    className={`input  w-full resize-none h-full pr-20 md:pr-32 ${
+                      errors.description ? 'border-red-500' : ''
+                    }`}
+                    onChange={handleChange}
+                  />
+                  {errors.description && (
+                    <div className='text-center text-lg '>
+                      <p className='text-red-500  mt-1'>
+                        {errors.description.message}
+                      </p>
+                    </div>
+                  )}
 
-                <button className='absolute  text-lg w-20 md:w-32 h-full text-white font-bold bg-gray-600 top-0 right-0'>
-                  <span className='block'>댓글</span>
-                  <span className='block'>작성</span>
-                </button>
-              </div>
-            </form>
+                  <button className='absolute  text-lg w-20 md:w-32 h-full text-white font-bold bg-gray-600 top-0 right-0'>
+                    <span className='block'>댓글</span>
+                    <span className='block'>작성</span>
+                  </button>
+                </div>
+              </form>
+            )}
 
             <table className='table-auto w-full  mx-auto mt-10'>
               {data?.qna.qna?.qnaComment
@@ -304,10 +318,7 @@ export const Qna = () => {
                       <td className='md:px-2 md:py-2 md:w-1/12 w-2/12 font-bold '>
                         {comment.commentOwner}
                       </td>
-                      <td
-                        className='md:px-2 md:py-2  font-bold md:w-full'
-                        style={{ whiteSpace: 'pre-wrap' }}
-                      >
+                      <td className='md:px-2 md:py-2 font-bold md:w-full whitespace-pre-wrap'>
                         {comment.comment}
                       </td>
                       <td className='md:px-2 md:py-2  font-bold '>

@@ -11,6 +11,9 @@ import { format } from 'date-fns';
 import { client } from '../../apollo';
 import { NOTICES_QUERY } from '../client/notices';
 import { Link } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
+import Favicon from '../../styles/images/wavenexus-logo-two.png';
 
 const NOTICE_QUERY = gql`
   query notice($input: NoticeInput!) {
@@ -138,6 +141,12 @@ export const Notice = () => {
   return (
     <>
       <div>
+        <HelmetProvider>
+          <Helmet>
+            <link rel='icon' type='image/png' href={Favicon} />
+            <title>WAVENEXUS</title>
+          </Helmet>
+        </HelmetProvider>
         <div className=' w-full  mx-auto  flex flex-col items-center bg-center px-10'>
           {/* Intro section */}
           <div className='w-full max-w-screen-2xl xl:px-40 mb-20'>
@@ -177,7 +186,7 @@ export const Notice = () => {
                 <tr>
                   <td
                     colSpan={9}
-                    className=' px-2 py-2  font-bold text-lg md:text-xl md:text-2xl'
+                    className=' px-2 py-2  font-bold text-lg whitespace-pre-wrap md:text-2xl'
                   >
                     {data?.notice.notice?.description}
                   </td>

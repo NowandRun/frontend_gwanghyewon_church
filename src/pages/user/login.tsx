@@ -20,7 +20,6 @@ import {
   LOCALSTORAGE_ACCESSTOKEN,
   LOCALSTORAGE_REFRESHTOKEN,
 } from '../../constants';
-import { useMe } from '../../hooks/useMe';
 
 /* mutation 적용하기 */
 const LOGIN_MUTATION = gql`

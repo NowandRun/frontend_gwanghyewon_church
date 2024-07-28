@@ -9,11 +9,9 @@ import {
   CreateNoticeMutationVariables,
   UserRole,
 } from '../gql/graphql';
-import { Button } from './button';
 import { FormError } from './form-error';
 import { useNavigate } from 'react-router-dom';
 import { useMe } from '../hooks/useMe';
-import { NOTICES_QUERY } from '../pages/client/notices';
 
 interface NoticeProps {
   openNoticeModal: () => void;
@@ -42,8 +40,6 @@ const NoticeWrite: React.FC<NoticeProps> = ({
   openNoticeModal,
   closeNoticeModal,
 }) => {
-  const client = useApolloClient();
-
   const {
     data: identifyData,
     loading: identifyLoading,
@@ -136,14 +132,13 @@ const NoticeWrite: React.FC<NoticeProps> = ({
                 <div className='w-20'>
                   <span className='mr-3'>내용:</span>
                 </div>
-                <TextareaAutosize
+                <textarea
                   {...register('description', {
-                    required: '메시지를 입력해주세요.',
+                    required: '공지사항을 입력해주세요.',
                   })}
-                  minRows={3} // 최소 행 수 설정
-                  maxRows={6} // 최대 행 수 설정
-                  placeholder='메시지를 입력하세요.'
-                  className='input  w-11/12'
+                  rows={3}
+                  placeholder='공지사항을 입력하세요.'
+                  className='input w-11/12 resize-none'
                 />
               </div>
 

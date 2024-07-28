@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import meImage from '../styles/images/me.jpg';
 import introDiv from '../styles/images/study.png';
 import CustomModal from './Modal';
 import wavenexusLogo from '../styles/images/wavenexus-logo-two.png';
@@ -29,12 +28,6 @@ const Intro: React.FC<PriceProps> = ({
         <Box sx={{ border: 'none' }}>
           <div className='bg-gradient-to-tl from-gray-200'>
             <div className='flex flex-col justify-center items-center py-24 px-10 '>
-              {/* <img
-                src={meImage}
-                alt='Me'
-                className='w-48 h-auto mr-4 md:w-96'
-              /> */}
-
               <img
                 src={wavenexusLogo}
                 alt='Me'
@@ -53,7 +46,7 @@ const Intro: React.FC<PriceProps> = ({
                     공감의 결합을 목표로
                   </span>
                   <span className='break-words md:text-4xl md:text-center mt-7 mb-12'>
-                    서비스 공감을 제공합니다.
+                    공감 서비스를 제공합니다.
                   </span>
                 </div>
                 <div className='text-xs md:text-2xl '>

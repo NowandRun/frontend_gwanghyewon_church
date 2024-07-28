@@ -1,12 +1,5 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import nestjsImage from '../styles/images/NestJS.png';
-import reactjsImage from '../styles/images/Reactjs.png';
-import typescriptImage from '../styles/images/TypeScript.png';
-import mongodbImage from '../styles/images/mongodb.png';
-import mysqlImage from '../styles/images/mysql.png';
-import nodejsImage from '../styles/images/nodejs.png';
-import postgresqlImage from '../styles/images/postgresql.png';
 import CustomModal from './Modal';
 import skillDiv from '../styles/images/project.png';
 import wavenexusLogo from '../styles/images/wavenexus-logo-two.png';
@@ -34,101 +27,7 @@ const Skill: React.FC<SkillProps> = ({
       <CustomModal isOpen={isSkillModalOpen} closeModal={closeSkillModal}>
         <Box sx={{ border: 'none' }}>
           <div>
-            {/* <div className='bg-blue-100 py-2 flex items-center w-full  h-full'>
-              <span className='text-2xl font-bold ml-5 md:text-5xl'>Skill</span>
-            </div> */}
             <div className='flex flex-col items-center py-24 px-10'>
-              {/*<div className='flex flex-col  w-full justify-center h-full'>
-                <span className=' break-words mb-5 font-semibold text-xl'>
-                  프론트엔드
-                </span>
-                <div className=' flex flex-col '>
-                  <div className='flex flex-col items-center w-20'>
-                    <img
-                      src={reactjsImage}
-                      alt='React'
-                      className='w-48 h-auto'
-                    />
-                    <span className='mt-2 break-words mb-5 font-semibold text-lg'>
-                      ReactJS
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className='flex flex-col  w-full justify-center h-full'>
-                <span className=' break-words mb-5 font-semibold mt-5 text-xl'>
-                  백엔드
-                </span>
-                <div className=' flex flex-wrap'>
-                  <div className='flex flex-col justify-end items-center  w-20'>
-                    <img
-                      src={nodejsImage}
-                      alt='React'
-                      className='w-48 h-auto'
-                    />
-                    <span className='mt-2 break-words mb-5 font-semibold text-lg'>
-                      NodeJS
-                    </span>
-                  </div>
-
-                  <div className='flex flex-col items-center justify-end ml-8 w-20'>
-                    <img
-                      src={typescriptImage}
-                      alt='React'
-                      className='w-48 h-auto'
-                    />
-                    <span className='mt-2 break-words mb-5 font-semibold  text-lg'>
-                      TypeScript
-                    </span>
-                  </div>
-
-                  <div className='flex flex-col items-center ml-8 justify-end w-20'>
-                    <img
-                      src={nestjsImage}
-                      alt='React'
-                      className='w-48 h-auto'
-                    />
-                    <span className='mt-2 break-words mb-5 font-semibold text-lg'>
-                      NestJS
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className='flex flex-col  w-full justify-center h-full'>
-                <span className=' break-words mb-5 font-semibold mt-5 text-2xl'>
-                  데이터베이스
-                </span>
-                <div className=' flex flex-wrap'>
-                  <div className='flex flex-col justify-end items-center  w-20'>
-                    <img
-                      src={mongodbImage}
-                      alt='React'
-                      className='w-48 h-auto'
-                    />
-                    <span className='mt-2 break-words mb-5 font-semibold text-lg'>
-                      MongoDB
-                    </span>
-                  </div>
-
-                  <div className='flex flex-col items-center justify-end ml-8 w-20'>
-                    <img src={mysqlImage} alt='React' className='w-48 h-auto' />
-                    <span className='mt-2 break-words mb-5 font-semibold  text-lg'>
-                      MySQL
-                    </span>
-                  </div>
-
-                  <div className='flex flex-col items-center ml-8 justify-end w-20'>
-                    <img
-                      src={postgresqlImage}
-                      alt='React'
-                      className='w-48 h-auto'
-                    />
-                    <span className='mt-2 break-words mb-5 font-semibold text-lg'>
-                      PostgreSQL
-                    </span>
-                  </div>
-                </div>
-              </div> */}
               <div className='flex flex-col  w-full justify-center h-full'>
                 <div className='flex items-center '>
                   <img src={wavenexusLogo} alt='React' className='w-6 h-auto' />

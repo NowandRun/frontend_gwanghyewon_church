@@ -2,7 +2,6 @@ import React from 'react';
 import { useMe } from '../hooks/useMe';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { NotFound } from '../pages/404';
-import { UserRole } from '../gql/graphql';
 import { Header } from '../components/header';
 import Client from '../pages/client/client';
 import { ClipLoader } from 'react-spinners';
@@ -52,9 +51,6 @@ export const LoggedInRouter = () => {
   ];
   return (
     <Router>
-      <div>
-        <h1>Logged IN</h1>
-      </div>
       <Header />
       <Routes>
         {identifyData &&

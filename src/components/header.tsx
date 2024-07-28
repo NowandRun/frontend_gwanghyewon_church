@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useMe } from '../hooks/useMe';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
@@ -7,16 +7,6 @@ import MyLogo from '../styles/images/wavenexus.png';
 
 export const Header: React.FC = () => {
   const { data: identifyData } = useMe();
-
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
 
   return (
     <>
@@ -31,11 +21,7 @@ export const Header: React.FC = () => {
             </Link>
           </div>
 
-          <div
-            className='text-xl'
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
+          <div className='text-xl'>
             <Link to='/notice'>
               <span>공지</span>
             </Link>
