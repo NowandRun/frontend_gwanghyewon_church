@@ -21,7 +21,7 @@ const documents = {
     "\n  mutation createQnaComment($input: CreateQnaCommentInput!) {\n    createQnaComment(input: $input) {\n      error\n      ok\n      results {\n        id\n        createdAt\n        commentOwner\n        userId\n        comment\n      }\n    }\n  }\n": types.CreateQnaCommentDocument,
     "\n  query qnas($input: QnasInput!) {\n    qnas(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n        qnaComment {\n          id\n          createdAt\n          commentOwner\n          userId\n          comment\n        }\n      }\n    }\n  }\n": types.QnasDocument,
     "\n  mutation createAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n": types.CreateAccountDocument,
-    "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      refreshToken\n      error\n    }\n  }\n": types.LoginDocument,
+    "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      error\n    }\n  }\n": types.LoginDocument,
     "\n  query notice($input: NoticeInput!) {\n    notice(input: $input) {\n      error\n      ok\n      notice {\n        id\n        createdAt\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n": types.NoticeDocument,
 };
 
@@ -74,7 +74,7 @@ export function graphql(source: "\n  mutation createAccount($createAccountInput:
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      refreshToken\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      refreshToken\n      error\n    }\n  }\n"];
+export function graphql(source: "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      error\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

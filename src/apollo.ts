@@ -23,7 +23,7 @@ export const authRefreshToken = makeVar(refreshToken);
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/graphql',
-  credentials: 'include',
+  credentials: 'same-origin',
 });
 
 const authLink = setContext((_, { headers }) => {
