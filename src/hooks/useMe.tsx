@@ -1,10 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { MeQuery } from '../gql/graphql';
-import { isLoggedInAcessTokenVar, isLoggedInRefresTokenVar } from '../apollo';
-import {
-  LOCALSTORAGE_ACCESSTOKEN,
-  LOCALSTORAGE_REFRESHTOKEN,
-} from '../constants';
+import { isLoggedInAcessTokenVar } from '../apollo';
+import { LOCALSTORAGE_ACCESSTOKEN } from '../constants';
 
 export const ME_QUERY = gql`
   query me {
@@ -34,9 +31,7 @@ export const useMe = () => {
           `${'http' ? 'http' : 'https'}://localhost:3000/login`
         );
         localStorage.removeItem(LOCALSTORAGE_ACCESSTOKEN);
-        localStorage.removeItem(LOCALSTORAGE_REFRESHTOKEN);
         isLoggedInAcessTokenVar(false);
-        isLoggedInRefresTokenVar(false);
       }
     },
   });

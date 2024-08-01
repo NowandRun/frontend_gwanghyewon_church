@@ -10,16 +10,8 @@ import Favicon from '../../styles/images/wavenexus-logo-two.png';
 
 import { Button } from '../../components/button';
 import { useNavigate } from 'react-router-dom';
-import {
-  authAccessToken,
-  authRefreshToken,
-  isLoggedInAcessTokenVar,
-  isLoggedInRefresTokenVar,
-} from '../../apollo';
-import {
-  LOCALSTORAGE_ACCESSTOKEN,
-  LOCALSTORAGE_REFRESHTOKEN,
-} from '../../constants';
+import { authAccessToken, isLoggedInAcessTokenVar } from '../../apollo';
+import { LOCALSTORAGE_ACCESSTOKEN } from '../../constants';
 
 /* mutation 적용하기 */
 const LOGIN_MUTATION = gql`
@@ -27,7 +19,6 @@ const LOGIN_MUTATION = gql`
     login(input: $loginInput) {
       ok
       accessToken
-      refreshToken
       error
     }
   }
@@ -50,15 +41,12 @@ export const Login = () => {
 
   const onCompleted = (data: LoginMutation) => {
     const {
-      login: { ok, error, accessToken, refreshToken },
+      login: { ok, error, accessToken },
     } = data;
-    if (ok && accessToken && refreshToken) {
+    if (ok && accessToken /* && refreshToken */) {
       localStorage.setItem(LOCALSTORAGE_ACCESSTOKEN, accessToken);
-      localStorage.setItem(LOCALSTORAGE_REFRESHTOKEN, refreshToken);
       authAccessToken(accessToken);
-      authRefreshToken(refreshToken);
       isLoggedInAcessTokenVar(true);
-      isLoggedInRefresTokenVar(true);
       navigate('/');
     }
   };
@@ -68,7 +56,6 @@ export const Login = () => {
   const onError = (error: ApolloError) => {
     if (error.message === 'Response not successful: Received status code 500') {
       localStorage.removeItem(LOCALSTORAGE_ACCESSTOKEN);
-      localStorage.removeItem(LOCALSTORAGE_REFRESHTOKEN);
       setButtonText('다시 시도해주세요'); // 버튼 텍스트를 '다시 시도해주세요'로 변경
     }
   };

@@ -6,24 +6,17 @@ import {
   makeVar,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { onError } from '@apollo/client/link/error';
-import {
-  LOCALSTORAGE_ACCESSTOKEN,
-  LOCALSTORAGE_REFRESHTOKEN,
-} from './constants';
+import { LOCALSTORAGE_ACCESSTOKEN } from './constants';
 
 export const accessToken = localStorage.getItem(LOCALSTORAGE_ACCESSTOKEN);
-export const refreshToken = localStorage.getItem(LOCALSTORAGE_REFRESHTOKEN);
 
 export const isLoggedInAcessTokenVar = makeVar(Boolean(accessToken)); // 초기값은 false로 설정
-export const isLoggedInRefresTokenVar = makeVar(Boolean(refreshToken)); // 초기값은 false로 설정
 
 export const authAccessToken = makeVar(accessToken);
-export const authRefreshToken = makeVar(refreshToken);
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/graphql',
-  credentials: 'same-origin',
+  credentials: 'include',
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -31,7 +24,6 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       aat: authAccessToken() || '',
-      art: authRefreshToken() || '',
     },
   };
 });
@@ -47,7 +39,6 @@ export const client = new ApolloClient({
             read() {
               return {
                 isLoggedInAcessTokenVar: isLoggedInAcessTokenVar(),
-                isLoggedInRefresTokenVar: isLoggedInRefresTokenVar(),
               };
             },
           },
@@ -55,7 +46,6 @@ export const client = new ApolloClient({
             read() {
               return {
                 accessToken: authAccessToken(),
-                refresToken: authRefreshToken(),
               };
             },
           },
