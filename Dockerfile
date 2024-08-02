@@ -6,7 +6,7 @@ RUN npm install
 RUN npm run build
 
 
-FROM nginx
+FROM nginx:alpine
 
 # root 에 app 폴더를 생성
 RUN mkdir /app
