@@ -28,7 +28,11 @@ const Price: React.FC<PriceProps> = ({
         <Box sx={{ border: 'none' }}>
           <div className='py-24 px-5'>
             <div className='flex justify-center mb-16'>
-              <img src={MyLogo} className='h-16 max-h-full py-2 md:h-24' />
+              <img
+                src={MyLogo}
+                alt='logo'
+                className='h-16 max-h-full py-2 md:h-24'
+              />
             </div>
             <div className='flex flex-col mt-5 pb-4'>
               <span className='md:text-2xl text-base w-11/12 mx-auto px-2 pb-1 md:pb-3 font-medium text-gray-500'>

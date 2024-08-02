@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Box, TextareaAutosize } from '@mui/material';
+import { Box } from '@mui/material';
 import CustomModal from './Modal';
 import MyLogo from '../styles/images/wavenexus-logo-two.png';
 import { useForm } from 'react-hook-form';
-import { ApolloError, gql, useApolloClient, useMutation } from '@apollo/client';
+import { ApolloError, gql, useMutation } from '@apollo/client';
 import {
   CreateNoticeMutation,
   CreateNoticeMutationVariables,
@@ -40,15 +40,11 @@ const NoticeWrite: React.FC<NoticeProps> = ({
   openNoticeModal,
   closeNoticeModal,
 }) => {
-  const {
-    data: identifyData,
-    loading: identifyLoading,
-    error: identifyError,
-  } = useMe();
+  const { data: identifyData } = useMe();
 
   const onCompleted = (data: CreateNoticeMutation) => {
     const {
-      createNotice: { ok, error, noticeId },
+      createNotice: { ok },
     } = data;
     if (ok) {
       setUploading(false);
@@ -57,7 +53,7 @@ const NoticeWrite: React.FC<NoticeProps> = ({
     }
   };
   const navigate = useNavigate();
-  const [createNoticeMutation, { data, loading, error }] = useMutation<
+  const [createNoticeMutation, { data, loading }] = useMutation<
     CreateNoticeMutation,
     CreateNoticeMutationVariables
   >(NOTICE_WRITE_MUTATION, {
@@ -70,7 +66,7 @@ const NoticeWrite: React.FC<NoticeProps> = ({
     },
   });
 
-  const [uploading, setUploading] = useState(false);
+  const [_, setUploading] = useState(false);
 
   const onSubmit = () => {
     setUploading(true);
@@ -88,7 +84,7 @@ const NoticeWrite: React.FC<NoticeProps> = ({
   const {
     register,
     getValues,
-    formState: { errors, isValid },
+    formState: { isValid },
     handleSubmit,
   } = useForm<INoticeWriteForm>({
     mode: 'onChange',

@@ -62,7 +62,7 @@ const Intro: React.FC<PriceProps> = ({
                       </a>
                     </li>
                     <li>
-                      <a>Email: whd617@naver.com</a>
+                      <span>Email: whd617@naver.com</span>
                     </li>
                   </ul>
                 </div>
