@@ -6,31 +6,16 @@ RUN npm install
 RUN npm run build
 
 
-FROM nginx:alpine
+FROM nginx:stable-alpine
 
-# root 에 app 폴더를 생성
-RUN mkdir /app
+# nginx의 기본 설정을 삭제하고 앱에서 설정한 파일을 복사
+RUN rm -rf /etc/nginx/conf.d
+COPY conf /etc/nginx
 
-# work dir 고정
-WORKDIR /app
+# 위 스테이지에서 생성한 빌드 결과를 nginx의 샘플 앱이 사용하던 폴더로 이동
+COPY --from=build /app/build /usr/share/nginx/html
 
-# work dir 에 build 폴더 생성 /app/build
-RUN mkdir ./build
-
-# host pc의 현재경로의 build 폴더를 workdir 의 build 폴더로 복사
-ADD ./build ./build
-
-# nginx 의 default.conf 를 삭제
-RUN rm /etc/nginx/conf.d/default.conf
-
-# 빌드된 React 파일을 Nginx HTML 디렉토리로 복사
-COPY --from=0 /app/build /usr/share/nginx/html
-
-# host pc 의 nginx.conf 를 아래 경로에 복사
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-
-# 80 포트 오픈
 EXPOSE 80
 
-# container 실행 시 자동으로 실행할 command. nginx 시작함
-CMD ["nginx", "-g", "daemon off;"]
+# nginx 실행
+CMD [ "nginx", "-g", "daemon off;" ] 
