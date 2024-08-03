@@ -35,13 +35,6 @@ export const QNAS_QUERY = gql`
 `;
 
 export const Qnas = () => {
-  /* const client = useApolloClient();
-
-  useEffect(() => {
-    const queryResult = client.readQuery({ query: NOTICES_QUERY });
-    console.log(queryResult);
-  }, []); */
-
   const [page, setPage] = useState(1);
   const { loading, error, data } = useQuery<QnasQuery, QnasQueryVariables>(
     QNAS_QUERY,
