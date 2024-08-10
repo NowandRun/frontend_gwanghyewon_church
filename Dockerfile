@@ -12,10 +12,10 @@ RUN npm run build
 
 # Stage 2: Production
 FROM nginx:alpine
+EXPOSE 80
+COPY ./conf/default.conf /etc/nginx/conf.d/default.conf 
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Nginx 설정 파일 복사
-COPY nginx.conf /etc/nginx/nginx.conf
-
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
