@@ -1,13 +1,14 @@
 # Stage 1: Build
 FROM node:22 AS build
+RUN mkdir -p /app
 WORKDIR /app
 
 # package.json 및 package-lock.json 먼저 복사하고 종속성 설치
-COPY package.json package-lock.json ./
+COPY package*.json /app
 RUN npm install
 
 # 소스 파일을 복사하고 빌드
-COPY . .
+COPY . /app
 RUN npm run build
 
 # Stage 2: Production
