@@ -10,7 +10,7 @@ import Favicon from '../../styles/images/wavenexus-logo-two.png';
 
 import { Button } from '../../components/button';
 import { useNavigate } from 'react-router-dom';
-import { authAccessToken, isLoggedInAcessTokenVar } from '../../apollo';
+import { authAccessToken, isLoggedInAccessTokenVar } from '../../apollo';
 import { LOCALSTORAGE_ACCESSTOKEN } from '../../constants';
 
 /* mutation 적용하기 */
@@ -46,7 +46,7 @@ export const Login = () => {
     if (ok && accessToken /* && refreshToken */) {
       localStorage.setItem(LOCALSTORAGE_ACCESSTOKEN, accessToken);
       authAccessToken(accessToken);
-      isLoggedInAcessTokenVar(true);
+      isLoggedInAccessTokenVar(true);
       navigate('/');
     }
   };

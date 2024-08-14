@@ -10,6 +10,7 @@ import { Notices } from '../pages/client/notices';
 import { Qna } from '../pages/client/qna';
 import { NotFound } from '../pages/404';
 import Client from '../pages/client/client';
+import { Signup } from '../pages/client/signup';
 
 const nonAuth = [
   {
@@ -37,6 +38,10 @@ const nonAuth = [
     path: `/qna`,
     component: <Qnas />,
   },
+  {
+    path: '/signup',
+    component: <Signup />,
+  },
 ];
 
 export const LoggedOutRouter = () => {
@@ -57,6 +62,12 @@ export const LoggedOutRouter = () => {
           <div className='text-xl'>
             <Link to='/notice'>
               <span>공지</span>
+            </Link>
+          </div>
+
+          <div className='text-xl'>
+            <Link to='/signup'>
+              <span>회원가입</span>
             </Link>
           </div>
 

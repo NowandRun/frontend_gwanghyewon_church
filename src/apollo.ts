@@ -10,7 +10,7 @@ import { LOCALSTORAGE_ACCESSTOKEN } from './constants';
 
 export const accessToken = localStorage.getItem(LOCALSTORAGE_ACCESSTOKEN);
 
-export const isLoggedInAcessTokenVar = makeVar(Boolean(accessToken)); // 초기값은 false로 설정
+export const isLoggedInAccessTokenVar = makeVar(Boolean(accessToken)); // 초기값은 false로 설정
 
 export const authAccessToken = makeVar(accessToken);
 
@@ -38,7 +38,7 @@ export const client = new ApolloClient({
           isLoggedIn: {
             read() {
               return {
-                isLoggedInAcessTokenVar: isLoggedInAcessTokenVar(),
+                isLoggedInAcessTokenVar: isLoggedInAccessTokenVar(),
               };
             },
           },
