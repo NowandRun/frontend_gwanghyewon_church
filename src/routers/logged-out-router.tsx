@@ -38,10 +38,6 @@ const nonAuth = [
     path: `/qna`,
     component: <Qnas />,
   },
-  {
-    path: '/signup',
-    component: <Signup />,
-  },
 ];
 
 export const LoggedOutRouter = () => {
@@ -62,12 +58,6 @@ export const LoggedOutRouter = () => {
           <div className='text-xl'>
             <Link to='/notice'>
               <span>공지</span>
-            </Link>
-          </div>
-
-          <div className='text-xl'>
-            <Link to='/signup'>
-              <span>회원가입</span>
             </Link>
           </div>
 
