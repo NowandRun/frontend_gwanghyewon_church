@@ -526,6 +526,9 @@ const Price: React.FC<PriceProps> = ({
                   </tr>
                 </tbody>
               </table>
+              <div className='font-semibold text-2xl mt-3'>
+                <span>문의전화: 010-2915-3782</span>
+              </div>
             </div>
           </div>
         </Box>

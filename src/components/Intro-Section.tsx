@@ -51,6 +51,9 @@ const Intro: React.FC<PriceProps> = ({
                 </div>
                 <div className='text-xs md:text-2xl '>
                   <ul>
+                    <li>
+                      <span>문의전화: 010-2915-3782</span>
+                    </li>
                     <li className='pb-1'>
                       <a href='https://wlrma-123.tistory.com/'>
                         Blog: https://wlrma-123.tistory.com/
