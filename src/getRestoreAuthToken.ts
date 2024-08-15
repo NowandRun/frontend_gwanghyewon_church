@@ -1,8 +1,4 @@
-import { makeVar } from '@apollo/client';
-import {
-  LOCALSTORAGE_ACCESSTOKEN,
-  LOCALSTORAGE_REFRESHTOKEN,
-} from './constants';
+import { LOCALSTORAGE_ACCESSTOKEN } from './constants';
 
 async function getRestoreAuthToken(): Promise<{
   accessToken: string | null;
