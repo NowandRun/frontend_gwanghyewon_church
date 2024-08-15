@@ -1,7 +1,7 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const GRAPHQL_URI =
-  process.env.REACT_APP_GRAPHQL_URI || 'http://localhost:4000/graphql';
+  'http://backend:4000/graphql' || 'http://localhost:4000/graphql';
 
 const config: CodegenConfig = {
   overwrite: true,
