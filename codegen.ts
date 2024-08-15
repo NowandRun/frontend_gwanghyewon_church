@@ -1,11 +1,8 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
-const GRAPHQL_URI =
-  'http://backend:4000/graphql' || 'http://localhost:4000/graphql';
-
 const config: CodegenConfig = {
   overwrite: true,
-  schema: GRAPHQL_URI,
+  schema: 'http://backend:4000/graphql',
   documents: ['src/**/*.tsx'],
   ignoreNoDocuments: true, // for better experience with the watcher
   generates: {
