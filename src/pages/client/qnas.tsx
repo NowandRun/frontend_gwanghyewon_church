@@ -4,10 +4,33 @@ import { format } from 'date-fns';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Favicon from '../../styles/images/wavenexus-logo-two.png';
 import { gql, useQuery } from '@apollo/client';
-import { QnasQuery, QnasQueryVariables } from '../../gql/graphql';
+import {
+  QnaNoticesQuery,
+  QnasNoticeOutput,
+  QnasQuery,
+  QnasQueryVariables,
+} from '../../gql/graphql';
 import QnaWrite from '../../components/qna-write';
 
-export const QNAS_QUERY = gql`
+export const QNAS_MANAGER_QUERY = gql`
+  query qnaNotices {
+    qnaNotices {
+      error
+      ok
+      results {
+        id
+        createdAt
+        userId
+        userName
+        title
+        description
+        views
+      }
+    }
+  }
+`;
+
+export const QNAS_CLIENT_QUERY = gql`
   query qnas($input: QnasInput!) {
     qnas(input: $input) {
       error
@@ -36,16 +59,23 @@ export const QNAS_QUERY = gql`
 
 export const Qnas = () => {
   const [page, setPage] = useState(1);
-  const { loading, error, data } = useQuery<QnasQuery, QnasQueryVariables>(
-    QNAS_QUERY,
-    {
-      variables: {
-        input: {
-          page,
-        },
+  const {
+    loading: qnaClientLoading,
+    error: qnaClientError,
+    data: qnaClientData,
+  } = useQuery<QnasQuery, QnasQueryVariables>(QNAS_CLIENT_QUERY, {
+    variables: {
+      input: {
+        page,
       },
-    }
-  );
+    },
+  });
+
+  const {
+    loading: qnaManagerLoading,
+    error: qnaManagerError,
+    data: qnaManagerData,
+  } = useQuery<QnaNoticesQuery, QnasNoticeOutput>(QNAS_MANAGER_QUERY);
 
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);
@@ -157,7 +187,9 @@ export const Qnas = () => {
                 </tr>
               </thead>
               <tbody>
-                {data?.qnas.ok && data.qnas.results?.length === 0 ? (
+                {qnaClientData?.qnas.ok &&
+                qnaManagerData?.qnaNotices.ok &&
+                qnaClientData.qnas.results?.length === 0 ? (
                   <tr>
                     <td colSpan={4} className='text-center py-24'>
                       <h4 className='text-xl mb-2'>
@@ -169,36 +201,67 @@ export const Qnas = () => {
                     </td>
                   </tr>
                 ) : (
-                  data?.qnas.results?.map((qna, index) => (
-                    <tr key={qna.id}>
-                      <td className='border border-gray-400 md:px-2 md:py-2 px-1 py-1 font-bold text-center text-xs md:text-base'>
-                        {qna.id}
-                      </td>
-                      <td className='border border-gray-400 md:px-2 md:py-2 px-1 py-1 text-xs md:text-base'>
-                        <Link to={`${qna.id}`}>
-                          {isTitleNew(qna.createdAt) && (
-                            <span className='text-xs text-green-500 font-bold'>
-                              New
-                            </span>
-                          )}{' '}
-                          {qna.title}{' '}
-                          {qna.qnaComment &&
-                            hasCommentsToday(qna.qnaComment, qna.createdAt) && (
-                              <span className='text-xs text-red-500 font-bold'>
-                                댓글
-                              </span>
-                            )}
-                        </Link>
-                      </td>
+                  <>
+                    {qnaManagerData?.qnaNotices.results?.map(
+                      (qnaNotice, index) => (
+                        <tr key={qnaNotice.id}>
+                          <td className='border border-gray-400 md:px-2 md:py-2 px-1 py-1 font-bold text-center text-xs md:text-base'>
+                            공지
+                          </td>
+                          <td className='border border-gray-400 md:px-2 md:py-2 px-1 py-1 text-xs md:text-base'>
+                            <Link to={`/qna/notice/${qnaNotice.id}`}>
+                              {isTitleNew(qnaNotice.createdAt) && (
+                                <span className='text-xs text-green-500 font-bold'>
+                                  New
+                                </span>
+                              )}{' '}
+                              {qnaNotice.title}{' '}
+                            </Link>
+                          </td>
 
-                      <td className='border border-gray-400 md:px-2 md:py-2 text-center px-1 py-1 text-xs md:text-base'>
-                        {formatDate(qna.createdAt)}
-                      </td>
-                      <td className='text-center border border-gray-400 md:px-2 md:py-2 px-1 py-1 text-xs md:text-base'>
-                        {qna.views}
-                      </td>
-                    </tr>
-                  ))
+                          <td className='border border-gray-400 md:px-2 md:py-2 text-center px-1 py-1 text-xs md:text-base'>
+                            {formatDate(qnaNotice.createdAt)}
+                          </td>
+                          <td className='text-center border border-gray-400 md:px-2 md:py-2 px-1 py-1 text-xs md:text-base'>
+                            {qnaNotice.views}
+                          </td>
+                        </tr>
+                      )
+                    )}
+                    {qnaClientData?.qnas.results?.map((qna, index) => (
+                      <tr key={qna.id}>
+                        <td className='border border-gray-400 md:px-2 md:py-2 px-1 py-1 font-bold text-center text-xs md:text-base'>
+                          {qna.id}
+                        </td>
+                        <td className='border border-gray-400 md:px-2 md:py-2 px-1 py-1 text-xs md:text-base'>
+                          <Link to={`${qna.id}`}>
+                            {isTitleNew(qna.createdAt) && (
+                              <span className='text-xs text-green-500 font-bold'>
+                                New
+                              </span>
+                            )}{' '}
+                            {qna.title}{' '}
+                            {qna.qnaComment &&
+                              hasCommentsToday(
+                                qna.qnaComment,
+                                qna.createdAt
+                              ) && (
+                                <span className='text-xs text-red-500 font-bold'>
+                                  댓글
+                                </span>
+                              )}
+                          </Link>
+                        </td>
+
+                        <td className='border border-gray-400 md:px-2 md:py-2 text-center px-1 py-1 text-xs md:text-base'>
+                          {formatDate(qna.createdAt)}
+                        </td>
+                        <td className='text-center border border-gray-400 md:px-2 md:py-2 px-1 py-1 text-xs md:text-base'>
+                          {qna.views}
+                        </td>
+                      </tr>
+                    ))}
+                  </>
                 )}
               </tbody>
             </table>
@@ -214,9 +277,9 @@ export const Qnas = () => {
                 <div></div>
               )}
               <span>
-                Page {page} of {data?.qnas.totalPages}
+                Page {page} of {qnaClientData?.qnas.totalPages}
               </span>
-              {page !== data?.qnas.totalPages ? (
+              {page !== qnaClientData?.qnas.totalPages ? (
                 <button
                   onClick={onNextPageClick}
                   className='focus:outline-none font-medium text-2xl'

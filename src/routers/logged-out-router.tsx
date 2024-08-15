@@ -11,6 +11,7 @@ import { Qna } from '../pages/client/qna';
 import { NotFound } from '../pages/404';
 import Client from '../pages/client/client';
 import { Signup } from '../pages/client/signup';
+import { QnaNotice } from '../pages/client/qna-notice';
 
 const nonAuth = [
   {
@@ -33,10 +34,13 @@ const nonAuth = [
     path: '/login',
     component: <Login />,
   },
-
   {
     path: `/qna`,
     component: <Qnas />,
+  },
+  {
+    path: `/qna/notice/:id`,
+    component: <QnaNotice />,
   },
 ];
 

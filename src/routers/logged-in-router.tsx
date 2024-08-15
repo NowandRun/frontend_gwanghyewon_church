@@ -10,6 +10,7 @@ import { Notices } from '../pages/client/notices';
 import { Notice } from '../pages/user/notice';
 import { Qnas } from '../pages/client/qnas';
 import { Qna } from '../pages/client/qna';
+import { QnaNotice } from '../pages/client/qna-notice';
 
 export const LoggedInRouter = () => {
   /* hook을 활용한 user data 사용 */
@@ -47,6 +48,10 @@ export const LoggedInRouter = () => {
     {
       path: `/qna/:id`,
       component: <Qna />,
+    },
+    {
+      path: `/qna/notice/:id`,
+      component: <QnaNotice />,
     },
   ];
   return (

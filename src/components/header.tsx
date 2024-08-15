@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import MyLogo from '../styles/images/wavenexus.png';
+import { UserRole } from '../gql/graphql';
 
 export const Header: React.FC = () => {
   const { data: identifyData } = useMe();
@@ -27,13 +28,18 @@ export const Header: React.FC = () => {
             </Link>
           </div>
 
-          {identifyData?.me.role === 'Manager' && (
+          {identifyData?.me.role === UserRole.Manager ? (
             <Link to='/signup'>
               <div className='flex justify-center text-lg text-gray-800 font-semibold'>
                 <FontAwesomeIcon icon={faUserCircle} className='text-2xl' />
                 <span className=' pl-2'>{identifyData?.me.userName}</span>
               </div>
             </Link>
+          ) : (
+            <div className='flex justify-center text-lg text-gray-800 font-semibold'>
+              <FontAwesomeIcon icon={faUserCircle} className='text-2xl' />
+              <span className=' pl-2'>{identifyData?.me.userName}</span>
+            </div>
           )}
         </div>
       </header>

@@ -11,5 +11,5 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["src/types", "node_modules/@types"]
   },
-  "include": ["src"]
+  "include": ["src", "codegen.ts", "codegen.ts"]
 }

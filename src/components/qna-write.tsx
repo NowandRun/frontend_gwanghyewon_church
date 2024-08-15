@@ -4,7 +4,11 @@ import CustomModal from './Modal';
 import MyLogo from '../styles/images/wavenexus-logo-two.png';
 import { useForm } from 'react-hook-form';
 import { ApolloError, gql, useApolloClient, useMutation } from '@apollo/client';
-import { CreateQnaMutation, CreateQnaMutationVariables } from '../gql/graphql';
+import {
+  CreateQnaMutation,
+  CreateQnaMutationVariables,
+  UserRole,
+} from '../gql/graphql';
 import { FormError } from './form-error';
 import { useNavigate } from 'react-router-dom';
 import { useMe } from '../hooks/useMe';
@@ -94,9 +98,15 @@ const QnaWrite: React.FC<QnaProps> = ({
 
   return (
     <div>
-      {identifyData && (
+      {identifyData?.me.role === UserRole.Client ? (
         <div className='cursor-pointer text-right' onClick={openQnaModal}>
           <span className='text-lg md:text-2xl font-extrabold'>글작성</span>
+        </div>
+      ) : (
+        <div className='cursor-pointer text-right' onClick={openQnaModal}>
+          <span className='text-lg md:text-2xl font-extrabold'>
+            공지글 작성
+          </span>
         </div>
       )}
 
@@ -106,9 +116,15 @@ const QnaWrite: React.FC<QnaProps> = ({
             <div className='flex px-10 items-end   pb-4 '>
               <img src={MyLogo} className='w-10  py-2' />
               <div className='mb-2 '>
-                <span className='md:text-2xl text-xl  md:w-11/12 mx-auto px-2 pb-3 font-bold '>
-                  QNA 작성하기
-                </span>
+                {identifyData?.me.role === UserRole.Client ? (
+                  <span className='md:text-2xl text-xl  md:w-11/12 mx-auto px-2 pb-3 font-bold '>
+                    QNA 작성하기
+                  </span>
+                ) : (
+                  <span className='md:text-2xl text-xl  md:w-11/12 mx-auto px-2 pb-3 font-bold '>
+                    QNA 공지하기
+                  </span>
+                )}
               </div>
             </div>
             <form

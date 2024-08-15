@@ -1,59 +1,32 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  CreateQnaCommentMutation,
-  CreateQnaCommentMutationVariables,
-  QnaQuery,
-  QnaQueryVariables,
-  QnasQuery,
-  QnasQueryVariables,
-} from '../../gql/graphql';
 import { format } from 'date-fns';
-import { client } from '../../apollo';
 import { Link } from 'react-router-dom';
-import { QNAS_CLIENT_QUERY } from './qnas';
-import { useForm } from 'react-hook-form';
-import { useMe } from '../../hooks/useMe';
 import { HelmetProvider } from 'react-helmet-async';
 import { Helmet } from 'react-helmet';
 import Favicon from '../../styles/images/wavenexus-logo-two.png';
+import {
+  QnaNoticeQuery,
+  QnaNoticeQueryVariables,
+  QnaNoticesQuery,
+  QnaNoticesQueryVariables,
+} from '../../gql/graphql';
+import { client } from '../../apollo';
+import { QNAS_MANAGER_QUERY } from './qnas';
 
-const QNA_QUERY = gql`
-  query qna($input: QnaInput!) {
-    qna(input: $input) {
+export const QNA_NOTICE_QUERY = gql`
+  query qnaNotice($input: QnaNoticeInput!) {
+    qnaNotice(input: $input) {
       error
       ok
-      qna {
+      qnaNotice {
         id
         createdAt
         userName
         title
         description
         views
-        qnaComment {
-          id
-          createdAt
-          commentOwner
-          userId
-          comment
-        }
-      }
-    }
-  }
-`;
-
-const QNA_COMMENT_CREATE_MUTATIONS = gql`
-  mutation createQnaComment($input: CreateQnaCommentInput!) {
-    createQnaComment(input: $input) {
-      error
-      ok
-      results {
-        id
-        createdAt
-        commentOwner
-        userId
-        comment
       }
     }
   }
@@ -67,47 +40,22 @@ interface IQnaCommentWriteForm {
   description: string;
 }
 
-export const Qna = () => {
+export const QnaNotice = () => {
   const { id } = useParams() as TNoticeParams;
 
-  const qnaId = Number(id);
+  const qnaNoticeId = Number(id);
+  console.log(qnaNoticeId);
 
-  const {
-    data: identifyData,
-    loading: identifyLoading,
-    error: identifyError,
-  } = useMe();
-
-  const { data, refetch } = useQuery<QnaQuery, QnaQueryVariables>(QNA_QUERY, {
-    variables: {
-      input: {
-        qnaId,
-      },
-    },
-  });
-
-  const onCompleted = (data: CreateQnaCommentMutation) => {
-    const {
-      createQnaComment: { ok, error, results },
-    } = data;
-    if (ok) {
-      refetch();
-      setValue('description', '');
-    }
-  };
-
-  const [uploading, setUploading] = useState(false);
-
-  const [
-    createQnaCommentMutation,
-    { data: createCommentData, loading, error },
-  ] = useMutation<CreateQnaCommentMutation, CreateQnaCommentMutationVariables>(
-    QNA_COMMENT_CREATE_MUTATIONS,
+  const { data, refetch } = useQuery<QnaNoticeQuery, QnaNoticeQueryVariables>(
+    QNA_NOTICE_QUERY,
     {
-      onCompleted,
+      variables: {
+        input: {
+          qnaNoticeId,
+        },
+      },
     }
   );
-
   const formatDate = (createdAt: string | undefined) => {
     if (!createdAt) return ''; // Handle undefined case or other invalid values
 
@@ -134,33 +82,38 @@ export const Qna = () => {
   useEffect(() => {
     const fetchNearbyNotices = async () => {
       try {
-        const result = await client.query<QnasQuery, QnasQueryVariables>({
-          query: QNAS_CLIENT_QUERY,
+        const result = await client.query<
+          QnaNoticesQuery,
+          QnaNoticesQueryVariables
+        >({
+          query: QNAS_MANAGER_QUERY,
         });
 
-        const qnas = result.data.qnas.results;
+        const qnasNotices = result.data.qnaNotices.results;
 
-        if (!qnas) {
+        if (!qnasNotices) {
           // Handle case where notices array is not available
           setPrevQnaId(null);
           setNextQnaId(null);
           return;
         }
 
-        const currentIndex = qnas?.findIndex((qna) => qna.id === qnaId);
+        const currentIndex = qnasNotices?.findIndex(
+          (qnaNotice) => qnaNotice.id === qnaNoticeId
+        );
         if (currentIndex !== -1) {
           if (currentIndex > 0) {
-            setPrevQnaId(qnas[currentIndex - 1]?.id);
-            setPrevQnaTitle(qnas[currentIndex - 1]?.title);
-            setPrevQnaCreateAt(qnas[currentIndex - 1]?.createdAt);
+            setPrevQnaId(qnasNotices[currentIndex - 1]?.id);
+            setPrevQnaTitle(qnasNotices[currentIndex - 1]?.title);
+            setPrevQnaCreateAt(qnasNotices[currentIndex - 1]?.createdAt);
           } else {
             setPrevQnaId(null);
           }
 
-          if (currentIndex < qnas.length - 1) {
-            setNextQnaId(qnas[currentIndex + 1].id);
-            setNextQnaTitle(qnas[currentIndex + 1].title);
-            setNextQnaCreateAt(qnas[currentIndex + 1]?.createdAt);
+          if (currentIndex < qnasNotices.length - 1) {
+            setNextQnaId(qnasNotices[currentIndex + 1].id);
+            setNextQnaTitle(qnasNotices[currentIndex + 1].title);
+            setNextQnaCreateAt(qnasNotices[currentIndex + 1]?.createdAt);
           } else {
             setNextQnaId(null);
           }
@@ -174,7 +127,7 @@ export const Qna = () => {
     };
 
     fetchNearbyNotices();
-  }, [qnaId]);
+  }, [qnaNoticeId]);
 
   const shortenText = (text: string | null | undefined) => {
     if (!text) return '';
@@ -185,36 +138,6 @@ export const Qna = () => {
       return text;
     }
   };
-
-  const onSubmit = () => {
-    setUploading(true);
-    const { description } = getValues();
-    createQnaCommentMutation({
-      variables: {
-        input: {
-          comment: description,
-          qnaId,
-        },
-      },
-    });
-  };
-
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { value } = event.target;
-    if (value.length <= 60) {
-      setValue('description', value);
-    }
-  };
-
-  const {
-    register,
-    setValue,
-    getValues,
-    formState: { errors, isValid },
-    handleSubmit,
-  } = useForm<IQnaCommentWriteForm>({
-    mode: 'onChange',
-  });
 
   return (
     <>
@@ -230,7 +153,7 @@ export const Qna = () => {
           <div className='w-full max-w-screen-2xl xl:px-0 mb-20'>
             <div className='max-w-screen-2xl pb-14 mx-auto mt-8 '>
               <div className='text-2xl md:text-4xl font-bold text-gray-600 flex justify-between mt-16   gap-y-10'>
-                <span>{data?.qna.qna?.title}</span>
+                <span>{data?.qnaNotice.qnaNotice?.title}</span>
               </div>
             </div>
             <table className='table-auto w-full mx-auto '>
@@ -240,21 +163,21 @@ export const Qna = () => {
                     작성자
                   </td>
                   <td className='text-xs md:text-lg border border-t-0 border-b-0 border-r-0 border-gray-400 md:px-2 md:py-2  font-bold w-52 md:w-28'>
-                    {data?.qna.qna?.userName}
+                    {data?.qnaNotice.qnaNotice?.userName}
                   </td>
                   <td className=' md:px-2 md:py-2  font-bold text-center w-0 md:w-10'></td>
                   <td className='text-xs md:text-lg border border-t-0 border-b-0 border-l-0 border-gray-400  px-2 py-2  font-bold w-56  md:w-12'>
                     작성일
                   </td>
                   <td className='text-xs md:text-lg border border-t-0 border-b-0 border-r-0 border-gray-400 px-2 py-2  font-bold  w-14'>
-                    {formatDate(data?.qna.qna?.createdAt)}
+                    {formatDate(data?.qnaNotice.qnaNotice?.createdAt)}
                   </td>
                   <td className=' md:px-2 md:py-2  font-bold text-center w-0 md:w-10'></td>
                   <td className='w-56 text-xs md:text-lg border border-t-0 border-b-0 border-l-0 border-gray-400 px-2 py-2  font-bold  md:w-12'>
                     조회수
                   </td>
                   <td className='text-xs px-2 md:text-lg py-2  font-bold text-center w-14'>
-                    {data?.qna.qna?.views}
+                    {data?.qnaNotice.qnaNotice?.views}
                   </td>
                   <td className=' px-2 py-2  font-bold text-center w-20 md:w-64'></td>
                 </tr>
@@ -266,63 +189,10 @@ export const Qna = () => {
                     colSpan={9}
                     className=' px-2 py-2  font-bold text-lg md:text-2xl whitespace-pre-wrap'
                   >
-                    {data?.qna.qna?.description}
+                    {data?.qnaNotice.qnaNotice?.description}
                   </td>
                 </tr>
               </tbody>
-            </table>
-            {identifyData && (
-              <form onSubmit={handleSubmit(onSubmit)} className='flex mt-5'>
-                <div className='relative flex-1 '>
-                  <textarea
-                    {...register('description', {
-                      required: '댓글을 작성하세요.',
-                      maxLength: {
-                        value: 60,
-                        message: '댓글은 60자 이내로 작성해주세요.', // 최대 글자 수 초과 시 에러 메시지
-                      },
-                    })}
-                    rows={3}
-                    placeholder='댓글을 작성하세요.'
-                    className={`input  w-full resize-none h-full pr-20 md:pr-32 ${
-                      errors.description ? 'border-red-500' : ''
-                    }`}
-                    onChange={handleChange}
-                  />
-                  {errors.description && (
-                    <div className='text-center text-lg '>
-                      <p className='text-red-500  mt-1'>
-                        {errors.description.message}
-                      </p>
-                    </div>
-                  )}
-
-                  <button className='absolute  text-lg w-20 md:w-32 h-full text-white font-bold bg-gray-600 top-0 right-0'>
-                    <span className='block'>댓글</span>
-                    <span className='block'>작성</span>
-                  </button>
-                </div>
-              </form>
-            )}
-
-            <table className='table-auto w-full  mx-auto mt-10'>
-              {data?.qna.qna?.qnaComment
-                ?.map((comment) => (
-                  <tbody key={comment.id} className='text-xs md:text-base'>
-                    <tr>
-                      <td className='md:px-2 md:py-2 md:w-1/12 w-2/12 font-bold '>
-                        {comment.commentOwner}
-                      </td>
-                      <td className='md:px-2 md:py-2 font-bold md:w-full whitespace-pre-wrap'>
-                        {comment.comment}
-                      </td>
-                      <td className='md:px-2 md:py-2  font-bold '>
-                        {formatDate(comment.createdAt)}
-                      </td>
-                    </tr>
-                  </tbody>
-                ))
-                .reverse()}
             </table>
 
             <div className='flex justify-between w-full mx-auto pt-20  '>
