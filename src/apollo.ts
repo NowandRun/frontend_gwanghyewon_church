@@ -16,7 +16,7 @@ export const isLoggedInAccessTokenVar = makeVar(Boolean(accessToken)); // 초기
 export const authAccessToken = makeVar(accessToken);
 
 const httpLink = createHttpLink({
-  uri: 'https://wavenexus.co.kr/graphql',
+  uri: 'https://wavenexus.co.kr/graphql' || 'http://localhost:4000/graphql',
   credentials: 'include',
 });
 
