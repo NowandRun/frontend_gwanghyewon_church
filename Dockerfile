@@ -9,6 +9,10 @@ RUN npm install
 
 # 소스 파일을 복사하고 빌드
 COPY . /app
+
+# GraphQL 코드 생성
+RUN npm run generate
+
 RUN npm run build
 
 # Stage 2: Production
