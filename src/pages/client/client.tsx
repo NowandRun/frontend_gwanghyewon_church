@@ -64,7 +64,6 @@ function Client() {
       // 생성된 시간이 0에서 24시간 사이면 "New" 표시
       return hoursDifference >= 0 && hoursDifference <= 24;
     } catch (error) {
-      console.error('제목이 새로운지 확인하는 도중 에러 발생:', error);
       return false; // 에러 발생 시 gracefully하게 처리
     }
   };
@@ -89,7 +88,6 @@ function Client() {
 
       return hasRecentComment;
     } catch (error) {
-      console.error('댓글이 오늘 생성되었는지 확인하는 도중 에러 발생:', error);
       return false; // 에러 발생 시 gracefully하게 처리
     }
   };
@@ -104,14 +102,12 @@ function Client() {
       }
       return format(date, 'yyyy.MM.dd');
     } catch (error) {
-      console.error('Error formatting date:', error);
       return ''; // Handle error case gracefully
     }
   };
 
   const limitedQnasData = qnaClientData?.qnas.results?.slice(0, 4);
   const limitedQnasNoticeData = qnaManagerData?.qnaNotices.results?.slice(0, 1);
-  console.log(limitedQnasData);
   const {
     loading: noticeLoading,
     error: noticeError,
@@ -125,8 +121,6 @@ function Client() {
   });
 
   const limitedNoticeData = noticeData?.notices.results?.slice(0, 5);
-
-  console.log(limitedQnasNoticeData);
 
   const shortenText = (text: string | null | undefined) => {
     if (!text) return '';
