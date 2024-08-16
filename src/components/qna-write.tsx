@@ -98,18 +98,18 @@ const QnaWrite: React.FC<QnaProps> = ({
 
   return (
     <div>
-      {identifyData?.me.role === UserRole.Client ? (
+      {identifyData?.me.role === UserRole.Client && (
         <div className='cursor-pointer text-right' onClick={openQnaModal}>
           <span className='text-lg md:text-2xl font-extrabold'>글작성</span>
         </div>
-      ) : (
+      )}{' '}
+      {identifyData?.me.role === UserRole.Manager && (
         <div className='cursor-pointer text-right' onClick={openQnaModal}>
           <span className='text-lg md:text-2xl font-extrabold'>
             공지글 작성
           </span>
         </div>
       )}
-
       <CustomModal isOpen={isQnaModalOpen} closeModal={closeQnaModal}>
         <Box sx={{ border: 'none' }}>
           <div className='md:py-20 md:px-16 py-10 px-8'>
