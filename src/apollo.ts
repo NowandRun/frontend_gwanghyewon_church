@@ -8,7 +8,6 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { LOCALSTORAGE_ACCESSTOKEN } from './constants';
 
-const GRAPHQL_URI = process.env.REACT_APP_GRAPHQL_URI;
 export const accessToken = localStorage.getItem(LOCALSTORAGE_ACCESSTOKEN);
 
 export const isLoggedInAccessTokenVar = makeVar(Boolean(accessToken)); // 초기값은 false로 설정
@@ -16,7 +15,7 @@ export const isLoggedInAccessTokenVar = makeVar(Boolean(accessToken)); // 초기
 export const authAccessToken = makeVar(accessToken);
 
 const httpLink = createHttpLink({
-  uri: GRAPHQL_URI,
+  uri: 'https://wavenexus.co.kr/graphql',
   credentials: 'include',
 });
 
