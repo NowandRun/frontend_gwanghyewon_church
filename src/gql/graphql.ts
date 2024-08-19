@@ -217,6 +217,13 @@ export type QnaNoticeOutput = {
   qnaNotice?: Maybe<QnaNotice>;
 };
 
+export type QnaNoticesOutput = {
+  __typename?: 'QnaNoticesOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  results?: Maybe<Array<QnaNotice>>;
+};
+
 export type QnaOutput = {
   __typename?: 'QnaOutput';
   error?: Maybe<Scalars['String']['output']>;
@@ -226,13 +233,6 @@ export type QnaOutput = {
 
 export type QnasInput = {
   page?: Scalars['Int']['input'];
-};
-
-export type QnasNoticeOutput = {
-  __typename?: 'QnasNoticeOutput';
-  error?: Maybe<Scalars['String']['output']>;
-  ok: Scalars['Boolean']['output'];
-  results?: Maybe<Array<QnaNotice>>;
 };
 
 export type QnasOutput = {
@@ -251,7 +251,7 @@ export type Query = {
   notices: NoticesOutput;
   qna: QnaOutput;
   qnaNotice: QnaNoticeOutput;
-  qnaNotices: QnasNoticeOutput;
+  qnaNotices: QnaNoticesOutput;
   qnas: QnasOutput;
   userProfile: UserProfileOutput;
 };
@@ -361,7 +361,7 @@ export type CreateQnaCommentMutation = { __typename?: 'Mutation', createQnaComme
 export type QnaNoticesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type QnaNoticesQuery = { __typename?: 'Query', qnaNotices: { __typename?: 'QnasNoticeOutput', error?: string | null, ok: boolean, results?: Array<{ __typename?: 'QnaNotice', id: number, createdAt: any, userId: number, userName: string, title: string, description: string, views: number }> | null } };
+export type QnaNoticesQuery = { __typename?: 'Query', qnaNotices: { __typename?: 'QnaNoticesOutput', error?: string | null, ok: boolean, results?: Array<{ __typename?: 'QnaNotice', id: number, createdAt: any, userId: number, userName: string, title: string, description: string, views: number }> | null } };
 
 export type QnasQueryVariables = Exact<{
   input: QnasInput;

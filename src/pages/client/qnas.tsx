@@ -7,7 +7,7 @@ import { gql, useQuery } from '@apollo/client';
 import {
   QnaNoticeQueryVariables,
   QnaNoticesQuery,
-  QnasNoticeOutput,
+  QnaNoticesQueryVariables,
   QnasQuery,
   QnasQueryVariables,
 } from '../../gql/graphql';
@@ -76,7 +76,7 @@ export const Qnas = () => {
     loading: qnaManagerLoading,
     error: qnaManagerError,
     data: qnaManagerData,
-  } = useQuery<QnaNoticesQuery, QnaNoticeQueryVariables>(QNAS_MANAGER_QUERY);
+  } = useQuery<QnaNoticesQuery, QnaNoticesQueryVariables>(QNAS_MANAGER_QUERY);
 
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);
