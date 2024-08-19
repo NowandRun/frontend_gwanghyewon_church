@@ -5,6 +5,7 @@ import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Favicon from '../../styles/images/wavenexus-logo-two.png';
 import { gql, useQuery } from '@apollo/client';
 import {
+  QnaNoticeQueryVariables,
   QnaNoticesQuery,
   QnasNoticeOutput,
   QnasQuery,
@@ -75,7 +76,7 @@ export const Qnas = () => {
     loading: qnaManagerLoading,
     error: qnaManagerError,
     data: qnaManagerData,
-  } = useQuery<QnaNoticesQuery, QnasNoticeOutput>(QNAS_MANAGER_QUERY);
+  } = useQuery<QnaNoticesQuery, QnaNoticeQueryVariables>(QNAS_MANAGER_QUERY);
 
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);

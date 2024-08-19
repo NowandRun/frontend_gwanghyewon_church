@@ -1,5 +1,5 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
-
+/* 'https://wavnexus.co.kr/graphql' */
 const config: CodegenConfig = {
   overwrite: true,
   schema: 'https://wavnexus.co.kr/graphql',

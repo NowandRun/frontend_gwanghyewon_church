@@ -13,7 +13,7 @@ export const accessToken = localStorage.getItem(LOCALSTORAGE_ACCESSTOKEN);
 export const isLoggedInAccessTokenVar = makeVar(Boolean(accessToken)); // 초기값은 false로 설정
 
 export const authAccessToken = makeVar(accessToken);
-
+/* 'https://wavenexus.co.kr/graphql', */
 const httpLink = createHttpLink({
   uri: 'https://wavenexus.co.kr/graphql',
   credentials: 'include',
