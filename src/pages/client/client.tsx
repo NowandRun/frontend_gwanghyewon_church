@@ -7,7 +7,14 @@ import Favicon from '../../styles/images/wavenexus-logo-two.png';
 import { useQuery } from '@apollo/client';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { NoticesQuery, NoticesQueryVariables } from '../../gql/graphql';
+import {
+  NoticesQuery,
+  NoticesQueryVariables,
+  QnaNoticesQuery,
+  QnaNoticesQueryVariables,
+  QnasQuery,
+  QnasQueryVariables,
+} from '../../gql/graphql';
 import { NOTICES_QUERY } from './notices';
 import { QNAS_CLIENT_QUERY, QNAS_MANAGER_QUERY } from './qnas';
 
@@ -17,7 +24,7 @@ function Client() {
     loading: qnaClientLoading,
     error: qnaClientError,
     data: qnaClientData,
-  } = useQuery(QNAS_CLIENT_QUERY, {
+  } = useQuery<QnasQuery, QnasQueryVariables>(QNAS_CLIENT_QUERY, {
     variables: {
       input: {
         page,
@@ -29,7 +36,7 @@ function Client() {
     loading: qnaManagerLoading,
     error: qnaManagerError,
     data: qnaManagerData,
-  } = useQuery(QNAS_MANAGER_QUERY);
+  } = useQuery<QnaNoticesQuery, QnaNoticesQueryVariables>(QNAS_MANAGER_QUERY);
 
   /* Intro Modal */
   const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
@@ -208,9 +215,8 @@ function Client() {
                   </tr>
                 </thead>
                 <tbody>
-                  {qnaClientData?.qnas.ok &&
-                  limitedQnasData.length === 0 &&
-                  limitedQnasNoticeData === 0 ? (
+                  {limitedQnasData?.length === 0 &&
+                  limitedQnasNoticeData?.length === 0 ? (
                     <tr>
                       <td colSpan={4} className='text-center py-24'>
                         <h4 className='text-xl mb-2'>
