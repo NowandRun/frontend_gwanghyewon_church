@@ -71,13 +71,21 @@ export const QnaNotice = () => {
     }
   };
 
-  const [prevQnaId, setPrevQnaId] = useState<number | null>(null);
-  const [prevQnaTitle, setPrevQnaTitle] = useState<string | null>(null);
-  const [prevQnaCreateAt, setPrevQnaCreateAt] = useState<string | null>(null);
+  const [prevQnaNoticeId, setPrevQnaNoticeId] = useState<number | null>(null);
+  const [prevQnaNoticeTitle, setPrevQnaNoticeTitle] = useState<string | null>(
+    null
+  );
+  const [prevQnaNoticeCreateAt, setPrevQnaNoticeCreateAt] = useState<
+    string | null
+  >(null);
 
-  const [nextQnaId, setNextQnaId] = useState<number | null>(null);
-  const [nextQnaTitle, setNextQnaTitle] = useState<string | null>(null);
-  const [nextQnaCreateAt, setNextQnaCreateAt] = useState<string | null>(null);
+  const [nextQnaNoticeId, setNextQnaNoticeId] = useState<number | null>(null);
+  const [nextQnaNoticeTitle, setNextQnaNoticeTitle] = useState<string | null>(
+    null
+  );
+  const [nextQnaNoticeCreateAt, setNextQnaNoticeCreateAt] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     const fetchNearbyNotices = async () => {
@@ -88,13 +96,12 @@ export const QnaNotice = () => {
         >({
           query: QNAS_MANAGER_QUERY,
         });
-
         const qnasNotices = result.data.qnaNotices.results;
 
         if (!qnasNotices) {
           // Handle case where notices array is not available
-          setPrevQnaId(null);
-          setNextQnaId(null);
+          setPrevQnaNoticeId(null);
+          setNextQnaNoticeId(null);
           return;
         }
 
@@ -103,23 +110,23 @@ export const QnaNotice = () => {
         );
         if (currentIndex !== -1) {
           if (currentIndex > 0) {
-            setPrevQnaId(qnasNotices[currentIndex - 1]?.id);
-            setPrevQnaTitle(qnasNotices[currentIndex - 1]?.title);
-            setPrevQnaCreateAt(qnasNotices[currentIndex - 1]?.createdAt);
+            setPrevQnaNoticeId(qnasNotices[currentIndex - 1]?.id);
+            setPrevQnaNoticeTitle(qnasNotices[currentIndex - 1]?.title);
+            setPrevQnaNoticeCreateAt(qnasNotices[currentIndex - 1]?.createdAt);
           } else {
-            setPrevQnaId(null);
+            setPrevQnaNoticeId(null);
           }
 
           if (currentIndex < qnasNotices.length - 1) {
-            setNextQnaId(qnasNotices[currentIndex + 1].id);
-            setNextQnaTitle(qnasNotices[currentIndex + 1].title);
-            setNextQnaCreateAt(qnasNotices[currentIndex + 1]?.createdAt);
+            setNextQnaNoticeId(qnasNotices[currentIndex + 1].id);
+            setNextQnaNoticeTitle(qnasNotices[currentIndex + 1].title);
+            setNextQnaNoticeCreateAt(qnasNotices[currentIndex + 1]?.createdAt);
           } else {
-            setNextQnaId(null);
+            setNextQnaNoticeId(null);
           }
         } else {
-          setPrevQnaId(null);
-          setNextQnaId(null);
+          setPrevQnaNoticeId(null);
+          setNextQnaNoticeId(null);
         }
       } catch (error) {
         console.error('Error fetching nearby notices:', error);
@@ -198,12 +205,12 @@ export const QnaNotice = () => {
             <div className='flex justify-between w-full mx-auto pt-20  '>
               <div
                 className={`w-full border border-gray-400 ${
-                  prevQnaId === null
+                  prevQnaNoticeId === null
                     ? 'bg-gray-200 bg-opacity-90 disabled-link text'
                     : ''
                 }`}
               >
-                {prevQnaId === null ? (
+                {prevQnaNoticeId === null ? (
                   <div
                     className='flex flex-col h-28 justify-center ml-5'
                     style={{ userSelect: 'none' }}
@@ -216,7 +223,7 @@ export const QnaNotice = () => {
                   </div>
                 ) : (
                   <Link
-                    to={`/qna/${prevQnaId}`}
+                    to={`/qna/${prevQnaNoticeId}`}
                     className='flex flex-col h-28 justify-center ml-5'
                   >
                     <div className='flex flex-row justify-start'>
@@ -224,10 +231,11 @@ export const QnaNotice = () => {
                       <div className='flex flex-col ml-3'>
                         <span>이전글</span>
                         <span className='md:text-xl py-1'>
-                          {shortenText(prevQnaTitle)}
+                          {shortenText(prevQnaNoticeTitle)}
                         </span>
                         <span>
-                          {prevQnaCreateAt && formatDate(prevQnaCreateAt)}
+                          {prevQnaNoticeCreateAt &&
+                            formatDate(prevQnaNoticeCreateAt)}
                         </span>
                       </div>
                     </div>
@@ -237,12 +245,12 @@ export const QnaNotice = () => {
 
               <div
                 className={`w-full text-right border border-gray-400 ${
-                  nextQnaId === null
+                  nextQnaNoticeId === null
                     ? 'bg-gray-200 bg-opacity-90 disabled-link text'
                     : ''
                 }`}
               >
-                {nextQnaId === null ? (
+                {nextQnaNoticeId === null ? (
                   <div
                     className='flex flex-col h-28 justify-center mr-5 '
                     style={{ userSelect: 'none' }}
@@ -255,17 +263,18 @@ export const QnaNotice = () => {
                   </div>
                 ) : (
                   <Link
-                    to={`/qna/${nextQnaId}`}
+                    to={`/qna/${nextQnaNoticeId}`}
                     className='flex flex-col h-28 justify-center mr-5'
                   >
                     <div className='flex flex-row justify-end'>
                       <div className='flex flex-col mr-3'>
                         <span>다음글</span>
                         <span className='md:text-xl text-sm py-1'>
-                          {shortenText(nextQnaTitle)}
+                          {shortenText(nextQnaNoticeTitle)}
                         </span>
                         <span>
-                          {nextQnaCreateAt && formatDate(nextQnaCreateAt)}
+                          {nextQnaNoticeCreateAt &&
+                            formatDate(nextQnaNoticeCreateAt)}
                         </span>
                       </div>
                       <span>&rarr;</span>

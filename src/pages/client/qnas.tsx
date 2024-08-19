@@ -5,7 +5,6 @@ import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Favicon from '../../styles/images/wavenexus-logo-two.png';
 import { gql, useQuery } from '@apollo/client';
 import {
-  QnaNoticeQueryVariables,
   QnaNoticesQuery,
   QnaNoticesQueryVariables,
   QnasQuery,
@@ -190,8 +189,8 @@ export const Qnas = () => {
               <tbody>
                 {qnaClientData?.qnas.ok &&
                 qnaManagerData?.qnaNotices.ok &&
-                qnaClientData.qnas.results?.length === 0 &&
-                qnaManagerData.qnaNotices.results?.length === 0 ? (
+                qnaClientData?.qnas.results?.length === 0 &&
+                qnaManagerData?.qnaNotices.results?.length === 0 ? (
                   <tr>
                     <td colSpan={4} className='text-center py-24'>
                       <h4 className='text-xl mb-2'>
