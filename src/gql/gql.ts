@@ -16,12 +16,12 @@ const documents = {
     "\n  mutation createNotice($input: CreateNoticeInput!) {\n    createNotice(input: $input) {\n      error\n      ok\n      noticeId\n    }\n  }\n": types.CreateNoticeDocument,
     "\n  mutation createQna($input: CreateQnaInput!) {\n    createQna(input: $input) {\n      error\n      ok\n      qnaId\n    }\n  }\n": types.CreateQnaDocument,
     "\n  query me {\n    me {\n      id\n      userName\n      role\n    }\n  }\n": types.MeDocument,
-    "\n  query qnaNotices {\n    qnaNotices {\n      error\n      ok\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n": types.QnaNoticesDocument,
-    "\n  query qnas($input: QnasInput!) {\n    qnas(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n        qnaComment {\n          id\n          createdAt\n          commentOwner\n          userId\n          comment\n        }\n      }\n    }\n  }\n": types.QnasDocument,
     "\n  query notices($input: NoticesInput!) {\n    notices(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n": types.NoticesDocument,
     "\n  query qnaNotice($input: QnaNoticeInput!) {\n    qnaNotice(input: $input) {\n      error\n      ok\n      qnaNotice {\n        id\n        createdAt\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n": types.QnaNoticeDocument,
     "\n  query qna($input: QnaInput!) {\n    qna(input: $input) {\n      error\n      ok\n      qna {\n        id\n        createdAt\n        userName\n        title\n        description\n        views\n        qnaComment {\n          id\n          createdAt\n          commentOwner\n          userId\n          comment\n        }\n      }\n    }\n  }\n": types.QnaDocument,
     "\n  mutation createQnaComment($input: CreateQnaCommentInput!) {\n    createQnaComment(input: $input) {\n      error\n      ok\n      results {\n        id\n        createdAt\n        commentOwner\n        userId\n        comment\n      }\n    }\n  }\n": types.CreateQnaCommentDocument,
+    "\n  query qnaNotices {\n    qnaNotices {\n      error\n      ok\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n": types.QnaNoticesDocument,
+    "\n  query qnas($input: QnasInput!) {\n    qnas(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n        qnaComment {\n          id\n          createdAt\n          commentOwner\n          userId\n          comment\n        }\n      }\n    }\n  }\n": types.QnasDocument,
     "\n  mutation createAccount($createAccountInput: CreateAccountInput!) {\n    createAccount(input: $createAccountInput) {\n      ok\n      error\n    }\n  }\n": types.CreateAccountDocument,
     "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      accessToken\n      error\n    }\n  }\n": types.LoginDocument,
     "\n  query notice($input: NoticeInput!) {\n    notice(input: $input) {\n      error\n      ok\n      notice {\n        id\n        createdAt\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n": types.NoticeDocument,
@@ -56,14 +56,6 @@ export function graphql(source: "\n  query me {\n    me {\n      id\n      userN
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query qnaNotices {\n    qnaNotices {\n      error\n      ok\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n"): (typeof documents)["\n  query qnaNotices {\n    qnaNotices {\n      error\n      ok\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query qnas($input: QnasInput!) {\n    qnas(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n        qnaComment {\n          id\n          createdAt\n          commentOwner\n          userId\n          comment\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query qnas($input: QnasInput!) {\n    qnas(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n        qnaComment {\n          id\n          createdAt\n          commentOwner\n          userId\n          comment\n        }\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function graphql(source: "\n  query notices($input: NoticesInput!) {\n    notices(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n"): (typeof documents)["\n  query notices($input: NoticesInput!) {\n    notices(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -77,6 +69,14 @@ export function graphql(source: "\n  query qna($input: QnaInput!) {\n    qna(inp
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation createQnaComment($input: CreateQnaCommentInput!) {\n    createQnaComment(input: $input) {\n      error\n      ok\n      results {\n        id\n        createdAt\n        commentOwner\n        userId\n        comment\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation createQnaComment($input: CreateQnaCommentInput!) {\n    createQnaComment(input: $input) {\n      error\n      ok\n      results {\n        id\n        createdAt\n        commentOwner\n        userId\n        comment\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query qnaNotices {\n    qnaNotices {\n      error\n      ok\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n"): (typeof documents)["\n  query qnaNotices {\n    qnaNotices {\n      error\n      ok\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query qnas($input: QnasInput!) {\n    qnas(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n        qnaComment {\n          id\n          createdAt\n          commentOwner\n          userId\n          comment\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query qnas($input: QnasInput!) {\n    qnas(input: $input) {\n      error\n      ok\n      totalPages\n      totalResults\n      results {\n        id\n        createdAt\n        userId\n        userName\n        title\n        description\n        views\n        qnaComment {\n          id\n          createdAt\n          commentOwner\n          userId\n          comment\n        }\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
