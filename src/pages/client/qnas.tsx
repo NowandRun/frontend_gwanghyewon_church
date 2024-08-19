@@ -190,7 +190,8 @@ export const Qnas = () => {
               <tbody>
                 {qnaClientData?.qnas.ok &&
                 qnaManagerData?.qnaNotices.ok &&
-                qnaClientData.qnas.results?.length === 0 ? (
+                qnaClientData.qnas.results?.length === 0 &&
+                qnaManagerData.qnaNotices.results?.length === 0 ? (
                   <tr>
                     <td colSpan={4} className='text-center py-24'>
                       <h4 className='text-xl mb-2'>
