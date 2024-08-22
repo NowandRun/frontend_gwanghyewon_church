@@ -16,7 +16,7 @@ export const authAccessToken = makeVar(accessToken);
 /* 'https://wavenexus.co.kr/graphql', */
 /* 'http://localhost:4000/graphql' */
 const httpLink = createHttpLink({
-  uri: 'https://wavenexus.co.kr/graphql',
+  uri: 'http://localhost:4000/graphql',
   credentials: 'include',
 });
 
