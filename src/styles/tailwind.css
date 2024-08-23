@@ -11,20 +11,3 @@
 }
 
 @tailwind utilities;
-
-@font-face {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-weight: normal;
-  src: url('./font/Noto_Sans_KR/NotoSansKR-VariableFont_wght.ttf')
-    format('truetype');
-}
-
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  padding: 0;
-}
-
-#root {
-  height: 100vh;
-  weight: 100%;
-}
