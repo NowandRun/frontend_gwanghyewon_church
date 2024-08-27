@@ -102,7 +102,7 @@ const QnaWrite: React.FC<QnaProps> = ({
         <div className='cursor-pointer text-right' onClick={openQnaModal}>
           <span className='text-lg md:text-2xl font-extrabold'>글작성</span>
         </div>
-      )}{' '}
+      )}
       {identifyData?.me.role === UserRole.Manager && (
         <div className='cursor-pointer text-right' onClick={openQnaModal}>
           <span className='text-lg md:text-2xl font-extrabold'>
