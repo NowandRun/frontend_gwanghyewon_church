@@ -12,6 +12,7 @@ import {
 import { FormError } from './form-error';
 import { useNavigate } from 'react-router-dom';
 import { useMe } from '../hooks/useMe';
+import { ClipLoader } from 'react-spinners';
 
 interface QnaProps {
   openQnaModal: () => void;
@@ -40,8 +41,16 @@ const QnaWrite: React.FC<QnaProps> = ({
   openQnaModal,
   closeQnaModal,
 }) => {
-  const client = useApolloClient();
-
+  const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
+  const {
+    register,
+    getValues,
+    formState: { errors, isValid },
+    handleSubmit,
+  } = useForm<IQnaWriteForm>({
+    mode: 'onChange',
+  });
   const {
     data: identifyData,
     loading: identifyLoading,
@@ -58,7 +67,7 @@ const QnaWrite: React.FC<QnaProps> = ({
       window.location.reload();
     }
   };
-  const navigate = useNavigate();
+
   const [createQnaMutation, { data, loading, error }] = useMutation<
     CreateQnaMutation,
     CreateQnaMutationVariables
@@ -72,8 +81,6 @@ const QnaWrite: React.FC<QnaProps> = ({
     },
   });
 
-  const [uploading, setUploading] = useState(false);
-
   const onSubmit = () => {
     setUploading(true);
     const { title, description } = getValues();
@@ -86,15 +93,6 @@ const QnaWrite: React.FC<QnaProps> = ({
       },
     });
   };
-
-  const {
-    register,
-    getValues,
-    formState: { errors, isValid },
-    handleSubmit,
-  } = useForm<IQnaWriteForm>({
-    mode: 'onChange',
-  });
 
   return (
     <div>

@@ -58,7 +58,7 @@ export const QNAS_CLIENT_QUERY = gql`
   }
 `;
 
-export const Qnas = () => {
+export const Qnas_User = () => {
   const [page, setPage] = useState(1);
   const {
     loading: qnaClientLoading,
@@ -71,12 +71,6 @@ export const Qnas = () => {
       },
     },
   });
-
-  const {
-    data: identifyData,
-    loading: identifyLoading,
-    error: identifyError,
-  } = useMe();
 
   const {
     loading: qnaManagerLoading,
@@ -148,10 +142,6 @@ export const Qnas = () => {
     }
   };
 
-  const [isQnaModalOpen, setIsQnaModalOpen] = useState(false);
-  const openQnaModal = () => setIsQnaModalOpen(true);
-  const closeQnaModal = () => setIsQnaModalOpen(false);
-
   return (
     <>
       <HelmetProvider>
@@ -169,15 +159,6 @@ export const Qnas = () => {
             <div className='max-w-screen-2xl md:pb-14 pb-5 mx-auto mt-8 '>
               <div className='md:text-4xl text-2xl font-bold text-gray-600 flex justify-between mt-16   gap-y-10'>
                 <span>QNA</span>
-                {identifyData?.me ? (
-                  <QnaWrite
-                    closeQnaModal={closeQnaModal}
-                    isQnaModalOpen={isQnaModalOpen}
-                    openQnaModal={openQnaModal}
-                  />
-                ) : (
-                  <></>
-                )}
               </div>
             </div>
             <table className='table-auto w-full mx-auto '>

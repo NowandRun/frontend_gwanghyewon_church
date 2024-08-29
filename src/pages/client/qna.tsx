@@ -136,6 +136,11 @@ export const Qna = () => {
       try {
         const result = await client.query<QnasQuery, QnasQueryVariables>({
           query: QNAS_CLIENT_QUERY,
+          variables: {
+            input: {
+              page: 1,
+            },
+          },
         });
 
         const qnas = result.data.qnas.results;

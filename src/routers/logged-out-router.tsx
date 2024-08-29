@@ -6,16 +6,17 @@ import { Link } from 'react-router-dom';
 import MyLogo from '../styles/images/wavenexus.png';
 import { Qnas } from '../pages/client/qnas';
 import { Notice } from '../pages/user/notice';
-import { Notices } from '../pages/client/notices';
 import { Qna } from '../pages/client/qna';
 import { NotFound } from '../pages/404';
 import Client from '../pages/client/client';
 import { QnaNotice } from '../pages/client/qna-notice';
-
+import { Notices_User } from '../pages/user/notices-user';
+import { Qnas_User } from '../pages/user/qnas-user';
+import { Qna_User } from '../pages/user/qna-user';
 const nonAuth = [
   {
     path: `/qna/:id`,
-    component: <Qna />,
+    component: <Qna_User />,
   },
   {
     path: `/notice/:id`,
@@ -27,7 +28,7 @@ const nonAuth = [
   },
   {
     path: '/notice',
-    component: <Notices />,
+    component: <Notices_User />,
   },
   {
     path: '/login',
@@ -35,7 +36,7 @@ const nonAuth = [
   },
   {
     path: `/qna`,
-    component: <Qnas />,
+    component: <Qnas_User />,
   },
   {
     path: `/qna/notice/:id`,

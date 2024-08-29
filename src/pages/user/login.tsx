@@ -43,6 +43,7 @@ export const Login = () => {
     const {
       login: { ok, error, accessToken },
     } = data;
+
     if (ok && accessToken /* && refreshToken */) {
       localStorage.setItem(LOCALSTORAGE_ACCESSTOKEN, accessToken);
       authAccessToken(accessToken);

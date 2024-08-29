@@ -16,14 +16,16 @@ export const ME_QUERY = gql`
 export const useMe = () => {
   const data = useQuery<MeQuery>(ME_QUERY, {
     onError: (error) => {
-      console.log(error.message);
+      console.log('🍪', error.message);
       if (
         error.message === 'Forbidden resource' ||
         error.message === 'Response not successful: Received status code 500'
       ) {
-        window.location.replace(
+        /* window.location.replace(
           `${'http' ? 'http' : 'https'}://localhost:3000/`
-        );
+        ); */
+        localStorage.removeItem(LOCALSTORAGE_ACCESSTOKEN);
+        isLoggedInAccessTokenVar(false);
       }
       if (error.message === 'User not authorized') {
         alert('Session이 만료되었습니다.');
