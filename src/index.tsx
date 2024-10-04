@@ -1,20 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './styles/styles.css';
 import { ApolloProvider } from '@apollo/client';
-import { client } from './apollo';
+import { client } from './types/apollo';
 import { HelmetProvider } from 'react-helmet-async';
-import { App } from './App';
+import { RecoilRoot } from 'recoil';
+import App from './App';
+import GlobalStyle from './Style/GlobalStyle';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <HelmetProvider>
-        <App />
-      </HelmetProvider>
-    </ApolloProvider>
+    <RecoilRoot>
+      <ApolloProvider client={client}>
+        <HelmetProvider>
+          <App />
+        </HelmetProvider>
+      </ApolloProvider>
+    </RecoilRoot>
   </React.StrictMode>
 );

@@ -3,7 +3,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 /* http://localhost:4000/graphql */
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'https://wavnexus.co.kr/graphql',
+  schema: 'http://localhost:4000/graphql',
   documents: ['src/**/*.tsx'],
   ignoreNoDocuments: true, // for better experience with the watcher
   generates: {
