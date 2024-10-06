@@ -5,19 +5,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 
-const Icon = styled.div`
-  cursor: pointer;
-  border-radius: 18px;
-  height: 35px;
-  width: 35px;
-  background-color: ${(props) => props.theme.bgColor};
-  font-size: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition-duration: 1s;
-`;
-
 function Mode() {
   const [darkAtom, setDarkAtom] = useRecoilState(isdarkAtom);
   const toggleDarkAtom = () => setDarkAtom((prev) => !prev);
@@ -37,3 +24,18 @@ function Mode() {
 }
 
 export default Mode;
+
+const Icon = styled.div`
+  cursor: pointer;
+  border-radius: 18px;
+  height: 40px;
+  width: 40px;
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-duration: 1s;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.3 /* 50% 투명도 */);
+  }
+`;

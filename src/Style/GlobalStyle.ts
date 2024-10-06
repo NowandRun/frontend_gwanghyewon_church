@@ -11,6 +11,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Source Sans Pro', sans-serif;
     background-color: ${(props) => props.theme.bgColor};
     color: ${(props) => props.theme.textColor};
+    transition-duration: 1s;
     line-height: 1.5;
   }
   a {

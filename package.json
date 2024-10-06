@@ -22,6 +22,7 @@
     "apollo-link-token-refresh": "^0.7.0",
     "autoprefixer": "^10.4.19",
     "date-fns": "^3.6.0",
+    "framer-motion": "^11.11.1",
     "gh-pages": "^6.1.1",
     "gltfjsx": "^6.2.18",
     "graphql": "^16.9.0",
