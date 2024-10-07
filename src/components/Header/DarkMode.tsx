@@ -34,8 +34,10 @@ const Icon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition-duration: 1s;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.3 /* 50% 투명도 */);
+  transition-duration: 0.7s;
+  @media (min-width: 1300px) {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.3 /* 50% 투명도 */);
+    }
   }
 `;
