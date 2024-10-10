@@ -8,13 +8,12 @@ import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 
 function Header() {
   const location = useLocation();
+  console.log(location);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null); // hover 상태 추가
-  const [isHovering, setIsHovering] = useState(false); // Hover 상태 유지
-  const [isHeaderHovering, setIsHeaderHovering] = useState(false);
   // 메뉴 항목의 경로
   const menuItems = [
-    { path: '/info', label: '교회안내', layoutId: 'positionbar' },
+    { path: '/info', label: '교회안내' },
     { path: '/ministro', label: '섬기는 이들' },
     { path: '/sermon', label: '설교' },
     { path: '/youth', label: '다음세대' },
@@ -38,29 +37,21 @@ function Header() {
             <span>교회로고</span>
           </Logo>
         </Link>
-        <SubPage
-          onMouseEnter={() => {
-            setIsHeaderHovering(true); // HoverBox 표시}
-          }}
-          onMouseLeave={() => {
-            setIsHeaderHovering(false); // HoverBox 숨김
-          }}
-        >
+        <SubPage>
           {menuItems.map((item, index) => (
             <Link to={item.path} key={index}>
               <SubPageItem
                 onMouseEnter={() => {
                   setHoverIndex(index);
-                  setIsHovering(true); // HoverBox 표시}
                 }}
                 onMouseLeave={() => {
                   setHoverIndex(null);
-                  setIsHovering(true); // HoverBox 표시}
                 }}
               >
                 <div style={{ margin: '20px' }}>
                   {item.label}
-                  {(activeIndex === index || hoverIndex === index) && (
+                  {((location.pathname !== '/' && activeIndex === index) ||
+                    hoverIndex === index) && (
                     <Positionbar layoutId='pointerbar' />
                   )}
                 </div>
