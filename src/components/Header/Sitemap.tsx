@@ -82,7 +82,7 @@ const modalBoxVariants: Variants = {
 
 const Button = styled(motion.div)`
   background-color: ${(props) => props.theme.cardBgColor};
-  height: 120px;
+  height: 140px;
   width: 80px;
   display: flex;
   justify-content: center;
@@ -104,7 +104,7 @@ const Button = styled(motion.div)`
   }
   > :last-child {
     position: relative; /* position을 relative로 설정 */
-    top: 5px; /* y축 방향으로 아래쪽으로 이동 */
+    top: 12px; /* y축 방향으로 아래쪽으로 이동 */
   }
 `;
 

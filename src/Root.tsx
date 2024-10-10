@@ -7,7 +7,6 @@ import { isdarkAtom } from './types/atoms';
 
 function Root() {
   const isDark = useRecoilValue(isdarkAtom);
-
   return (
     <div>
       <Header />

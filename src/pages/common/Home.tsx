@@ -12,7 +12,7 @@ const Container = styled.div`
 function Home() {
   return (
     <Container>
-      <span>hello</span>
+      <span>Home</span>
     </Container>
   );
 }
