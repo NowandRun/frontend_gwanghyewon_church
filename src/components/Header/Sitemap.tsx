@@ -4,16 +4,24 @@ import { motion, AnimatePresence, Variants, Variant } from 'framer-motion';
 import { faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useWindowDimensions from '../useWindowDimensions';
+import { menuItems } from './Header';
 
-function Sitemap() {
+// onOpenChange의 타입을 함수로 정의
+interface SitemapProps {
+  onOpenChange: (isOpen: boolean) => void; // Correctly define the type of the function
+}
+
+const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const width = useWindowDimensions();
 
   const openModal = () => {
     setIsOpen(true);
+    onOpenChange(true); // 부모에 알림
   };
   const closeModal = () => {
     setIsOpen(false);
+    onOpenChange(false); // 부모에 알림
   };
 
   return (
@@ -33,7 +41,47 @@ function Sitemap() {
             animate={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
             onClick={closeModal}
           >
-            <ModalBox layoutId='Sitemap' />
+            <ModalBox layoutId='Sitemap'>
+              <ModalBoxWrapper>
+                <HeaderTitle>
+                  <span>사이트 맵</span>
+                </HeaderTitle>
+                <ChildContent>
+                  {menuItems.map((item, index) => (
+                    <ItemWrapper key={index}>
+                      {/* 부모 메뉴 표시 */}
+                      <ItemTitle>
+                        <h3>{item.label}</h3>
+                      </ItemTitle>
+                      {/* children이 있는지 확인 후 출력 */}
+                      {item.children && (
+                        <ul>
+                          {item.children.map((child, childIndex) => (
+                            <SubChildList key={childIndex}>
+                              <SubChildListTitle>
+                                {child.label}
+                              </SubChildListTitle>
+                              {/* child에 하위 children이 있는지 확인하고, 중첩된 메뉴를 추가 */}
+                              {child.children && (
+                                <SubChild>
+                                  {child.children.map((lastChild, index) => (
+                                    <li key={index}>
+                                      <span>- </span>
+                                      {lastChild.label}
+                                    </li>
+                                  ))}
+                                </SubChild>
+                              )}
+                            </SubChildList>
+                          ))}
+                        </ul>
+                      )}
+                    </ItemWrapper>
+                  ))}
+                </ChildContent>
+              </ModalBoxWrapper>
+              <BottomBox />
+            </ModalBox>
           </Overlay>
         )}
         {isOpen && width < 1300 && (
@@ -61,7 +109,7 @@ function Sitemap() {
       </AnimatePresence>
     </>
   );
-}
+};
 
 export default Sitemap;
 
@@ -77,6 +125,7 @@ const modalBoxVariants: Variants = {
   exit: {
     opacity: 0, // 나가면서 동시에 투명해짐
     x: '100%',
+    backgroundColor: 'none',
   }, // 오른쪽으로 나가면서 종료
 };
 
@@ -117,6 +166,7 @@ const Overlay = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: rgba(0, 0, 0, 0); // 초기 상태를 투명으로 설정
   @media (max-width: 1300px) {
     display: flex;
     width: 100%;
@@ -128,18 +178,18 @@ const Overlay = styled(motion.div)`
 `;
 
 const ModalBox = styled(motion.div)`
-  background-color: ${(props) => props.theme.bgColor};
+  background-color: white;
+  color: black;
   width: 90%;
   height: 80%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   box-shadow:
     0 2px 3px rgba(0, 0, 0, 0.1),
     0 10px 20px rgba(0, 0, 0, 0.06);
-
+  > ::-webkit-scrollbar {
+    display: none;
+  }
+  position: relative; /* 추가: 내부 요소가 상대적으로 위치할 수 있게 함 */
   @media (max-width: 1300px) {
     width: 45%;
     height: 100%;
@@ -153,5 +203,61 @@ const ModalBox = styled(motion.div)`
     right: 0;
     top: 0;
     bottom: 0;
+    overflow-y: auto; /* 모바일에서도 스크롤 허용 */
   }
+`;
+
+const ModalBoxWrapper = styled.div`
+  max-height: calc(100% - 20px);
+  overflow-y: auto; /* 내부 콘텐츠 스크롤 허용 */
+`;
+
+const HeaderTitle = styled.div`
+  background-color: black;
+  color: white;
+  padding: 20px;
+  font-size: 25px;
+`;
+
+const ItemWrapper = styled.div`
+  padding: 20px;
+`;
+
+const ItemTitle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid black;
+`;
+
+const SubChildList = styled.li``;
+
+const SubChildListTitle = styled.div`
+  border-bottom: 1.5px dotted rgba(0, 0, 0, 0.4);
+  padding-left: 8px;
+  margin: 3px auto;
+`;
+
+const SubChild = styled.ul`
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.05);
+`;
+
+const ChildContent = styled.div`
+  display: grid;
+  grid-template-columns: repeat(
+    4,
+    1fr
+  ); /* 2개의 열로 구성, 각 열이 동일한 너비 */
+  grid-gap: 10px; /* 열 간의 간격 설정 */
+  max-height: 100%; /* 모달 높이를 벗어나지 않도록 설정 */
+  overflow-y: auto; /* 넘칠 경우 스크롤 가능 */
+`;
+
+const BottomBox = styled.div`
+  background-color: black;
+  height: 20px; /* 고정된 높이값 설정 */
+  bottom: 0; /* 하단에 위치 */
+  width: 100%; /* 부모의 너비에 맞게 설정 */
+  position: absolute;
 `;

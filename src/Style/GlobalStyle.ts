@@ -13,6 +13,9 @@ const GlobalStyle = createGlobalStyle`
     color: ${(props) => props.theme.textColor};
     transition-duration: 1s;
     line-height: 1.5;
+    > ::-webkit-scrollbar {
+    display: none;
+  }
   }
   a {
     text-decoration: none;
