@@ -4,9 +4,10 @@ import { useRecoilValue } from 'recoil';
 import { isdarkAtom } from '../../../types/atoms';
 
 function Info() {
+  const isDark = useRecoilValue(isdarkAtom);
   return (
     <>
-      <Outlet />
+      <Outlet context={{ isDark }}/>
     </>
   );
 }

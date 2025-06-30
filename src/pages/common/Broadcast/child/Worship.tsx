@@ -1,7 +1,7 @@
 import React from 'react';
 
-function Proclaim() {
+function Worship() {
   return <>Proclaim</>;
 }
 
-export default Proclaim;
+export default Worship;

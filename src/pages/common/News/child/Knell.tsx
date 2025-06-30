@@ -1,7 +1,7 @@
 import React from 'react';
 
-function Knell() {
-  return <>Knell</>;
+function Tidings() {
+  return <>Tidings</>;
 }
 
-export default Knell;
+export default Tidings;

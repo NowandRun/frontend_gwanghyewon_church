@@ -6,5 +6,9 @@ declare module 'styled-components' {
     bgColor: string;
     accentColor: string;
     cardBgColor: string;
+    media: {
+      max1300: string;
+      min1301: string;
+    };
   }
 }

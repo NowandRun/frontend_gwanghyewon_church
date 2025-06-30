@@ -5,7 +5,6 @@ import { client } from './types/apollo';
 import { HelmetProvider } from 'react-helmet-async';
 import { RecoilRoot } from 'recoil';
 import App from './App';
-import GlobalStyle from './Style/GlobalStyle';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

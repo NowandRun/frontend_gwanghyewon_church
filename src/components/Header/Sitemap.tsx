@@ -5,6 +5,7 @@ import { faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useWindowDimensions from '../useWindowDimensions';
 import { menuItems } from './Header';
+import { Link, useLocation } from 'react-router-dom';
 
 // onOpenChange의 타입을 함수로 정의
 interface SitemapProps {
@@ -12,7 +13,9 @@ interface SitemapProps {
 }
 
 const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const width = useWindowDimensions();
 
   const openModal = () => {
@@ -24,6 +27,13 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
     onOpenChange(false); // 부모에 알림
   };
 
+    useEffect(() => {
+      const currentIndex = menuItems.findIndex((item) =>
+        location.pathname === `/${item.path}` || location.pathname.startsWith(`/${item.path}/`)
+      );
+      setSelectedIndex(currentIndex !== -1 ? currentIndex : null);
+    }, [location.pathname]);
+
   return (
     <>
       <Button onClick={openModal} layoutId='Sitemap'>
@@ -34,7 +44,7 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
         </div>
       </Button>
       <AnimatePresence>
-        {isOpen && width >= 1300 && (
+        {isOpen && width >= 1900 && (
           <Overlay
             initial={{ backgroundColor: 'rgba(0,0,0,0)' }}
             exit={{ backgroundColor: 'rgba(0,0,0,0)' }}
@@ -51,7 +61,9 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
                     <ItemWrapper key={index}>
                       {/* 부모 메뉴 표시 */}
                       <ItemTitle>
-                        <h3>{item.label}</h3>
+                         <Link to={`/${item.path}`} >
+                            <h3>{item.label}</h3>
+                          </Link>
                       </ItemTitle>
                       {/* children이 있는지 확인 후 출력 */}
                       {item.children && (
@@ -59,19 +71,10 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
                           {item.children.map((child, childIndex) => (
                             <SubChildList key={childIndex}>
                               <SubChildListTitle>
-                                {child.label}
+                                <Link to={`/${item.path}/${child.path}`} >
+                                  {child.label}
+                                </Link>
                               </SubChildListTitle>
-                              {/* child에 하위 children이 있는지 확인하고, 중첩된 메뉴를 추가 */}
-                              {child.children && (
-                                <SubChild>
-                                  {child.children.map((lastChild, index) => (
-                                    <li key={index}>
-                                      <span>- </span>
-                                      {lastChild.label}
-                                    </li>
-                                  ))}
-                                </SubChild>
-                              )}
                             </SubChildList>
                           ))}
                         </ul>
@@ -84,7 +87,7 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
             </ModalBox>
           </Overlay>
         )}
-        {isOpen && width < 1300 && (
+        {isOpen && width < 1900 && (
           <Overlay
             exit={{ backgroundColor: 'rgba(0,0,0,0)' }}
             animate={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
@@ -103,7 +106,40 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
                 opacity: { duration: 0.3 },
                 scale: { duration: 0.3 },
               }}
-            />
+            >
+              <ModalBoxWrapper>
+                <HeaderTitle>
+                  <span>사이트 맵</span>
+                </HeaderTitle>
+                <ChildContent>
+                  {menuItems.map((item, index) => (
+                    <ItemWrapper key={index}>
+                      {/* 부모 메뉴 표시 */}
+                      <ItemTitle>
+                         <Link to={`/${item.path}`} >
+                         <h3>{item.label}</h3>
+                                  </Link>
+                      </ItemTitle>
+                      {/* children이 있는지 확인 후 출력 */}
+                      {item.children && (
+                        <ul>
+                          {item.children.map((child, childIndex) => (
+                            <SubChildList key={childIndex}>
+                              <SubChildListTitle>
+                                <Link to={`/${item.path}/${child.path}`} >
+                                  {child.label}
+                                </Link>
+                              </SubChildListTitle>
+                            </SubChildList>
+                          ))}
+                        </ul>
+                      )}
+                    </ItemWrapper>
+                  ))}
+                </ChildContent>
+              </ModalBoxWrapper>
+              <BottomBox />
+            </ModalBox >
           </Overlay>
         )}
       </AnimatePresence>
@@ -167,7 +203,7 @@ const Overlay = styled(motion.div)`
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0); // 초기 상태를 투명으로 설정
-  @media (max-width: 1300px) {
+  @media (max-width: 1900px) {
     display: flex;
     width: 100%;
     height: 100%;
@@ -180,7 +216,7 @@ const Overlay = styled(motion.div)`
 const ModalBox = styled(motion.div)`
   background-color: white;
   color: black;
-  width: 90%;
+  width: 50%;
   height: 80%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   box-shadow:
@@ -190,7 +226,7 @@ const ModalBox = styled(motion.div)`
     display: none;
   }
   position: relative; /* 추가: 내부 요소가 상대적으로 위치할 수 있게 함 */
-  @media (max-width: 1300px) {
+  @media (max-width: 1900px) {
     width: 45%;
     height: 100%;
     display: flex;
@@ -210,6 +246,19 @@ const ModalBox = styled(motion.div)`
 const ModalBoxWrapper = styled.div`
   max-height: calc(100% - 20px);
   overflow-y: auto; /* 내부 콘텐츠 스크롤 허용 */
+  @media (max-width: 1900px) {
+    display: flex;
+        width:100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    will-change: transform, opacity; // 성능 개선을 위한 will-change 추가
+    /* 모바일에서 슬라이드 애니메이션을 위한 스타일 */
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto; /* 모바일에서도 스크롤 허용 */
+  }
 `;
 
 const HeaderTitle = styled.div`
@@ -228,6 +277,12 @@ const ItemTitle = styled.div`
   justify-content: center;
   align-items: center;
   border-bottom: 2px solid black;
+   @media (max-width: 1900px) {
+    display: flex;
+justify-content: flex-start;
+  align-items: center;
+  border-bottom: 2px solid black;
+  }
 `;
 
 const SubChildList = styled.li``;
@@ -252,6 +307,17 @@ const ChildContent = styled.div`
   grid-gap: 10px; /* 열 간의 간격 설정 */
   max-height: 100%; /* 모달 높이를 벗어나지 않도록 설정 */
   overflow-y: auto; /* 넘칠 경우 스크롤 가능 */
+  @media (max-width: 1900px) {
+    display: flex;
+    flex-direction: column;
+    will-change: transform, opacity; // 성능 개선을 위한 will-change 추가
+    /* 모바일에서 슬라이드 애니메이션을 위한 스타일 */
+    position: relative;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto; /* 모바일에서도 스크롤 허용 */
+  }
 `;
 
 const BottomBox = styled.div`

@@ -27,6 +27,17 @@ const GlobalStyle = createGlobalStyle`
   table {
     border-collapse: collapse;
   }
+  
+  html, body {
+    overflow: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
 `;
 
 export default GlobalStyle;

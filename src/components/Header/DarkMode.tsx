@@ -11,11 +11,11 @@ function Mode() {
   return (
     <>
       {!darkAtom ? (
-        <Icon onClick={toggleDarkAtom}>
+        <Icon  onClick={toggleDarkAtom}>
           <FontAwesomeIcon icon={faMoon} />
         </Icon>
       ) : (
-        <Icon onClick={toggleDarkAtom}>
+        <Icon  onClick={toggleDarkAtom}>
           <FontAwesomeIcon icon={faSun} />
         </Icon>
       )}
@@ -24,6 +24,8 @@ function Mode() {
 }
 
 export default Mode;
+
+
 
 const Icon = styled.div`
   cursor: pointer;
