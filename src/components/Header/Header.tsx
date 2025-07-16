@@ -135,6 +135,26 @@ function Header() {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isSitemapOpen, setIsSitemapOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+  
+    const handleScroll = () => {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(scrollTop > 0);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+  
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
 
   // 페이지 경로 변경 시 현재 위치에 해당하는 메뉴 인덱스 설정
   useEffect(() => {
@@ -142,6 +162,10 @@ function Header() {
       location.pathname === `/${item.path}` || location.pathname.startsWith(`/${item.path}/`)
     );
     setSelectedIndex(currentIndex !== -1 ? currentIndex : null);
+  
+    // 💡 페이지 전환 후 hover 상태 초기화
+    setHoverIndex(null);
+    setIsHovered(false);
   }, [location.pathname]);
 
   const handleHeaderOn = () => setIsHovered(true);
@@ -150,87 +174,98 @@ function Header() {
 
   return (
     <>
-      <AllContents isSitemapOpen={isSitemapOpen}  
+      <AllContents 
+        isSitemapOpen={isSitemapOpen}  
         isHovered={isHovered}  
+        isScrolled={isScrolled} // ✅ 추가
         onMouseEnter={handleHeaderOn}
         onMouseLeave={handleHeaderOff}
+        
       >
         <HeaderWrapper
           onMouseEnter={handleHeaderOn}
           onMouseLeave={handleHeaderOff}
         >
-          <Link to="/">
-            <Logo>
-              <span>로고</span>
-            </Logo>
-          </Link>
+          <LeftWrapper>
+            <Link to="/">
+              <Logo>
+                <span>로고</span>
+              </Logo>
+            </Link>
+          </LeftWrapper>
 
-          <SubPage>
-            {menuItems.map((item, index) => (
-              <MenuGroupWrapper
-                key={index}
-                onMouseEnter={() => setHoverIndex(index)}
-                onMouseLeave={() => setHoverIndex(null)}
-              >
-                <Link to={`/${item.path}`} onClick={() => {
-                  setSelectedIndex(index);
-                  setHoverIndex(null);      // Hover 초기화
-                  setIsHovered(false);      // Hover 상태 플래그 초기화
-                }}>
-                  <SubPageItem>
-                    <div style={{ margin: '20px' }}>
-                      <SubHeaderPage>{item.label}</SubHeaderPage>
-                      {(hoverIndex === index || selectedIndex === index) && (
-                        <Positionbar
+          <CenterWrapper >
+            <SubPage>
+              {menuItems.map((item, index) => (
+                <MenuGroupWrapper
+                  key={index}
+                  onMouseEnter={() => setHoverIndex(index)}
+                  onMouseLeave={() => setHoverIndex(null)}
+                >
+                  <Link to={`/${item.path}`} onClick={() => {
+                    setSelectedIndex(index);
+                    setHoverIndex(null);      // Hover 초기화
+                    setIsHovered(false);      // Hover 상태 플래그 초기화
+                  }}>
+                    <SubPageItem
+                      onClick={() => {
+                        window.location.href = `/${item.path}`;
+                      }}
+                    >
+                      <div style={{ margin: '20px' }}>
+                        <SubHeaderPage>{item.label}</SubHeaderPage>
+                        {(hoverIndex === index || selectedIndex === index) && (
+                          <Positionbar
                           isSitemapOpen={isSitemapOpen}
                           isHovered={isHovered}
                           layoutId="pointerbar"
                         />
-                      )}
-                    </div>
-                  </SubPageItem>
-                </Link>
+                        )}
+                      </div>
+                    </SubPageItem>
+                  </Link>
 
-                {hoverIndex === index && (
-                  <HoverBox>
-                     <ScrollContent>
-                      <SubheadingWrapper>
-                        <Subheading>
-                          <span>{item.subtitle}</span>
-                          <span>{item.label}</span>
-                        </Subheading>
-                        <Separator />
-                        <SubheadingChildren>
-                        {item.children.map((child, childIdx) => (
-                            <Link
-                              key={childIdx}
-                              to={`/${item.path}/${child.path}`}
-                              onClick={() => {
-                                setSelectedIndex(index);
-                                setHoverIndex(null);     // Hover 초기화
-                                setIsHovered(false);     // Hover 상태 플래그 초기화
-                              }}
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </SubheadingChildren>
-                      </SubheadingWrapper>
-                    </ScrollContent>
-                  </HoverBox>
-                )}
-              </MenuGroupWrapper>
-            ))}
-          </SubPage>
-
-          <UserFeat>
-            <span>회원가입</span>
-            <span>로그인</span>
-            <ModeWrapper>
-              <Mode />
-            </ModeWrapper>
-          </UserFeat>
-
+                  {hoverIndex === index && (
+                    <HoverBox>
+                      <ScrollContent>
+                        <SubheadingWrapper>
+                          <Subheading>
+                            <span>{item.subtitle}</span>
+                            <span>{item.label}</span>
+                          </Subheading>
+                          <Separator />
+                          <SubheadingChildren>
+                          {item.children.map((child, childIdx) => (
+                              <Link
+                                key={childIdx}
+                                to={`/${item.path}/${child.path}`}
+                                onClick={() => {
+                                  setSelectedIndex(index);
+                                  setHoverIndex(null);     // Hover 초기화
+                                  setIsHovered(false);     // Hover 상태 플래그 초기화
+                                }}
+                              >
+                                {child.label}
+                              </Link>
+                            ))}
+                          </SubheadingChildren>
+                        </SubheadingWrapper>
+                      </ScrollContent>
+                    </HoverBox>
+                  )}
+                </MenuGroupWrapper>
+              ))}
+            </SubPage>
+          </CenterWrapper>
+          <RightWrapper>
+            <UserFeat>
+              <span>회원가입</span>
+              <span>로그인</span>
+              <ModeWrapper>
+                <Mode />
+              </ModeWrapper>
+            </UserFeat>
+          </RightWrapper>
           <SitemapWrapper>
             <Sitemap onOpenChange={handleSitemapOpen} />
           </SitemapWrapper>
@@ -245,40 +280,30 @@ interface PositionbarProps {
   isSitemapOpen: boolean;
   isHovered: boolean;
 }
-
-
-
 const AllContents = styled.header<{
   isSitemapOpen: boolean;
   isHovered: boolean;
+  isScrolled: boolean;
 }>`
-position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+  background-color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
+    isHovered || isSitemapOpen|| isScrolled ? 'rgba(255, 255, 255, 1)' : 'transparent'};
 
-    z-index: 10;
- transition: background-color 0.3s ease;
-  background-color: ${({ isHovered, isSitemapOpen }) =>
-    isHovered || isSitemapOpen ? 'rgba(255, 255, 255, 0.95)' : 'transparent'};
-  box-shadow: ${({ isHovered }) =>
-    isHovered ? '0 2px 8px rgba(0,0,0,0.1)' : 'none'};
-
-  ${({theme}) => theme.media.min1301} {
-    background-color: transparent; // hover가 아닐 때도 투명 유지
-
-    &:hover {
-      color: ${({ isHovered, isSitemapOpen }) =>
-        isHovered || isSitemapOpen ? 'black' : 'inherit'};
-      background-color: ${({ isHovered, isSitemapOpen }) =>
-        isHovered || isSitemapOpen ? 'white' : 'transparent'};
-    }
-  }
-
-   ${({theme}) => theme.media.max1300}{
+  box-shadow: ${({ isHovered, isScrolled  }) =>
+    isHovered || isScrolled? '0 2px 8px rgba(0,0,0,0.1)' : 'none'};
+  
+  color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
+          isHovered || isSitemapOpen || isScrolled ? 'black' : 'inherit'};
+  ${({theme}) => theme.media.max1300}{
     position: sticky;
     background-color: ${({ theme }) => theme.cardBgColor};
     box-shadow: none;
+    color: inherit;
   }
 `;
 
@@ -290,19 +315,40 @@ const HeaderWrapper = styled.div`
   margin-left: auto;
   margin-right: auto;
   height: 120px; /* 고정된 높이 */
+  width: 70%;
   ${({theme}) => theme.media.max1300} {
     display: flex;
-    padding-left: 1rem;
-    padding-right: 1rem;
     justify-content: space-between;
+    width: 100%;
   }
+`;
+
+const LeftWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+`;
+
+const CenterWrapper = styled.div`
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  height:100%;
+`;
+
+const RightWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5rem;
+  padding-right: 3%;
 `;
 
 const SubPage = styled.div`
   position: static ; /* 절대 위치로 설정하여 다른 내용에 영향 미치지 않도록 함 */
   display: flex;
   align-items: center;
-  right : 10px;
   font-size: 20px;
   font-weight: bold;
   height: 100%;
@@ -323,7 +369,9 @@ const HoverBox = styled.div`
  position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  width: 100vw;
+  left: 50%; /* 가운데 기준점으로 이동 */
+  transform: translateX(-50%); /* 정확히 가운데 정렬 */
   height: 220px;
   background-color: white;
   z-index: 10;
@@ -345,10 +393,7 @@ const Logo = styled.div`
    transition: 1s;
    font-size: 45px;
    font-size: 15px;
-
    position: relative;
-   margin-left: 400px;
-   margin-right: 50px;
  }
   ${({theme}) => theme.media.max1300} {
     transition: 1s;
@@ -418,15 +463,6 @@ const SitemapWrapper = styled.div`
   bottom: -20px; /* hr 위에 겹쳐서 보이도록 아래로 배치 */
   top: 0;
   z-index: 1000; /* HoverBox보다 높은 값 */
-  ${({theme}) => theme.media.max1300}{
-    position: relative;
-  };
-    ${({theme}) => theme.media.min1301} {
-    position: relative;
-    margin-right: 400px;
-    margin-left: 0;
-    
-  }
 `;
 
 
@@ -439,8 +475,6 @@ const SubHeaderPage = styled.span`
 
 const SubheadingWrapper = styled.div`
 
- 
-
   ${({theme}) => theme.media.min1301} {
     display: flex;
     align-items: flex-start; /* Align elements to the top */
@@ -448,8 +482,6 @@ const SubheadingWrapper = styled.div`
     margin-left: auto;
     margin-right: auto;
     height: 100%;
-
-    
   }
 `;
 

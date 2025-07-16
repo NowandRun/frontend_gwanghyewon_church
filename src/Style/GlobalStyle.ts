@@ -11,11 +11,8 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Source Sans Pro', sans-serif;
     background-color: ${(props) => props.theme.bgColor};
     color: ${(props) => props.theme.textColor};
-    transition-duration: 1s;
     line-height: 1.5;
-    > ::-webkit-scrollbar {
-    display: none;
-  }
+    transition: background-color 0.3s ease, color 0.3s ease; /* ✅ 이 줄만 남기세요 */
   }
   a {
     text-decoration: none;
@@ -27,16 +24,18 @@ const GlobalStyle = createGlobalStyle`
   table {
     border-collapse: collapse;
   }
-  
-  html, body {
-    overflow: auto;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
 
-  html::-webkit-scrollbar,
-  body::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    /* ✅ 1300px 이하일 때 스크롤은 동작하게 하되, 스크롤바는 숨김 */
+  @media (max-width: 1760px) {
+    html, body {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE 10+ */
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
+    }
   }
 `;
 
