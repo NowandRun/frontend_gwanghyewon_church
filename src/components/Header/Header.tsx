@@ -164,6 +164,7 @@ function Header() {
   }, []);
   
 
+
   // 페이지 경로 변경 시 현재 위치에 해당하는 메뉴 인덱스 설정
   useEffect(() => {
     const currentIndex = menuItems.findIndex((item) =>
@@ -178,7 +179,15 @@ function Header() {
 
   const handleHeaderOn = () => setIsHovered(true);
   const handleHeaderOff = () => setIsHovered(false);
-  const handleSitemapOpen = (isOpen: boolean) => setIsSitemapOpen(isOpen);
+  const handleSitemapOpen = (isOpen: boolean) => {
+    setIsSitemapOpen(isOpen);
+    
+    // 💡 닫힐 때 hover 상태도 초기화
+    if (!isOpen) {
+      setHoverIndex(null);
+      setIsHovered(false);
+    }
+  };
 
   return (
     <>
