@@ -6,6 +6,10 @@ declare module 'styled-components' {
     bgColor: string;
     accentColor: string;
     cardBgColor: string;
+    headerWidth: {
+      default: string;
+      responsive: string;
+    };
     media: {
       max1300: string;
       min1301: string;

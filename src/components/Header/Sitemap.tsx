@@ -34,6 +34,18 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
       setSelectedIndex(currentIndex !== -1 ? currentIndex : null);
     }, [location.pathname]);
 
+    useEffect(() => {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden'; // 배경 스크롤 막기
+      } else {
+        document.body.style.overflow = ''; // 복원
+      }
+    
+      return () => {
+        document.body.style.overflow = ''; // 컴포넌트 언마운트 시 복원
+      };
+    }, [isOpen]);
+
   return (
     <>
       <Button onClick={openModal} layoutId='Sitemap'>
@@ -173,14 +185,14 @@ const Button = styled(motion.div)`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  color: ${(props) => props.theme.textColor};
   text-align: center;
   font-weight: 600;
   box-shadow:
     0 2px 3px rgba(0, 0, 0, 0.1),
     0 10px 20px rgba(0, 0, 0, 0.06);
   cursor: pointer;
-  /* 배경색에만 트랜지션 적용 */
-  transition: background-color 1s;
+  transition: background-color 1s, color 1s;
   /* 첫 번째 자식 요소에만 적용 */
   > :first-child {
     font-size: 30px;

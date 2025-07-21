@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import Mode from './DarkMode';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Sitemap from './Sitemap';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+
+export const sharedHeaderWidth = css`
+  width: 70%;
+
+  ${({ theme }) => theme.media.max1300} {
+    width: 100%;
+  }
+`;
 
 export const menuItems = [
   {

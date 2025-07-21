@@ -3,32 +3,48 @@ import styled from 'styled-components';
 import { HEADER_HEIGHT} from '../../components/Header/Header'
 import ReactPlayer from 'react-player';
 import { Link } from "react-router-dom";
-
+import { ChurchIcon, CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon } from "@phosphor-icons/react";
 const text = `환영합니다!\n광혜원순복음교회입니다.`;
 
 const ministryItems = [
   {
     title: '교회소개',
-    icon: '💖', // 혹은 <img src="/..." />
-    description: '성도 한 사람 한 사람의 육체와 영혼을 모두 아우르는 ‘위드 성도 케어’',
+    icon: <ChurchIcon />, 
+    description: [
+      '하나님과 함께하는',
+      '행복한 교회를',
+      '소개합니다.'  
+    ],
     href: '/page1'
   },
   {
     title: '교회학교',
-    icon: '🕊️',
-    description: '새에덴교회 참전용사 초청행사는 마지막 한 분의 참전용사가 살아 계실 때까지 계속됩니다',
+    icon: <CrossIcon />,
+    description: [
+      '다음세대가', 
+      '성장하는', 
+      '교회학교입니다.'
+    ],
     href: '/page1'
   },
   {
     title: 'GS방송',
-    icon: '🖐️',
-    description: '하나님을 사랑하고, 이웃과 나라와 민족을 섬기는 예배자를 세웁니다',
+    icon: <GlobeHemisphereEastIcon />,
+    description: [
+      'GS방송은', 
+      '말씀과 함께 성장하는', 
+      '온라인 방송입니다.'
+    ],
     href: '/page1'
   },
   {
     title: '새가족',
-    icon: '📖',
-    description: '4-7세 대상으로 평일 쉐마 말씀교육을 통해 예수님을 가르치고 작은선교사를 키우는 교육공동체',
+    icon: <HandHeartIcon />,
+    description: [
+      '환영하고',
+      '축복하고',
+      '사랑합니다.'
+    ],
     href: '/page1'
   },
 ];
@@ -55,13 +71,22 @@ function Home() {
         </VideoWrapper>
 
         <MinistryContainer>
-          {ministryItems.map((item, index) => (
-            <MinistryCard key={index} to={item.href}>
-              <Icon>{item.icon}</Icon>
-              <Title>{item.title}</Title>
-              <Description>{item.description}</Description>
-            </MinistryCard>
-          ))}
+          <MinistryController>
+            {ministryItems.map((item, index) => (
+              <MinistryCard key={index} to={item.href}>
+                <Title>{item.title}</Title>
+                <Icon>{item.icon}</Icon>
+                <Description>
+                  {item.description.map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))}
+                </Description>
+              </MinistryCard>
+            ))}
+          </MinistryController>
         </MinistryContainer>
       </HomeWrapper>
     </>
@@ -128,39 +153,41 @@ const OverlayText = styled.div`
 
 
 const MinistryContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  background-color: ${(props) => props.theme.cardBgColor};
+  transition: background-color 1s;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  
+`;
 
-position: relative ; /* 절대 위치로 설정하여 다른 내용에 영향 미치지 않도록 함 */
-  justify-content: space-between;
-  align-items: center;
-  margin-left: auto;
-  margin-right: auto;
-
-
+const MinistryController = styled.div`
+  width: ${({theme}) => theme.headerWidth.default};
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 2rem;
-
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  
-
-  background-color: #3498a3; /* 이미지 배경색과 비슷하게 */
-
-  ${({theme}) => theme.media.max1300} {
+  flex-direction: row; /* ✅ 가로 정렬 */
+  ${({ theme }) => theme.media.max1300} {
+    width: ${({ theme }) => theme.headerWidth.responsive};
     display: flex;
-    flex-direction: row; /* 가로 정렬 명시 */
+    flex-wrap: nowrap; /* ✅ 줄바꿈 방지 */
+    flex-direction: row; /* ✅ 가로 정렬 */
     align-items: center;
+    justify-content: space-between; /* ✅ 가로 공간 확보 */
     padding: 0;
+    gap: 0.1rem; /* gap 줄이면 더 조밀하게 정렬 가능 */
   }
-`;
+`
 
 const MinistryCard = styled(Link)`
   flex: 1 1 22%;
-  min-width: 250px;
   background: transparent;
   text-align: center;
-  color: white;
+  color: ${(props) => props.theme.textColor};
+  transition: color 1s;
   padding: 1rem;
 
   border-right: 1px solid rgba(255, 255, 255, 0.4);
@@ -169,25 +196,34 @@ const MinistryCard = styled(Link)`
     border-right: none;
   }
 
-  @media (max-width: 768px) {
+  ${({theme}) => theme.media.max1300}{
     flex: 1 1 100%;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.3rem;
   }
 `;
 
 const Icon = styled.div`
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: 5rem;
+  ${({theme}) => theme.media.max1300}{
+    font-size: 3rem;
+  }
 `;
 
 const Title = styled.h3`
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  ${({theme}) => theme.media.max1300}{
+    font-size: 1rem;
+    font-weight: bold;
+  }
 `;
 
 const Description = styled.p`
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 1.4rem;
+  -webkit-box-orient: vertical;
+  ${({theme}) => theme.media.max1300}{
+    font-size: 0.7rem;
+    font-weight: bold;
+  }
 `;
