@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { HEADER_HEIGHT} from '../../components/Header/Header'
 import ReactPlayer from 'react-player';
 import { Link } from "react-router-dom";
-import { ChurchIcon, CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon } from "@phosphor-icons/react";
+import { ChurchIcon, CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon, CalendarCheckIcon, FilesIcon, YoutubeLogoIcon, MonitorArrowUpIcon } from "@phosphor-icons/react";
+import CircularGallery from '../../Style/CircularGallery'
+import {motion, AnimatePresence} from 'framer-motion';
+import useWindowDimensions from "../../components/useWindowDimensions";
+
+
 const text = `환영합니다!\n광혜원순복음교회입니다.`;
 
 const ministryItems = [
@@ -15,7 +20,7 @@ const ministryItems = [
       '행복한 교회를',
       '소개합니다.'  
     ],
-    href: '/page1'
+    href: '/info'
   },
   {
     title: '교회학교',
@@ -25,7 +30,7 @@ const ministryItems = [
       '성장하는', 
       '교회학교입니다.'
     ],
-    href: '/page1'
+    href: '/youth'
   },
   {
     title: 'GS방송',
@@ -35,25 +40,71 @@ const ministryItems = [
       '말씀과 함께 성장하는', 
       '온라인 방송입니다.'
     ],
-    href: '/page1'
+    href: '/broadcast'
   },
   {
     title: '새가족',
     icon: <HandHeartIcon />,
     description: [
-      '환영하고',
-      '축복하고',
+      '환영합니다',
+      '축복합니다',
       '사랑합니다.'
     ],
-    href: '/page1'
+    href: '/group'
   },
 ];
 
+const HomeSecondNavItems = [
+  {
+    title: '예배안내',
+    icon: <CalendarCheckIcon />, 
+    href: '/info'
+  },
+  {
+    title: '교회주보',
+    icon: <FilesIcon />,
+    href: '/youth'
+  },
+  {
+    title: '유튜브채널',
+    icon: <YoutubeLogoIcon />,
+    href: 'https://www.youtube.com/@Mrssomman'
+  },
+  {
+    title: '온라인행정',
+    icon: <MonitorArrowUpIcon />,
+    href: '/group'
+  },
+];
+
+const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 function Home() {
+/*   const [list, setList] = useState(items);
+  const [currentIndex, setCurrentIndex] = useState(0); // 중앙 박스 인
+  const [direction, setDirection] = useState<'next' | 'prev'>('next');
+
+  const next = () => {
+    setDirection('next');
+    setList((prev) => {
+      const newList = [...prev.slice(1), prev[0]]; // 왼쪽으로 shift
+      return newList;
+    });
+    setCurrentIndex((prev) => (prev + 1) % items.length);
+  };
+
+  const prev = () => {
+    setDirection('prev');
+    setList((prev) => {
+      const newList = [prev[prev.length - 1], ...prev.slice(0, prev.length - 1)];
+      return newList;
+    });
+    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+  }; */
   return (
     <>
       <HomeWrapper>
-        <VideoWrapper>
+        <VideoWrapper >
           <ReactPlayer
           url="https://youtu.be/AmL1_7F3GDA"
           playing
@@ -70,7 +121,7 @@ function Home() {
           </OverlayText>
         </VideoWrapper>
 
-        <MinistryContainer>
+        <MinistryContainer >
           <MinistryController>
             {ministryItems.map((item, index) => (
               <MinistryCard key={index} to={item.href}>
@@ -88,17 +139,55 @@ function Home() {
             ))}
           </MinistryController>
         </MinistryContainer>
+
+        <HomeSecondNav>
+          <HomeSecondNavOne>
+          
+          </HomeSecondNavOne>
+          <HomeSecondNavTwo>
+            <HomeSecondNavTwoController>
+            {HomeSecondNavItems.map((items, index) => (
+              <HomeSecondNavTwoCard key={index} to={items.href}>
+                <HomeSecondNavTwoIcon>
+                  {items.icon}
+                </HomeSecondNavTwoIcon>
+                <HomeSecondNavTwoTitle>
+                  {items.title}
+                </HomeSecondNavTwoTitle>
+              </HomeSecondNavTwoCard>
+            ))}
+            </HomeSecondNavTwoController>
+          </HomeSecondNavTwo>
+        </HomeSecondNav>
       </HomeWrapper>
+      {/* <div style={{ height: '600px', position: 'relative' }}>
+        <CircularGallery bend={0} textColor="black" borderRadius={0.02} scrollEase={0.02}  />
+      </div> */}
+      {/* <Slider>
+        <Row currentIndex={currentIndex}>
+          {list.map((item, index) => (
+            <Box
+              key={item}
+              isActive={index === 0} // 항상 첫 번째 요소를 커지게
+            >
+              {item}
+            </Box>
+          ))}
+        </Row>
+      </Slider>
+      <BoxMover>
+          <Prev onClick={prev}>Prev</Prev>
+          <Next onClick={next}>Next</Next>
+        </BoxMover> */}
+
     </>
   );
 }
 
 export default Home;
 
-
 const HomeWrapper = styled.div`
-
-`
+`;
 
 const VideoWrapper = styled.div`
   position: relative;
@@ -227,3 +316,118 @@ const Description = styled.p`
     font-weight: bold;
   }
 `;
+
+const Slider = styled.div`
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  background-color: ${(props) => props.theme.cardBgColor};
+
+`;
+
+const Row = styled(motion.div)<{ currentIndex: number }>`
+  display: flex;
+  align-items: flex-end;
+  transition: transform 0.5s ease-in-out;
+  padding-bottom: 50px;
+`;
+
+const Box = styled.div<{ isActive: boolean }>`
+  flex: 0 0 auto;
+  width: ${({ isActive }) => (isActive ? '800px' : '500px')};
+  height: ${({ isActive }) => (isActive ? '800px' : '500px')};
+  margin: 0 10px;
+  background-color: white;
+  font-size: ${({ isActive }) => (isActive ? '5rem' : '3rem')};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  ${({ isActive }) =>
+    isActive &&
+    `
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  `}
+`;
+
+const BoxMover = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  gap: 1rem;
+`;
+
+const Prev = styled.button`
+  padding: 0.5rem 1rem;
+`;
+
+const Next = styled.button`
+  padding: 0.5rem 1rem;
+`;
+
+const HomeSecondNav = styled.div`
+  height: 700px;
+  display: flex;
+`
+const HomeSecondNavOne = styled.div`
+  height: 100%;
+  width: 100%;
+  background-color: ${(props) => props.theme.bgColor};
+  display: flex;
+
+  `
+
+  const HomeSecondNavTwo = styled.div`
+    height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #D8D2C2;
+  `
+
+  const HomeSecondNavTwoController = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // 가로 2칸
+  grid-template-rows: repeat(2, 1fr);    // 세로 2칸
+  height: 80%;
+  width: 80%;
+  padding-right: 21rem;
+`
+
+  const HomeSecondNavTwoCard = styled(Link)`
+display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  `
+
+  const HomeSecondNavTwoIcon = styled.div`
+  background-color: ${(props) => props.theme.cardBgColor};
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+height: 120Px;
+  width: 120Px;
+    font-size: 5rem;
+  margin-bottom: 1rem;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+  `
+
+  const HomeSecondNavTwoTitle = styled.h3`
+   font-size: 1.5rem;
+  font-weight: bold;
+  `
+

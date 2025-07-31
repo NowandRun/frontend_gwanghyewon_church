@@ -13,6 +13,7 @@ const GlobalStyle = createGlobalStyle`
     color: ${(props) => props.theme.textColor};
     line-height: 1.5;
     transition: background-color 0.3s ease, color 0.3s ease; /* ✅ 이 줄만 남기세요 */
+    overflow-x: hidden;
   }
   a {
     text-decoration: none;

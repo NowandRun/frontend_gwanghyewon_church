@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence, Variants, Variant } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useWindowDimensions from '../useWindowDimensions';
@@ -179,8 +179,8 @@ const modalBoxVariants: Variants = {
 
 const Button = styled(motion.div)`
   background-color: ${(props) => props.theme.cardBgColor};
-  height: 140px;
-  width: 80px;
+  height: 150px;
+  width: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -198,10 +198,16 @@ const Button = styled(motion.div)`
     font-size: 30px;
     position: relative; /* position을 relative로 설정 */
     top: -4px; /* y축 방향으로 아래쪽으로 이동 */
+    
   }
   > :last-child {
     position: relative; /* position을 relative로 설정 */
     top: 12px; /* y축 방향으로 아래쪽으로 이동 */
+
+    span {
+      display: block;
+      font-size: 0.9rem; // 원하는 크기로 조정
+    }
   }
 `;
 
@@ -300,7 +306,8 @@ const ItemTitle = styled.div`
   }
 `;
 
-const SubChildList = styled.li``;
+const SubChildList = styled.li`
+`;
 
 const SubChildListTitle = styled.div`
   border-bottom: 1.5px dotted rgba(0, 0, 0, 0.4);
@@ -345,4 +352,7 @@ const BottomBox = styled.div`
   bottom: 0; /* 하단에 위치 */
   width: 100%; /* 부모의 너비에 맞게 설정 */
   position: absolute;
+`;
+
+const SpaceDiv = styled.div`
 `;
