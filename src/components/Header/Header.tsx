@@ -205,7 +205,11 @@ function Header() {
         >
           <LeftWrapper>
             <Link to="/">
-              <Logo>
+              <Logo 
+                isSitemapOpen={isSitemapOpen}  
+                isHovered={isHovered}  
+                isScrolled={isScrolled} // ✅ 추가
+              >
                 <span>로고</span>
               </Logo>
             </Link>
@@ -225,11 +229,14 @@ function Header() {
                     setIsHovered(false);      // Hover 상태 플래그 초기화
                   }}>
                     <SubPageItem
+                      isSitemapOpen={isSitemapOpen}  
+                      isHovered={isHovered}  
+                      isScrolled={isScrolled} // ✅ 추가
                       onClick={() => {
                         window.location.href = `/${item.path}`;
                       }}
                     >
-                      <div style={{ margin: '20px' }}>
+                      <SubHeaderPageController>
                         <SubHeaderPage>{item.label}</SubHeaderPage>
                         {(hoverIndex === index || selectedIndex === index) && (
                           <Positionbar
@@ -238,7 +245,7 @@ function Header() {
                           layoutId="pointerbar"
                         />
                         )}
-                      </div>
+                      </SubHeaderPageController>
                     </SubPageItem>
                   </Link>
 
@@ -275,7 +282,11 @@ function Header() {
             </SubPage>
           </CenterWrapper>
           <RightWrapper>
-            <UserFeat>
+            <UserFeat 
+            isSitemapOpen={isSitemapOpen}  
+            isHovered={isHovered}  
+            isScrolled={isScrolled} // ✅ 추가
+            >
               <span>회원가입</span>
               <span>로그인</span>
               <ModeWrapper>
@@ -293,10 +304,12 @@ function Header() {
 }
 
 export default Header;
+
 interface PositionbarProps {
   isSitemapOpen: boolean;
   isHovered: boolean;
-}
+};
+
 const AllContents = styled.header<{
   isSitemapOpen: boolean;
   isHovered: boolean;
@@ -307,15 +320,14 @@ const AllContents = styled.header<{
   left: 0;
   width: 100%;
   z-index: 10;
-  transition: background-color 0.3s ease;
   background-color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
     isHovered || isSitemapOpen|| isScrolled ? 'rgba(255, 255, 255, 1)' : 'transparent'};
 
   box-shadow: ${({ isHovered, isScrolled  }) =>
-    isHovered || isScrolled? '0 2px 8px rgba(0,0,0,0.1)' : 'none'};
+    isHovered || isScrolled ? '0 2px 8px rgba(0,0,0,0.1)' : 'none'};
   
-  color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
-          isHovered || isSitemapOpen || isScrolled ? 'black' : 'inherit'};
+  
+  transition: ${({isScrolled}) => isScrolled ? `background-color 0.3s ease`: `background-color 0.3s ease`};
   ${({theme}) => theme.media.max1300}{
     position: sticky;
     background-color: ${({ theme }) => theme.cardBgColor};
@@ -366,8 +378,6 @@ const SubPage = styled.div`
   position: static ; /* 절대 위치로 설정하여 다른 내용에 영향 미치지 않도록 함 */
   display: flex;
   align-items: center;
-  font-size: 20px;
-  font-weight: bold;
   height: 100%;
   align-items: stretch; /* stretch로 변경하여 자식 요소가 전체 높이를 차지하도록 함 */
   /* 작은 화면에서는 숨기기 */
@@ -404,23 +414,36 @@ const ScrollContent = styled.div`
   }
 `;
 
-const Logo = styled.div`
+const Logo = styled.div<{
+  isSitemapOpen: boolean;
+  isHovered: boolean;
+  isScrolled: boolean;
+}>`
+ color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
+             isSitemapOpen || isScrolled ? 'black' : isHovered ? 'inherit' :(props)=> props.theme.textColor};
  position: relative;
+
+ span {
+  font-size: 20px;
+ };
+
  ${({theme}) => theme.media.min1301} {
-   transition: 1s;
    font-size: 45px;
    font-size: 15px;
    position: relative;
  }
   ${({theme}) => theme.media.max1300} {
-    transition: 1s;
   margin-left: 10px;
   font-size: 45px;
     font-size: 15px;
   }
 `;
 
-const SubPageItem = styled.div`
+const SubPageItem = styled.div<{
+  isSitemapOpen: boolean;
+  isHovered: boolean;
+  isScrolled: boolean;
+}>`
   flex-grow: 1; /* 각 항목이 동일한 너비를 차지하도록 설정 */
   width: auto;
   position: relative; /* Positionbar가 텍스트 아래에 맞게 위치할 수 있도록 설정 */
@@ -433,17 +456,27 @@ const SubPageItem = styled.div`
   text-align: center; /* 텍스트를 중앙 정렬 */
   bottom: 0;
   cursor: pointer; /* 포인터 커서 추가 */
+  color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
+             isSitemapOpen || isScrolled ? 'black' : isHovered ? 'inherit' :(props)=> props.theme.textColor};
 `;
+
+const SubHeaderPageController = styled.div`
+ margin: 20px;
+`
 
 const Positionbar = styled(motion.div)<PositionbarProps>`
   height: 2px;
- background-color: ${(props) => props.theme.cardBgColor};
+  background-color: ${(props) => props.theme.cardBgColor};
   margin-top: 4px;
 `;
 
 
-const UserFeat = styled.div`
-  font-size: 13px;
+const UserFeat = styled.div<{
+  isSitemapOpen: boolean;
+  isHovered: boolean;
+  isScrolled: boolean;
+}>`
+  font-size: 15px;
   display: flex;
   position: relative;
   align-items: center;
@@ -453,6 +486,10 @@ justify-content: center; /* Center the label text */
     border-right: 1px solid #ccc; /* 여기에 경계선 추가 */
     padding-right: 10px; /* 경계선과 텍스트 간의 여백 */
   };
+
+
+   color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
+             isSitemapOpen || isScrolled ? 'black' : isHovered ? 'inherit' :(props)=> props.theme.textColor};
 
   /* 작은 화면에서는 '회원가입'과 '로그인' 숨기기 */
   ${({theme}) => theme.media.max1300} {
@@ -485,7 +522,7 @@ const SitemapWrapper = styled.div`
 
 
 const SubHeaderPage = styled.span`
-  font-size: 18px;
+  font-size: 20px;
 `;
 
 

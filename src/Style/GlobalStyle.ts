@@ -6,36 +6,38 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-  body {
+    transition: background-color 1s ease, color 1s ease;
+  };
+
+  html, body {
     font-family: 'Source Sans Pro', sans-serif;
-    background-color: ${(props) => props.theme.bgColor};
-    color: ${(props) => props.theme.textColor};
-    line-height: 1.5;
-    transition: background-color 0.3s ease, color 0.3s ease; /* ✅ 이 줄만 남기세요 */
     overflow-x: hidden;
-  }
+  };
   a {
     text-decoration: none;
     color: inherit;
-  }
+  };
   ul, ol {
     list-style: none;
-  }
+  };
   table {
     border-collapse: collapse;
-  }
+  };
 
-    /* ✅ 1300px 이하일 때 스크롤은 동작하게 하되, 스크롤바는 숨김 */
-  @media (max-width: 1760px) {
+
+
+  /* ✅ 1150px 이하일 때 스크롤은 동작하게 하되, X축·Y축 스크롤바를 숨김 */
+  @media (max-width: 1150px) {
     html, body {
+      overflow: auto; /* 스크롤 가능 */
       scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE 10+ */
+      -ms-overflow-style: none; /* IE, Edge */
     }
 
     html::-webkit-scrollbar,
     body::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
+      width: 0;  /* 세로 스크롤바 너비 0 */
+      height: 0; /* 가로 스크롤바 높이 0 */
     }
   }
 `;

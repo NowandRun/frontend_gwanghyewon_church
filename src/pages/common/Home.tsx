@@ -4,7 +4,6 @@ import { HEADER_HEIGHT} from '../../components/Header/Header'
 import ReactPlayer from 'react-player';
 import { Link } from "react-router-dom";
 import { ChurchIcon, CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon, CalendarCheckIcon, FilesIcon, YoutubeLogoIcon, MonitorArrowUpIcon } from "@phosphor-icons/react";
-import CircularGallery from '../../Style/CircularGallery'
 import {motion, AnimatePresence} from 'framer-motion';
 import useWindowDimensions from "../../components/useWindowDimensions";
 
@@ -59,6 +58,16 @@ const HomeSecondNavItems = [
     title: '예배안내',
     icon: <CalendarCheckIcon />, 
     href: '/info'
+  },
+  {
+    title: '양육',
+    icon: <CalendarCheckIcon />, 
+    href: '/group/nurture'
+  },
+  {
+    title: '봉사',
+    icon: <CalendarCheckIcon />, 
+    href: '/group/ministration'
   },
   {
     title: '교회주보',
@@ -157,20 +166,15 @@ function Home() {
               </HomeSecondNavTwoCard>
             ))}
             </HomeSecondNavTwoController>
+            <HomeSecondNavEmtyController />
           </HomeSecondNavTwo>
         </HomeSecondNav>
       </HomeWrapper>
-      {/* <div style={{ height: '600px', position: 'relative' }}>
-        <CircularGallery bend={0} textColor="black" borderRadius={0.02} scrollEase={0.02}  />
-      </div> */}
       {/* <Slider>
         <Row currentIndex={currentIndex}>
-          {list.map((item, index) => (
-            <Box
-              key={item}
-              isActive={index === 0} // 항상 첫 번째 요소를 커지게
-            >
-              {item}
+          {videoList.map((video, index) => (
+            <Box key={video.id} isActive={index === 0}>
+              <ReactPlayer url={`https://www.youtube.com/watch?v=${video.id}`} width="100%" height="100%" />
             </Box>
           ))}
         </Row>
@@ -202,14 +206,14 @@ const VideoWrapper = styled.div`
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     filter: brightness(0.85);
-  }
+  };
   iframe, video {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-  }
+  };
 
 
   ${({theme}) => theme.media.max1300} {
@@ -249,7 +253,10 @@ const MinistryContainer = styled.div`
   transition: background-color 1s;
   padding-top: 4rem;
   padding-bottom: 4rem;
-  
+  ${({theme}) => theme.media.max1300}{
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+  }
 `;
 
 const MinistryController = styled.div`
@@ -266,7 +273,7 @@ const MinistryController = styled.div`
     flex-direction: row; /* ✅ 가로 정렬 */
     align-items: center;
     justify-content: space-between; /* ✅ 가로 공간 확보 */
-    padding: 0;
+    padding: 1rem 0;
     gap: 0.1rem; /* gap 줄이면 더 조밀하게 정렬 가능 */
   }
 `
@@ -276,7 +283,7 @@ const MinistryCard = styled(Link)`
   background: transparent;
   text-align: center;
   color: ${(props) => props.theme.textColor};
-  transition: color 1s;
+  transition: color 1s ease;
   padding: 1rem;
 
   border-right: 1px solid rgba(255, 255, 255, 0.4);
@@ -289,13 +296,13 @@ const MinistryCard = styled(Link)`
     flex: 1 1 100%;
     border-right: 1px solid rgba(255, 255, 255, 0.3);
     padding: 0.3rem;
-  }
+     };
 `;
 
 const Icon = styled.div`
   font-size: 5rem;
   ${({theme}) => theme.media.max1300}{
-    font-size: 3rem;
+    font-size: 2rem;
   }
 `;
 
@@ -303,7 +310,7 @@ const Title = styled.h3`
   font-size: 2rem;
   font-weight: bold;
   ${({theme}) => theme.media.max1300}{
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: bold;
   }
 `;
@@ -312,7 +319,7 @@ const Description = styled.p`
   font-size: 1.4rem;
   -webkit-box-orient: vertical;
   ${({theme}) => theme.media.max1300}{
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: bold;
   }
 `;
@@ -370,15 +377,21 @@ const Next = styled.button`
 `;
 
 const HomeSecondNav = styled.div`
-  height: 700px;
+  height: 46rem;
   display: flex;
+  ${({theme}) => theme.media.max1300}{
+    height: 15rem;
+  };
 `
 const HomeSecondNavOne = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${(props) => props.theme.bgColor};
   display: flex;
-
+  ${({theme}) => theme.media.max1300}{
+    height: 100%;
+  width: 50%;
+  }
   `
 
   const HomeSecondNavTwo = styled.div`
@@ -388,15 +401,44 @@ const HomeSecondNavOne = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #D8D2C2;
+  position: relative; // ✅ 추가
+  ${({theme}) => theme.media.max1300}{
+    height: 100%;
+    width: 70%;
+  }
   `
 
   const HomeSecondNavTwoController = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); // 가로 2칸
-  grid-template-rows: repeat(2, 1fr);    // 세로 2칸
-  height: 80%;
-  width: 80%;
-  padding-right: 21rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 70%;
+  height: 70%;
+  position: absolute;
+  left: 0;
+  gap: 0.1rem; /* ✅ 카드 간격 추가 */
+  
+  ${({theme}) => theme.media.max1300}{
+    padding: 0;
+    width: 100%;
+    height: 70%;
+    position: static;
+
+  };
+`
+
+
+
+const HomeSecondNavEmtyController = styled.div`
+  width: 30%;
+  height: 100%;
+  right: 0;
+  position: absolute; // ✅ 추가
+  ${({theme}) => theme.media.max1300}{
+    height: 0;
+    width: 0;
+  };
 `
 
   const HomeSecondNavTwoCard = styled(Link)`
@@ -404,30 +446,51 @@ display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: calc(33.33% - 1rem); // 3개씩 정렬
+  height: 50%; // 총 높이의 반 (2줄)
+  text-align: center;
+  margin-left: 0.9rem;
+  ${({theme}) => theme.media.max1300} {
+    width: 25%;
+    height: 50%;
+    margin: 0 0.8rem;
+  }
   `
 
   const HomeSecondNavTwoIcon = styled.div`
-  background-color: ${(props) => props.theme.cardBgColor};
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-height: 120Px;
-  width: 120Px;
+    background-color: ${(props) => props.theme.cardBgColor};
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120Px;
+    width: 120Px;
     font-size: 5rem;
-  margin-bottom: 1rem;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  }
+    margin-bottom: 1rem;
+    color: ${(props) => props.theme.textColor};
+    transition: color 1s;
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+        ${({theme}) => theme.media.max1300}{
+        height: 50px;
+        width: 50px;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
   `
 
   const HomeSecondNavTwoTitle = styled.h3`
    font-size: 1.5rem;
   font-weight: bold;
+    color: ${(props) => props.theme.textColor};
+  transition: color 1s;
+  ${({theme}) => theme.media.max1300}{
+       font-size: 0.6rem;
+   }
   `
 

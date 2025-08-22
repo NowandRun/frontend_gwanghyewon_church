@@ -10,8 +10,8 @@ export const darkTheme: DefaultTheme = {
     responsive: '100%'
   },
   media: {
-    max1300: '@media (max-width: 1760px)',
-    min1301: '@media (min-width: 1761px)',
+    max1300: '@media (max-width: 1150px)',
+    min1301: '@media (min-width: 1151px)',
   },
 };
 
@@ -25,7 +25,7 @@ export const lightTheme: DefaultTheme = {
     responsive: '100%'
   },
   media: {
-    max1300: '@media (max-width: 1760px)',
-    min1301: '@media (min-width: 1761px)',
+    max1300: '@media (max-width: 1150px)',
+    min1301: '@media (min-width: 1151px)',
   },
 };

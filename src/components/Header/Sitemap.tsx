@@ -221,6 +221,8 @@ const Overlay = styled(motion.div)`
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0); // 초기 상태를 투명으로 설정
+  transition: none;
+  
   ${({theme}) => theme.media.max1300} {
     display: flex;
     width: 100%;
@@ -228,6 +230,7 @@ const Overlay = styled(motion.div)`
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
+    
   }
 `;
 
@@ -242,7 +245,7 @@ const ModalBox = styled(motion.div)`
     0 10px 20px rgba(0, 0, 0, 0.06);
   > ::-webkit-scrollbar {
     display: none;
-  }
+  };
   position: relative; /* 추가: 내부 요소가 상대적으로 위치할 수 있게 함 */
   
   ${({theme}) => theme.media.max1300} {

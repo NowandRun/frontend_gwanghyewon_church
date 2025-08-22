@@ -10,15 +10,18 @@ import GlobalStyle from './Style/GlobalStyle';
 import { isdarkAtom } from './types/atoms';
 import router from "./routers/router";
 
+
 const App = () => {
-  const isLoggedIn = useReactiveVar(isLoggedInAccessTokenVar); // 로그인 상태 확인
+  const isLoggedIn = useReactiveVar(isLoggedInAccessTokenVar);
   const isDark = useRecoilValue(isdarkAtom);
+
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <GlobalStyle /> {/* 글로벌 스타일 적용 */}
+      <GlobalStyle />
       <RouterProvider router={isLoggedIn ? loggedInRouter : router} />
     </ThemeProvider>
   );
 };
 
 export default App;
+
