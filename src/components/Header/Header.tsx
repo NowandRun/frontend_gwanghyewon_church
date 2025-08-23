@@ -329,7 +329,8 @@ const AllContents = styled.header<{
   
   transition: ${({isScrolled}) => isScrolled ? `background-color 0.3s ease`: `background-color 0.3s ease`};
   ${({theme}) => theme.media.max1300}{
-    position: sticky;
+        /* 모바일에서도 fixed 유지 */
+    position: fixed;
     background-color: ${({ theme }) => theme.cardBgColor};
     box-shadow: none;
     color: inherit;

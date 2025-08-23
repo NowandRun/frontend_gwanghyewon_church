@@ -250,6 +250,8 @@ function Home() {
 export default Home;
 
 const HomeWrapper = styled.div`
+  top:0;
+  padding-top: 120px; // 헤더 높이만큼 내려줌
 `;
 
 const VideoWrapper = styled.div`
