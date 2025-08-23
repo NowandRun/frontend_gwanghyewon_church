@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { HEADER_HEIGHT} from '../../components/Header/Header'
 import ReactPlayer from 'react-player';
 import { Link } from "react-router-dom";
-import { ChurchIcon, CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon, CalendarCheckIcon, FilesIcon, YoutubeLogoIcon, MonitorArrowUpIcon } from "@phosphor-icons/react";
+import { ChurchIcon, ChartLineUpIcon,CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon, HeartbeatIcon, CalendarCheckIcon, FilesIcon, YoutubeLogoIcon, MonitorArrowUpIcon } from "@phosphor-icons/react";
 import {motion, AnimatePresence} from 'framer-motion';
 import useWindowDimensions from "../../components/useWindowDimensions";
 
@@ -61,12 +61,12 @@ const HomeSecondNavItems = [
   },
   {
     title: '양육',
-    icon: <CalendarCheckIcon />, 
+    icon: <ChartLineUpIcon />, 
     href: '/group/nurture'
   },
   {
     title: '봉사',
-    icon: <CalendarCheckIcon />, 
+    icon: <HeartbeatIcon />, 
     href: '/group/ministration'
   },
   {
@@ -169,6 +169,65 @@ function Home() {
             <HomeSecondNavEmtyController />
           </HomeSecondNavTwo>
         </HomeSecondNav>
+        <HomeWorshipInformation>
+          <Wrapper>
+            <Section>
+              <WorshipInformationtitle>주일예배</WorshipInformationtitle>
+              <WorshipInformationPlace>
+                <WorshipInformationPlaceName>3층 대예배실</WorshipInformationPlaceName>
+              </WorshipInformationPlace>
+              <List>
+                <Item>1부 예배 오전 9시</Item>
+                <Item>2부 예배 오전 11시</Item>
+                <Item>바이블아카데미 오후 1시 30분</Item>
+              </List>
+            </Section>
+
+            <Section>
+              <WorshipInformationtitle>수요 및 금요성령집회</WorshipInformationtitle>
+              <WorshipInformationPlace>
+                <WorshipInformationPlaceName>3층 대예배실</WorshipInformationPlaceName>
+              </WorshipInformationPlace>
+              <List>
+                <Item>수요예배 저녁 7시 30분</Item>
+                <Item>금요성령집회 저녁 8시 30분</Item>
+              </List>
+            </Section>
+
+            <Section>
+              <WorshipInformationtitle>새벽기도회</WorshipInformationtitle>
+              <WorshipInformationPlace>
+                <WorshipInformationPlaceName>3층 대예배실</WorshipInformationPlaceName>
+              </WorshipInformationPlace>
+              <List>
+                <Item>월~금 매주 새벽 5시</Item>
+              </List>
+            </Section>
+
+            <Section>
+              <WorshipInformationtitle>교회학교</WorshipInformationtitle>
+              <WorshipInformationPlace>
+                <WorshipInformationPlaceName>2층 하꿈예배실</WorshipInformationPlaceName>
+              </WorshipInformationPlace>
+              <List>
+                <Item>하꿈주일학교 오전 10시 40분</Item>
+              </List>
+              <WorshipInformationPlace>
+                <WorshipInformationPlaceName>2층 예람예배실</WorshipInformationPlaceName>
+              </WorshipInformationPlace>
+              <List>
+                <Item>예람학생부 오후 1시 20분</Item>
+              </List>
+              <WorshipInformationPlace>
+                <WorshipInformationPlaceName>2층 하람예배실</WorshipInformationPlaceName>
+              </WorshipInformationPlace>
+              <List>
+                <Item>하람청년부 오후 1시 20분</Item>
+              </List>
+            </Section>
+
+          </Wrapper>
+        </HomeWorshipInformation>
       </HomeWrapper>
       {/* <Slider>
         <Row currentIndex={currentIndex}>
@@ -486,11 +545,86 @@ display: flex;
 
   const HomeSecondNavTwoTitle = styled.h3`
    font-size: 1.5rem;
-  font-weight: bold;
-    color: ${(props) => props.theme.textColor};
-  transition: color 1s;
-  ${({theme}) => theme.media.max1300}{
+   font-weight: bold;
+   color: ${(props) => props.theme.textColor};
+   transition: color 1s;
+   ${({theme}) => theme.media.max1300}{
        font-size: 0.6rem;
    }
   `
 
+  const HomeWorshipInformation = styled.section`
+    background: ${(props) => props.theme.bgColor};
+    padding: 4rem 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  `;
+
+  const Wrapper = styled.div`
+    width: 70%;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;        /* ✅ flex 추가 */
+    gap: 2rem;            /* ✅ 섹션 사이 간격 */
+    justify-content: space-between; /* ✅ 양쪽 정렬 */
+    ${({theme}) => theme.media.max1300}{
+      width: 100%;
+      gap: 1rem;  
+      padding: 1rem;
+    }
+  `;
+
+  const Section = styled.section`
+    margin-bottom: 2.5rem;
+     width: 100%;
+
+  `;
+
+  const WorshipInformationtitle = styled.h2`
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.3rem;
+    text-align: center;
+    ${({theme}) => theme.media.max1300}{
+      font-size: 0.75rem;
+      padding-bottom: 0.1rem;
+      margin-bottom: 0.5rem;
+    }
+  `;
+
+  const WorshipInformationPlace = styled.div`
+    width: 100%;
+    height: 2rem;
+    background-color:${(props) => props.theme.cardBgColor}; 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+   
+  `
+  const WorshipInformationPlaceName = styled.p`
+  font-size: 1.2rem;
+  ${({theme}) => theme.media.max1300}{
+    font-size: 0.7rem;
+  }
+  `
+
+  const List = styled.ul`
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  `;
+
+  const Item = styled.li`
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    color: #444;
+    ${({theme}) => theme.media.max1300}{
+      font-size: 0.7rem;
+    }
+  `;

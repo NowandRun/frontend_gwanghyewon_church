@@ -12,11 +12,11 @@ function Mode() {
     <>
       {!darkAtom ? (
         <Icon  onClick={toggleDarkAtom}>
-          <FontAwesomeIcon icon={faMoon} />
+          <FontAwesomeIcon icon={faSun} />
         </Icon>
       ) : (
         <Icon  onClick={toggleDarkAtom}>
-          <FontAwesomeIcon icon={faSun} />
+          <FontAwesomeIcon icon={faMoon} />
         </Icon>
       )}
     </>

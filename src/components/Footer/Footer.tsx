@@ -37,6 +37,7 @@ padding-right: 50px;
 
 const FooterMiddleText = styled.p`
 color: ${(props)=> props.theme.textColor};
+	font-size: 1.2rem;
   ${({theme}) => theme.media.max1300} {
     font-size: 0.6rem;
   }
@@ -48,7 +49,4 @@ color: ${(props)=> props.theme.textColor};
 		text-transform: uppercase;
 		color: #78B9B5;
 	};
-	  ${({theme}) => theme.media.max1300} {
-    font-size: 0.6rem;
-  }
 `;
