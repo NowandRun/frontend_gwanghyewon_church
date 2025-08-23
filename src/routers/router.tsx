@@ -1,4 +1,5 @@
-import { createBrowserRouter } from 'react-router-dom';
+// 변경
+import { createHashRouter } from 'react-router-dom';
 import { generateRoutes } from './generateRoutes';
 import React from 'react';
 import Root from "../Root";
@@ -7,7 +8,7 @@ import { menuItems } from "../components/Header/Header";
 
 const generatedRoutes = generateRoutes(menuItems);
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Root />,
