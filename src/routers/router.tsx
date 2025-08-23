@@ -23,7 +23,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: '/frontend_gwanghyewon_church', // ✅ 이 부분 추가!
+    basename: 'frontend_gwanghyewon_church', // ✅ 이 부분 추가!
   }
 );
 
