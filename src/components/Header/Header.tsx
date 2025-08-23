@@ -287,8 +287,8 @@ function Header() {
             isHovered={isHovered}  
             isScrolled={isScrolled} // ✅ 추가
             >
-              <span>회원가입</span>
-              <span>로그인</span>
+              {/* <span>회원가입</span>
+              <span>로그인</span> */}
               <ModeWrapper>
                 <Mode />
               </ModeWrapper>
@@ -350,6 +350,7 @@ const HeaderWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
+    height: 100px; /* 고정된 높이 */
   }
 `;
 
@@ -481,14 +482,12 @@ const UserFeat = styled.div<{
   display: flex;
   position: relative;
   align-items: center;
-justify-content: center; /* Center the label text */
+  justify-content: center; /* Center the label text */
   span:not(:last-child) {
     margin-right: 15px;
     border-right: 1px solid #ccc; /* 여기에 경계선 추가 */
     padding-right: 10px; /* 경계선과 텍스트 간의 여백 */
   };
-
-
    color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
              isSitemapOpen || isScrolled ? 'black' : isHovered ? 'inherit' :(props)=> props.theme.textColor};
 
@@ -507,14 +506,14 @@ justify-content: center; /* Center the label text */
 
 const ModeWrapper = styled.div`
   ${({theme}) => theme.media.max1300} {
-    margin-right: 10px; /* 여유 공간 확보 */
+    margin-right: 8px; /* 여유 공간 확보 */
   } ;
 `;
 
 
 
 const SitemapWrapper = styled.div`
-    position: relative;
+  position: relative;
   bottom: -20px; /* hr 위에 겹쳐서 보이도록 아래로 배치 */
   top: 0;
   z-index: 1000; /* HoverBox보다 높은 값 */
@@ -523,7 +522,7 @@ const SitemapWrapper = styled.div`
 
 
 const SubHeaderPage = styled.span`
-  font-size: 20px;
+  font-size: 18px;
 `;
 
 

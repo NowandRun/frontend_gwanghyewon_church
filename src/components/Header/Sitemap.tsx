@@ -198,7 +198,9 @@ const Button = styled(motion.div)`
     font-size: 30px;
     position: relative; /* position을 relative로 설정 */
     top: -4px; /* y축 방향으로 아래쪽으로 이동 */
-    
+    ${({theme}) => theme.media.max1300} {
+      font-size: 28px; // 원하는 크기로 조정
+    }
   }
   > :last-child {
     position: relative; /* position을 relative로 설정 */
@@ -207,7 +209,16 @@ const Button = styled(motion.div)`
     span {
       display: block;
       font-size: 0.9rem; // 원하는 크기로 조정
+      ${({theme}) => theme.media.max1300} {
+          font-size: 0.8rem; // 원하는 크기로 조정
+      }
     }
+
+  }
+
+    ${({theme}) => theme.media.max1300} {
+    height: 130px;
+    width: 80px;
   }
 `;
 
@@ -271,7 +282,7 @@ const ModalBoxWrapper = styled.div`
   
   ${({theme}) => theme.media.max1300} {
     display: flex;
-        width:100%;
+    width:100%;
     flex-direction: column;
     justify-content: flex-start;
     will-change: transform, opacity; // 성능 개선을 위한 will-change 추가
@@ -302,10 +313,10 @@ const ItemTitle = styled.div`
   border-bottom: 2px solid black;
 
   ${({theme}) => theme.media.max1300} {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  border-bottom: 2px solid black;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 2px solid black;
   }
 `;
 
@@ -357,5 +368,3 @@ const BottomBox = styled.div`
   position: absolute;
 `;
 
-const SpaceDiv = styled.div`
-`;

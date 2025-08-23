@@ -251,7 +251,7 @@ export default Home;
 
 const HomeWrapper = styled.div`
   ${({theme}) => theme.media.max1300} {
-      padding-top: 120px; // 헤더 높이만큼 내려줌
+      padding-top: 100px; // 헤더 높이만큼 내려줌
   }
 `;
 
