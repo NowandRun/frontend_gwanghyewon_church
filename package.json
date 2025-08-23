@@ -54,11 +54,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "tailwind:prodbuild": "NODE_ENV=production npm run tailwind:build",
-    "start": "npm run build & npm run generate & npm run tailwind:build & react-scripts start",
-    "tailwind:build": "NODE_ENV=production npx tailwindcss-cli@latest build -i src/styles/tailwind.css -o src/styles/styles.css",
+    "start": "npm run build & npm run generate & react-scripts start",
     "build": "CI=false react-scripts build",
-    "prebuild": "npm run tailwind:build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
