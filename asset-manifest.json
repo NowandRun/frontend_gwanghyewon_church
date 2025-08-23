@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.js": "/gwanghwewon-full-gospel-church/static/js/main.69a8c37d.js",
-    "reactPlayerYouTube.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerYouTube.c2a930e2.chunk.js",
-    "reactPlayerSoundCloud.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerSoundCloud.e3c748cc.chunk.js",
-    "reactPlayerVimeo.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerVimeo.fd8e936b.chunk.js",
-    "reactPlayerMux.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerMux.5cfed2f7.chunk.js",
-    "reactPlayerFacebook.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerFacebook.c4a56206.chunk.js",
-    "reactPlayerStreamable.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerStreamable.dc9c0d6a.chunk.js",
-    "reactPlayerWistia.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerWistia.e2396634.chunk.js",
-    "reactPlayerTwitch.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerTwitch.330677c7.chunk.js",
-    "reactPlayerDailyMotion.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerDailyMotion.3e424e6d.chunk.js",
-    "reactPlayerMixcloud.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerMixcloud.7277716e.chunk.js",
-    "reactPlayerVidyard.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerVidyard.8d457c08.chunk.js",
-    "reactPlayerKaltura.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerKaltura.f769a58c.chunk.js",
-    "reactPlayerFilePlayer.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerFilePlayer.14671dec.chunk.js",
-    "reactPlayerPreview.js": "/gwanghwewon-full-gospel-church/static/js/reactPlayerPreview.de1cf2ae.chunk.js",
-    "index.html": "/gwanghwewon-full-gospel-church/index.html"
+    "main.js": "/frontend_gwanghyewon_church/static/js/main.70009ebc.js",
+    "reactPlayerYouTube.js": "/frontend_gwanghyewon_church/static/js/reactPlayerYouTube.c2a930e2.chunk.js",
+    "reactPlayerSoundCloud.js": "/frontend_gwanghyewon_church/static/js/reactPlayerSoundCloud.e3c748cc.chunk.js",
+    "reactPlayerVimeo.js": "/frontend_gwanghyewon_church/static/js/reactPlayerVimeo.fd8e936b.chunk.js",
+    "reactPlayerMux.js": "/frontend_gwanghyewon_church/static/js/reactPlayerMux.5cfed2f7.chunk.js",
+    "reactPlayerFacebook.js": "/frontend_gwanghyewon_church/static/js/reactPlayerFacebook.c4a56206.chunk.js",
+    "reactPlayerStreamable.js": "/frontend_gwanghyewon_church/static/js/reactPlayerStreamable.dc9c0d6a.chunk.js",
+    "reactPlayerWistia.js": "/frontend_gwanghyewon_church/static/js/reactPlayerWistia.e2396634.chunk.js",
+    "reactPlayerTwitch.js": "/frontend_gwanghyewon_church/static/js/reactPlayerTwitch.330677c7.chunk.js",
+    "reactPlayerDailyMotion.js": "/frontend_gwanghyewon_church/static/js/reactPlayerDailyMotion.3e424e6d.chunk.js",
+    "reactPlayerMixcloud.js": "/frontend_gwanghyewon_church/static/js/reactPlayerMixcloud.7277716e.chunk.js",
+    "reactPlayerVidyard.js": "/frontend_gwanghyewon_church/static/js/reactPlayerVidyard.8d457c08.chunk.js",
+    "reactPlayerKaltura.js": "/frontend_gwanghyewon_church/static/js/reactPlayerKaltura.f769a58c.chunk.js",
+    "reactPlayerFilePlayer.js": "/frontend_gwanghyewon_church/static/js/reactPlayerFilePlayer.14671dec.chunk.js",
+    "reactPlayerPreview.js": "/frontend_gwanghyewon_church/static/js/reactPlayerPreview.de1cf2ae.chunk.js",
+    "index.html": "/frontend_gwanghyewon_church/index.html"
   },
   "entrypoints": [
-    "static/js/main.69a8c37d.js"
+    "static/js/main.70009ebc.js"
   ]
 }
