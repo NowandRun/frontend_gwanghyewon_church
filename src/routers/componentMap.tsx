@@ -5,7 +5,7 @@ export function generateComponentMap(menuItems: MenuItem[], parentPath = ''): Re
   const map: Record<string, React.ComponentType<any>> = {};
 
   menuItems.forEach((item) => {
-    const fullPath = parentPath ? `${parentPath}/${item.path}` : item.path;
+    const fullPath = parentPath ? `${parentPath}/${item.path}` : `/${item.path}`;
 
     const ParentElement = componentMap[fullPath];
     if (ParentElement) {
