@@ -22,7 +22,9 @@ const router = createHashRouter(
       ],
     },
   ],
-  {basename: "/frontend_gwanghyewon_church"}
+  {
+    basename: "/frontend_gwanghyewon_church", // homepage 경로와 일치
+  }
 );
 
 export default router;
