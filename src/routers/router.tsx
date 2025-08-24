@@ -5,6 +5,7 @@ import React from 'react';
 import Root from "../Root";
 import Home from "../pages/common/Home";
 import { menuItems } from "../components/Header/Header";
+import NotFound from "../components/ErrorPage/NotFound";
 
 const generatedRoutes = generateRoutes(menuItems);
 
@@ -20,6 +21,7 @@ const router = createHashRouter(
         },
         ...generatedRoutes,
       ],
+      errorElement: <NotFound />,
     },
   ],
 );
