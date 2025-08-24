@@ -1,5 +1,5 @@
 // 변경
-import { createBrowserRouter } from 'react-router-dom';
+import { createHashRouter } from 'react-router-dom';
 import { generateRoutes } from './generateRoutes';
 import React from 'react';
 import Root from "../Root";
@@ -8,7 +8,7 @@ import { menuItems } from "../components/Header/Header";
 
 const generatedRoutes = generateRoutes(menuItems);
 
-const router = createBrowserRouter(
+const router = createHashRouter(
   [
     {
       path: '/',
@@ -22,9 +22,7 @@ const router = createBrowserRouter(
       ],
     },
   ],
-  {
-    basename: '/frontend_gwanghyewon_church', // ✅ 이 부분 추가!
-  }
+  {basename: "/frontend_gwanghyewon_church"}
 );
 
 export default router;
