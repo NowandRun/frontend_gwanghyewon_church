@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 import { ChurchIcon, ChartLineUpIcon,CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon, HeartbeatIcon, CalendarCheckIcon, FilesIcon, YoutubeLogoIcon, MonitorArrowUpIcon } from "@phosphor-icons/react";
 import {motion, AnimatePresence} from 'framer-motion';
 import useWindowDimensions from "../../components/useWindowDimensions";
-import mainVideo from "../../Style/Videos/main_video.mp4";
-
 
 const text = `환영합니다!\n광혜원순복음교회입니다.`;
 
