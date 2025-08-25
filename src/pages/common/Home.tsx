@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { ChurchIcon, ChartLineUpIcon,CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon, HeartbeatIcon, CalendarCheckIcon, FilesIcon, YoutubeLogoIcon, MonitorArrowUpIcon } from "@phosphor-icons/react";
 import {motion, AnimatePresence} from 'framer-motion';
 import useWindowDimensions from "../../components/useWindowDimensions";
+import mainVideo from "../../Style/Videos/main_video.mp4";
 
 
 const text = `환영합니다!\n광혜원순복음교회입니다.`;
@@ -114,14 +115,16 @@ function Home() {
     <>
       <HomeWrapper>
         <VideoWrapper >
-          <ReactPlayer
-          url="https://youtu.be/AmL1_7F3GDA"
+        <ReactPlayer
+          url={process.env.PUBLIC_URL + '/videos/home_video_reencoded.mp4'}
           playing
           loop
           muted
-          controls={false}
           width="100%"
-          height={`calc(100vh - ${HEADER_HEIGHT}px)`}
+          height="100%"
+          config={{
+            file: { attributes: { style: { objectFit: 'cover' } } }
+          }}
         />
           <OverlayText>
             {text.split('\n').map((line, idx) => (
@@ -265,7 +268,6 @@ const VideoWrapper = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     filter: brightness(0.85);
   };
