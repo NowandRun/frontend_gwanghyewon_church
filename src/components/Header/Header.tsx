@@ -144,6 +144,7 @@ function Header() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isSitemapOpen, setIsSitemapOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1300); // ✅ 모바일 여부 감지
 
   useEffect(() => {
     let ticking = false;
@@ -163,6 +164,14 @@ function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
+    // ✅ 화면 크기 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1300);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
 
   // 페이지 경로 변경 시 현재 위치에 해당하는 메뉴 인덱스 설정
@@ -210,7 +219,16 @@ function Header() {
                 isHovered={isHovered}  
                 isScrolled={isScrolled} // ✅ 추가
               >
-                <span>로고</span>
+                <Logoimage 
+                  src={
+                    isMobile
+                      ? process.env.PUBLIC_URL + '/images/logo/new4.png' // ✅ 모바일에서는 항상 new1.png
+                      : (isHovered || isScrolled
+                          ? process.env.PUBLIC_URL + '/images/logo/new3.png'
+                          : process.env.PUBLIC_URL + '/images/logo/new1.png')
+                  } 
+                  alt="header로고" 
+                />
               </Logo>
             </Link>
           </LeftWrapper>
@@ -360,8 +378,18 @@ const LeftWrapper = styled.div`
   align-items: center;
 `;
 
+const Logoimage = styled.img`
+  width: 300px;   /* 원하면 2px 대신 원하는 값 */
+  height: auto;
+  display: block;
+  ${({theme}) => theme.media.max1300} {
+    width: 200px;   /* 원하면 2px 대신 원하는 값 */
+  }
+`;
+
+
 const CenterWrapper = styled.div`
-  flex: 2;
+  flex: 4;
   display: flex;
   justify-content: center;
   height:100%;
@@ -373,7 +401,6 @@ const RightWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 5rem;
-  padding-right: 3%;
 `;
 
 const SubPage = styled.div`
@@ -389,9 +416,10 @@ const SubPage = styled.div`
 `;
 
 const MenuGroupWrapper = styled.div`
-display: flex;
-align-items: center;
-justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 `;
 
 const HoverBox = styled.div`
@@ -425,14 +453,12 @@ const Logo = styled.div<{
              isSitemapOpen || isScrolled ? 'black' : isHovered ? 'inherit' :(props)=> props.theme.textColor};
  position: relative;
 
- span {
-  font-size: 20px;
- };
 
  ${({theme}) => theme.media.min1301} {
    font-size: 45px;
    font-size: 15px;
    position: relative;
+   padding-right: 150px;
  }
   ${({theme}) => theme.media.max1300} {
   margin-left: 10px;
@@ -463,7 +489,8 @@ const SubPageItem = styled.div<{
 `;
 
 const SubHeaderPageController = styled.div`
- margin: 20px;
+    width: 100%;
+    margin: 0 25px; /* 좌우 간격 */
 `
 
 const Positionbar = styled(motion.div)<PositionbarProps>`
@@ -483,6 +510,7 @@ const UserFeat = styled.div<{
   position: relative;
   align-items: center;
   justify-content: center; /* Center the label text */
+  padding-right: 40px;
   span:not(:last-child) {
     margin-right: 15px;
     border-right: 1px solid #ccc; /* 여기에 경계선 추가 */
@@ -496,6 +524,7 @@ const UserFeat = styled.div<{
     width: 100%;
     display: flex;
     margin-right: 0;
+    padding-right: 20px;
     justify-content: space-between;
     justify-content: flex-end;
     span:not(:last-child) {
@@ -522,7 +551,8 @@ const SitemapWrapper = styled.div`
 
 
 const SubHeaderPage = styled.span`
-  font-size: 18px;
+  font-size: 22px;
+  font-weight: 550;
 `;
 
 

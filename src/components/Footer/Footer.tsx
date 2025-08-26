@@ -4,10 +4,14 @@ import styled from "styled-components";
 function Footer() {
 	return(
 		<StyledFooter>
-			<FooterLogo>로고</FooterLogo>
+			<FooterLogo src={
+                     process.env.PUBLIC_URL + '/images/logo/new2.png'
+                  } 
+                  alt="header로고" />
 			<FooterMiddleText>
 				<p>충북 진천군 광혜원면 화랑3길 17</p>
 				<FooterMiddleTexttwo>Copyright @ 2025 <span>Gwanghyewon Full Gospel Church</span>  ALL rights reserved.</FooterMiddleTexttwo>
+				<p>Provided by WAVENEXUS</p>
 			</FooterMiddleText>
 		</StyledFooter>
 	);
@@ -16,6 +20,7 @@ function Footer() {
 export default Footer;
 
 const StyledFooter = styled.footer`
+		border-top: 1px solid ${(props) => props.theme.borderColor};
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -28,10 +33,12 @@ ${({theme}) => theme.media.max1300} {
 		
 `;
 
-const FooterLogo = styled.div`
+const FooterLogo = styled.img`
 padding-right: 50px;
+width: 15%;
   ${({theme}) => theme.media.max1300} {
-    font-size: 0.8rem;
+  	padding-right: 20px;
+	width: 30%;
   }
 `;
 

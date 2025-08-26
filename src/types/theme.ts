@@ -9,6 +9,7 @@ export const darkTheme: DefaultTheme = {
     default: '70%',
     responsive: '100%'
   },
+  borderColor: '#E0E0E0',
   media: {
     max1300: '@media (max-width: 1150px)',
     min1301: '@media (min-width: 1151px)',
@@ -20,6 +21,7 @@ export const lightTheme: DefaultTheme = {
   textColor: '#4F81C7',
   accentColor: '#64C4ED',
   cardBgColor: '#F0D78C',
+  borderColor: '#E0E0E0',
   headerWidth: {
     default: '70%',
     responsive: '100%'
