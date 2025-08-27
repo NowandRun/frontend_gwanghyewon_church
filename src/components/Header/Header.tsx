@@ -390,7 +390,6 @@ const CenterWrapper = styled.div`
   display: flex;
   width: 100%;
   height:100%;
-    background-color: green;
 `;
 
 const RightWrapper = styled.div`
@@ -399,7 +398,6 @@ const RightWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 5rem;
-  background-color: blue;
 `;
 
 const SubPage = styled.div`
