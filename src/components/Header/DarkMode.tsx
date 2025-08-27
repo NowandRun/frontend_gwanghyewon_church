@@ -41,4 +41,10 @@ const Icon = styled.div`
       background-color: rgba(0, 0, 0, 0.3 /* 50% 투명도 */);
     }
   }
+  ${({theme}) => theme.media.max1300} {
+    height: 30px;
+    width: 30px;
+    font-size: 20px;
+  } ;
+
 `;

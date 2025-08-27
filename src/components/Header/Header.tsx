@@ -254,7 +254,6 @@ function Header() {
                         window.location.href = `/${item.path}`;
                       }}
                     >
-                      <SubHeaderPageController>
                         <SubHeaderPage>{item.label}</SubHeaderPage>
                         {(hoverIndex === index || selectedIndex === index) && (
                           <Positionbar
@@ -263,7 +262,6 @@ function Header() {
                           layoutId="pointerbar"
                         />
                         )}
-                      </SubHeaderPageController>
                     </SubPageItem>
                   </Link>
 
@@ -275,7 +273,6 @@ function Header() {
                             <span>{item.subtitle}</span>
                             <span>{item.label}</span>
                           </Subheading>
-                          <Separator />
                           <SubheadingChildren>
                           {item.children.map((child, childIdx) => (
                               <Link
@@ -383,7 +380,7 @@ const Logoimage = styled.img`
   height: auto;
   display: block;
   ${({theme}) => theme.media.max1300} {
-    width: 200px;   /* 원하면 2px 대신 원하는 값 */
+    width: 160px;   /* 원하면 2px 대신 원하는 값 */
   }
 `;
 
@@ -391,8 +388,9 @@ const Logoimage = styled.img`
 const CenterWrapper = styled.div`
   flex: 4;
   display: flex;
-  justify-content: center;
+  width: 100%;
   height:100%;
+    background-color: green;
 `;
 
 const RightWrapper = styled.div`
@@ -401,15 +399,14 @@ const RightWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 5rem;
+  background-color: blue;
 `;
 
 const SubPage = styled.div`
-  position: static ; /* 절대 위치로 설정하여 다른 내용에 영향 미치지 않도록 함 */
   display: flex;
-  align-items: center;
   height: 100%;
   align-items: stretch; /* stretch로 변경하여 자식 요소가 전체 높이를 차지하도록 함 */
-  /* 작은 화면에서는 숨기기 */
+  flex: 1; /* ✅ CenterWrapper 공간을 다 쓰도록 */
   ${({theme}) => theme.media.max1300} {
     display: none;
   }
@@ -418,12 +415,12 @@ const SubPage = styled.div`
 const MenuGroupWrapper = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
-
+      justify-content: center;
+    flex: 1; /* ✅ CenterWrapper 공간을 다 쓰도록 */
 `;
 
 const HoverBox = styled.div`
- position: absolute;
+  position: absolute;
   top: 100%;
   left: 0;
   width: 100vw;
@@ -455,15 +452,11 @@ const Logo = styled.div<{
 
 
  ${({theme}) => theme.media.min1301} {
-   font-size: 45px;
-   font-size: 15px;
    position: relative;
    padding-right: 150px;
  }
   ${({theme}) => theme.media.max1300} {
-  margin-left: 10px;
-  font-size: 45px;
-    font-size: 15px;
+   margin-left: 10px;
   }
 `;
 
@@ -472,26 +465,11 @@ const SubPageItem = styled.div<{
   isHovered: boolean;
   isScrolled: boolean;
 }>`
-  flex-grow: 1; /* 각 항목이 동일한 너비를 차지하도록 설정 */
-  width: auto;
-  position: relative; /* Positionbar가 텍스트 아래에 맞게 위치할 수 있도록 설정 */
-  align-items: center; /* 텍스트를 수직 및 수평으로 중앙 정렬 */
-  justify-content: center; /* Center the label text */
-  height: 100%; /* 높이를 100%로 설정 */
-  display: flex; /* 인라인 블록으로 설정 */
-  flex: 1; /* 각 항목이 동일한 너비를 가지도록 설정 */
-  flex-grow: 1; /* Ensure each item takes equal space */
-  text-align: center; /* 텍스트를 중앙 정렬 */
-  bottom: 0;
-  cursor: pointer; /* 포인터 커서 추가 */
   color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
              isSitemapOpen || isScrolled ? 'black' : isHovered ? 'inherit' :(props)=> props.theme.textColor};
 `;
 
-const SubHeaderPageController = styled.div`
-    width: 100%;
-    margin: 0 25px; /* 좌우 간격 */
-`
+
 
 const Positionbar = styled(motion.div)<PositionbarProps>`
   height: 2px;
@@ -524,8 +502,7 @@ const UserFeat = styled.div<{
     width: 100%;
     display: flex;
     margin-right: 0;
-    padding-right: 20px;
-    justify-content: space-between;
+    padding-right: 10px;
     justify-content: flex-end;
     span:not(:last-child) {
       display: none;
@@ -551,29 +528,19 @@ const SitemapWrapper = styled.div`
 
 
 const SubHeaderPage = styled.span`
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 550;
 `;
 
 
 
 const SubheadingWrapper = styled.div`
-
-  ${({theme}) => theme.media.min1301} {
     display: flex;
     align-items: flex-start; /* Align elements to the top */
     max-width: 1400px; /* 2xl screen size */
     margin-left: auto;
     margin-right: auto;
     height: 100%;
-  }
-`;
-
-const Separator = styled.div`
-  width: 1px; /* 선의 두께 */
-  background-color: rgba(0, 0, 0, 0.1); /* 선의 색상 */
-  height: 100%; /* 높이를 부모 요소에 맞춤 */
-  margin: 0 20px; /* 선과 양쪽 요소 사이의 여백 설정 */
 `;
 
 const Subheading = styled.div`
