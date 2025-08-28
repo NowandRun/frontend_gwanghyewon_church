@@ -29,10 +29,10 @@ export default Mode;
 
 const Icon = styled.div`
   cursor: pointer;
-  border-radius: 18px;
-  height: 40px;
-  width: 40px;
-  font-size: 25px;
+  border-radius: 50%;
+  height: 2vw;
+  width: 2vw;
+  font-size: 1.2vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,7 +44,7 @@ const Icon = styled.div`
   ${({theme}) => theme.media.max1300} {
     height: 30px;
     width: 30px;
-    font-size: 20px;
+    font-size: 18px;
   } ;
 
 `;

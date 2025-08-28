@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './components/Header/Header';
-import { darkTheme } from './types/theme';
+import { darkTheme } from './Style/theme';
 import { useRecoilValue } from 'recoil';
 import { isdarkAtom } from './types/atoms';
 import Footer from "./components/Footer/Footer";

@@ -178,13 +178,17 @@ const modalBoxVariants: Variants = {
 };
 
 const Button = styled(motion.div)`
-  background-color: ${(props) => props.theme.cardBgColor};
-  height: 150px;
-  width: 100px;
+  position: fixed; /* 화면 고정 */
+   z-index: 2000; /* 다른 요소에 가려지지 않도록 */
+
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  top:0;
+  background-color: ${(props) => props.theme.cardBgColor};
+  height: 6vw;
+  width: 5vw;
   color: ${(props) => props.theme.textColor};
   text-align: center;
   font-weight: 600;
@@ -195,20 +199,19 @@ const Button = styled(motion.div)`
   transition: background-color 1s, color 1s;
   /* 첫 번째 자식 요소에만 적용 */
   > :first-child {
-    font-size: 30px;
+    font-size: 2vw;
     position: relative; /* position을 relative로 설정 */
-    top: -4px; /* y축 방향으로 아래쪽으로 이동 */
     ${({theme}) => theme.media.max1300} {
       font-size: 28px; // 원하는 크기로 조정
     }
   }
   > :last-child {
     position: relative; /* position을 relative로 설정 */
-    top: 12px; /* y축 방향으로 아래쪽으로 이동 */
+    top: 0.5vw; /* y축 방향으로 아래쪽으로 이동 */
 
     span {
       display: block;
-      font-size: 0.9rem; // 원하는 크기로 조정
+      font-size: 0.8vw;
       ${({theme}) => theme.media.max1300} {
           font-size: 0.8rem; // 원하는 크기로 조정
       }
@@ -216,9 +219,11 @@ const Button = styled(motion.div)`
 
   }
 
-    ${({theme}) => theme.media.max1300} {
-    height: 130px;
+  ${({theme}) => theme.media.max1300} {
+    height: 110px;
     width: 80px;
+    right: 0;   /* 모바일에서도 오른쪽 유지 */
+    top: 0;     /* 모바일에서도 상단 유지 */
   }
 `;
 

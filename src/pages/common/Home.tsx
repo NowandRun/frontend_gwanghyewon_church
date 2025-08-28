@@ -268,6 +268,9 @@ const VideoWrapper = styled.div`
     object-fit: cover;
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     filter: brightness(0.85);
+      ${({theme}) => theme.media.max1300} {
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
   };
   iframe, video {
     position: absolute;
@@ -381,7 +384,7 @@ const Description = styled.p`
   font-size: 1.4rem;
   -webkit-box-orient: vertical;
   ${({theme}) => theme.media.max1300}{
-    font-size: 0.65rem;
+    font-size: 0.5rem;
     font-weight: bold;
   }
 `;

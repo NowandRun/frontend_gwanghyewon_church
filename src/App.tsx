@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router-dom';
 import loggedInRouter from './routers/logged-in-router';
 import { useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
-import { darkTheme, lightTheme } from './types/theme';
+import { darkTheme, lightTheme } from './Style/theme';
 import GlobalStyle from './Style/GlobalStyle';
 import { isdarkAtom } from './types/atoms';
 import router from "./routers/router";

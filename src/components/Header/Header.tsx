@@ -353,15 +353,16 @@ const AllContents = styled.header<{
 `;
 
 const HeaderWrapper = styled.div`
+  max-width: 70vw; /* 2xl screen size */
   position: relative ; /* 절대 위치로 설정하여 다른 내용에 영향 미치지 않도록 함 */
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-left: auto;
   margin-right: auto;
-  height: 120px; /* 고정된 높이 */
-  width: 70%;
+  height: 5vw; /* 고정된 높이 */
   ${({theme}) => theme.media.max1300} {
+   max-width: none; /* 2xl screen size */
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -370,23 +371,23 @@ const HeaderWrapper = styled.div`
 `;
 
 const LeftWrapper = styled.div`
-  flex: 1;
+  flex: 3;
   display: flex;
   align-items: center;
 `;
 
 const Logoimage = styled.img`
-  width: 300px;   /* 원하면 2px 대신 원하는 값 */
+  width: 13vw;   /* 원하면 2px 대신 원하는 값 */
   height: auto;
   display: block;
   ${({theme}) => theme.media.max1300} {
-    width: 160px;   /* 원하면 2px 대신 원하는 값 */
+    width: 150px;
   }
 `;
 
 
 const CenterWrapper = styled.div`
-  flex: 4;
+  flex: 6;
   display: flex;
   width: 100%;
   height:100%;
@@ -413,7 +414,7 @@ const SubPage = styled.div`
 const MenuGroupWrapper = styled.div`
     display: flex;
     align-items: center;
-      justify-content: center;
+    justify-content: center;
     flex: 1; /* ✅ CenterWrapper 공간을 다 쓰도록 */
 `;
 
@@ -424,16 +425,18 @@ const HoverBox = styled.div`
   width: 100vw;
   left: 50%; /* 가운데 기준점으로 이동 */
   transform: translateX(-50%); /* 정확히 가운데 정렬 */
-  height: 220px;
+  height: 12vw;
   background-color: white;
   z-index: 10;
   justify-content: center;
+  border-top: 0.05px solid #ccc; /* 오른쪽에 경계선 추가 */
 `;
 
 const ScrollContent = styled.div`
   overflow: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  height: 100%;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -451,7 +454,6 @@ const Logo = styled.div<{
 
  ${({theme}) => theme.media.min1301} {
    position: relative;
-   padding-right: 150px;
  }
   ${({theme}) => theme.media.max1300} {
    margin-left: 10px;
@@ -467,14 +469,11 @@ const SubPageItem = styled.div<{
              isSitemapOpen || isScrolled ? 'black' : isHovered ? 'inherit' :(props)=> props.theme.textColor};
 `;
 
-
-
 const Positionbar = styled(motion.div)<PositionbarProps>`
   height: 2px;
   background-color: ${(props) => props.theme.cardBgColor};
   margin-top: 4px;
 `;
-
 
 const UserFeat = styled.div<{
   isSitemapOpen: boolean;
@@ -486,7 +485,7 @@ const UserFeat = styled.div<{
   position: relative;
   align-items: center;
   justify-content: center; /* Center the label text */
-  padding-right: 40px;
+  padding-right: 2vw;
   span:not(:last-child) {
     margin-right: 15px;
     border-right: 1px solid #ccc; /* 여기에 경계선 추가 */
@@ -500,7 +499,7 @@ const UserFeat = styled.div<{
     width: 100%;
     display: flex;
     margin-right: 0;
-    padding-right: 10px;
+    padding-right: 90px;
     justify-content: flex-end;
     span:not(:last-child) {
       display: none;
@@ -526,7 +525,7 @@ const SitemapWrapper = styled.div`
 
 
 const SubHeaderPage = styled.span`
-  font-size: 18px;
+  font-size: 0.95vw;
   font-weight: 550;
 `;
 
@@ -534,25 +533,30 @@ const SubHeaderPage = styled.span`
 
 const SubheadingWrapper = styled.div`
     display: flex;
-    align-items: flex-start; /* Align elements to the top */
-    max-width: 1400px; /* 2xl screen size */
-    margin-left: auto;
-    margin-right: auto;
+    align-items: flex-start; /* 위쪽 맞춤 */
+    justify-content: flex-start; /* ✅ 왼쪽 끝으로 정렬 */
+    width: 100%;          /* 가로 폭을 100%로 */
+    max-width: 70vw; /* 2xl screen size */
+    margin: 0 auto;       /* 가운데 정렬 */
+    flex: 1;
     height: 100%;
+
 `;
 
 const Subheading = styled.div`
-  font-size: 25px;
-  width: 12.8%;
+  font-size: 1.4vw;
+  width: 20%;
   display: flex;
   flex-direction: column;
+  border-right: 0.01px solid #ccc; /* 오른쪽에 경계선 추가 */
+  height: 100%;
   justify-content: flex-start; /* Align text to the top */
   font-weight: 550;
-  padding-left: 35px;
   padding-top: 60px; /* 상단 여백 추가 */
+  padding-left: 35px; /* 오른쪽 여백 추가 */
   /* subtitle을 대문자로 변환 */
   span:first-child {
-    font-size: 13px;
+    font-size: 0.9vw;
     text-transform: uppercase;
   }
 `;
@@ -564,7 +568,7 @@ const SubheadingChildren = styled.div`
     5,
     1fr
   ); /* 2개의 열로 구성, 각 열이 동일한 너비 */
-  font-size: 17px;
+  font-size: 1vw;
   grid-gap: 50px; /* 각 요소 간의 간격 설정 */
   height: 100%;
   width: 75%;
