@@ -544,6 +544,7 @@ const SubheadingWrapper = styled.div`
 `;
 
 const Subheading = styled.div`
+background-color: ${(props) => props.theme.cardBgColor};
   font-size: 1.4vw;
   width: 20%;
   display: flex;
