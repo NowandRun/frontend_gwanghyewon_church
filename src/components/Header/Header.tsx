@@ -353,7 +353,7 @@ const AllContents = styled.header<{
 `;
 
 const HeaderWrapper = styled.div`
-  max-width: 70vw; /* 2xl screen size */
+  max-width: ${({theme}) => theme.headerWidth.default}; /* 2xl screen size */
   position: relative ; /* 절대 위치로 설정하여 다른 내용에 영향 미치지 않도록 함 */
   display: flex;
   justify-content: space-between;
@@ -381,7 +381,7 @@ const Logoimage = styled.img`
   height: auto;
   display: block;
   ${({theme}) => theme.media.max1300} {
-    width: 150px;
+    width: 165px;
   }
 `;
 
@@ -559,6 +559,9 @@ background-color: ${(props) => props.theme.cardBgColor};
   span:first-child {
     font-size: 0.9vw;
     text-transform: uppercase;
+  }
+  span:last-child {
+    color: ${(props) => props.theme.textColor};
   }
 `;
 

@@ -36,13 +36,16 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
 
     useEffect(() => {
       if (isOpen) {
-        document.body.style.overflow = 'hidden'; // 배경 스크롤 막기
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden"; // html까지 차단
       } else {
-        document.body.style.overflow = ''; // 복원
+        document.body.style.overflow = "";
+        document.documentElement.style.overflow = "";
       }
     
       return () => {
-        document.body.style.overflow = ''; // 컴포넌트 언마운트 시 복원
+        document.body.style.overflow = "";
+        document.documentElement.style.overflow = "";
       };
     }, [isOpen]);
 
@@ -179,7 +182,6 @@ const modalBoxVariants: Variants = {
 
 const Button = styled(motion.div)`
   position: fixed; /* 화면 고정 */
-   z-index: 2000; /* 다른 요소에 가려지지 않도록 */
 
   display: flex;
   justify-content: center;
@@ -238,6 +240,11 @@ const Overlay = styled(motion.div)`
   align-items: center;
   background-color: rgba(0, 0, 0, 0); // 초기 상태를 투명으로 설정
   transition: none;
+
+    /* 👇 스크롤 이벤트 제거 */
+  overflow: hidden;      /* 내부 스크롤 막기 */
+  touch-action: none;    /* 모바일 터치 스크롤/줌 방지 */
+  overscroll-behavior: none; /* 바운스 스크롤 방지 */
   
   ${({theme}) => theme.media.max1300} {
     display: flex;
@@ -246,7 +253,6 @@ const Overlay = styled(motion.div)`
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    
   }
 `;
 
@@ -263,7 +269,8 @@ const ModalBox = styled(motion.div)`
     display: none;
   };
   position: relative; /* 추가: 내부 요소가 상대적으로 위치할 수 있게 함 */
-  
+  will-change: transform, opacity; // 성능 개선을 위한 will-change 추가
+
   ${({theme}) => theme.media.max1300} {
     width: 45%;
     height: 100%;
@@ -282,9 +289,9 @@ const ModalBox = styled(motion.div)`
 `;
 
 const ModalBoxWrapper = styled.div`
-  max-height: calc(100% - 20px);
+  max-height: calc(100% - 10px);
   overflow-y: auto; /* 내부 콘텐츠 스크롤 허용 */
-  
+
   ${({theme}) => theme.media.max1300} {
     display: flex;
     width:100%;
@@ -301,6 +308,7 @@ const ModalBoxWrapper = styled.div`
 `;
 
 const HeaderTitle = styled.div`
+
   background-color: black;
   color: white;
   padding: 20px;
@@ -308,7 +316,7 @@ const HeaderTitle = styled.div`
 `;
 
 const ItemWrapper = styled.div`
-  padding: 20px;
+
 `;
 
 const ItemTitle = styled.div`
@@ -335,15 +343,16 @@ const SubChildListTitle = styled.div`
 `;
 
 const ChildContent = styled.div`
+  padding: 1vw;
   display: grid;
   grid-template-columns: repeat(
     4,
     1fr
   ); /* 2개의 열로 구성, 각 열이 동일한 너비 */
-  grid-gap: 10px; /* 열 간의 간격 설정 */
+  gap: 0.8vw; /* 그리드 아이템 간의 간격 */
   max-height: 100%; /* 모달 높이를 벗어나지 않도록 설정 */
   overflow-y: auto; /* 넘칠 경우 스크롤 가능 */
-
+  font-size: 1vw;
   ${({theme}) => theme.media.max1300} {
     display: flex;
     flex-direction: column;
@@ -354,11 +363,11 @@ const ChildContent = styled.div`
     top: 0;
     bottom: 0;
     overflow-y: auto; /* 모바일에서도 스크롤 허용 */
-
+    font-size: 2.5vw;
     /* 스크롤바 숨기기 (크로스 브라우징) */
     -ms-overflow-style: none; /* IE, Edge */
     scrollbar-width: none; /* Firefox */
-
+    gap: 10vw; /* 그리드 아이템 간의 간격 */
     &::-webkit-scrollbar {
       display: none; /* Chrome, Safari */
     }

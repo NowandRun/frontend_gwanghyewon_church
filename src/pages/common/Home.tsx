@@ -16,7 +16,7 @@ const ministryItems = [
     description: [
       '하나님과 함께하는',
       '행복한 교회를',
-      '소개합니다.'  
+      '소개합니다'  
     ],
     href: '/info'
   },
@@ -26,7 +26,7 @@ const ministryItems = [
     description: [
       '다음세대가', 
       '성장하는', 
-      '교회학교입니다.'
+      '교회학교입니다'
     ],
     href: '/youth'
   },
@@ -36,7 +36,7 @@ const ministryItems = [
     description: [
       'GS방송은', 
       '말씀과 함께 성장하는', 
-      '온라인 방송입니다.'
+      '온라인 방송입니다'
     ],
     href: '/broadcast'
   },
@@ -46,7 +46,7 @@ const ministryItems = [
     description: [
       '환영합니다',
       '축복합니다',
-      '사랑합니다.'
+      '사랑합니다'
     ],
     href: '/group'
   },
@@ -177,11 +177,11 @@ function Home() {
               <WorshipInformationPlace>
                 <WorshipInformationPlaceName>3층 대예배실</WorshipInformationPlaceName>
               </WorshipInformationPlace>
-              <List>
+              <Worshiplist>
                 <Item>1부 예배 오전 9시</Item>
                 <Item>2부 예배 오전 11시</Item>
                 <Item>바이블아카데미 오후 1시 30분</Item>
-              </List>
+              </Worshiplist>
             </Section>
 
             <Section>
@@ -189,10 +189,10 @@ function Home() {
               <WorshipInformationPlace>
                 <WorshipInformationPlaceName>3층 대예배실</WorshipInformationPlaceName>
               </WorshipInformationPlace>
-              <List>
+              <Worshiplist>
                 <Item>수요예배 저녁 7시 30분</Item>
                 <Item>금요성령집회 저녁 8시 30분</Item>
-              </List>
+              </Worshiplist>
             </Section>
 
             <Section>
@@ -200,9 +200,9 @@ function Home() {
               <WorshipInformationPlace>
                 <WorshipInformationPlaceName>3층 대예배실</WorshipInformationPlaceName>
               </WorshipInformationPlace>
-              <List>
+              <Worshiplist>
                 <Item>월~금 매주 새벽 5시</Item>
-              </List>
+              </Worshiplist>
             </Section>
 
             <Section>
@@ -210,21 +210,21 @@ function Home() {
               <WorshipInformationPlace>
                 <WorshipInformationPlaceName>2층 하꿈예배실</WorshipInformationPlaceName>
               </WorshipInformationPlace>
-              <List>
+              <Worshiplist>
                 <Item>하꿈주일학교 오전 10시 40분</Item>
-              </List>
+              </Worshiplist>
               <WorshipInformationPlace>
                 <WorshipInformationPlaceName>2층 예람예배실</WorshipInformationPlaceName>
               </WorshipInformationPlace>
-              <List>
+              <Worshiplist>
                 <Item>예람학생부 오후 1시 20분</Item>
-              </List>
+              </Worshiplist>
               <WorshipInformationPlace>
                 <WorshipInformationPlaceName>2층 하람예배실</WorshipInformationPlaceName>
               </WorshipInformationPlace>
-              <List>
+              <Worshiplist>
                 <Item>하람청년부 오후 1시 20분</Item>
-              </List>
+              </Worshiplist>
             </Section>
 
           </Wrapper>
@@ -250,318 +250,280 @@ function Home() {
 
 export default Home;
 
-const HomeWrapper = styled.div`
-  ${({theme}) => theme.media.max1300} {
-      padding-top: 100px; // 헤더 높이만큼 내려줌
-  }
-`;
-
-const VideoWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%; /* 16:9 비율 = 9 / 16 * 100 */
-  height: 0;
-  pointer-events: none; /* Hover 이벤트 차단 */
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    filter: brightness(0.85);
-      ${({theme}) => theme.media.max1300} {
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+  const HomeWrapper = styled.div`
+    ${({theme}) => theme.media.max1300} {
+        padding-top: 100px; // 헤더 높이만큼 내려줌
     }
-  };
-  iframe, video {
-    position: absolute;
-    top: 0;
-    left: 0;
+  `;
+
+  const VideoWrapper = styled.div`
+    position: relative;
     width: 100%;
-    height: 100%;
-  };
+    padding-top: 56.25%; /* 16:9 비율 = 9 / 16 * 100 */
+    height: 0;
+    pointer-events: none; /* Hover 이벤트 차단 */
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.3);
+      filter: brightness(0.85);
+    };
+    iframe, video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    };
 
 
-  ${({theme}) => theme.media.max1300} {
-  top: 0;
-  }
-`;
+    ${({theme}) => theme.media.max1300} {
+    top: 0;
+    }
+  `;
 
-const OverlayText = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  const OverlayText = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  color: white;
-  font-size: 4rem;
-  font-weight: bold;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
-  z-index: 2;
-
-  ${({theme}) => theme.media.max1300} {
-    font-size: 1.6rem;
-  }
-`;
-
-
-
-const MinistryContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  background-color: ${(props) => props.theme.cardBgColor};
-  transition: background-color 1s;
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-  ${({theme}) => theme.media.max1300}{
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem;
-  }
-`;
-
-const MinistryController = styled.div`
-  width: ${({theme}) => theme.headerWidth.default};
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 2rem;
-  flex-direction: row; /* ✅ 가로 정렬 */
-  ${({ theme }) => theme.media.max1300} {
-    width: ${({ theme }) => theme.headerWidth.responsive};
     display: flex;
-    flex-wrap: nowrap; /* ✅ 줄바꿈 방지 */
-    flex-direction: row; /* ✅ 가로 정렬 */
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between; /* ✅ 가로 공간 확보 */
-    padding: 1rem 0;
-    gap: 0.1rem; /* gap 줄이면 더 조밀하게 정렬 가능 */
-  }
-`
+    justify-content: center;
 
-const MinistryCard = styled(Link)`
-  flex: 1 1 22%;
-  background: transparent;
-  text-align: center;
-  color: ${(props) => props.theme.textColor};
-  transition: color 1s ease;
-  padding: 1rem;
-
-  border-right: 1px solid rgba(255, 255, 255, 0.4);
-
-  &:last-child {
-    border-right: none;
-  }
-
-  ${({theme}) => theme.media.max1300}{
-    flex: 1 1 100%;
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 0.3rem;
-     };
-`;
-
-const Icon = styled.div`
-  font-size: 5rem;
-  ${({theme}) => theme.media.max1300}{
-    font-size: 2rem;
-  }
-`;
-
-const Title = styled.h3`
-  font-size: 2rem;
-  font-weight: bold;
-  ${({theme}) => theme.media.max1300}{
-    font-size: 0.9rem;
+    color: white;
+    font-size: 4vw;
     font-weight: bold;
-  }
-`;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+    z-index: 2;
 
-const Description = styled.p`
-  font-size: 1.4rem;
-  -webkit-box-orient: vertical;
-  ${({theme}) => theme.media.max1300}{
-    font-size: 0.5rem;
+  `;
+
+
+
+  const MinistryContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: ${(props) => props.theme.cardBgColor};
+    transition: background-color 1s;
+    padding: 2.5vw 0;
+  `;
+
+  const MinistryController = styled.div`
+    width: ${({theme}) => theme.headerWidth.default};
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-direction: row; /* ✅ 가로 정렬 */
+    ${({ theme }) => theme.media.max1300} {
+      width: ${({ theme }) => theme.headerWidth.responsive};
+      display: flex;
+      flex-wrap: nowrap; /* ✅ 줄바꿈 방지 */
+      flex-direction: row; /* ✅ 가로 정렬 */
+      align-items: center;
+      justify-content: space-between; /* ✅ 가로 공간 확보 */
+    }
+  `
+
+  const MinistryCard = styled(Link)`
+    flex: 1 1 22%;
+    background: transparent;
+    text-align: center;
+    color: ${(props) => props.theme.textColor};
+    transition: color 1s ease;
+
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+
+    &:last-child {
+      border-right: none;
+    }
+
+    ${({theme}) => theme.media.max1300}{
+      flex: 1 1 100%;
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      };
+  `;
+
+  const Icon = styled.div`
+    font-size: 5vw;
+    
+  `;
+
+  const Title = styled.h3`
+    font-size: 1.6vw;
     font-weight: bold;
-  }
-`;
 
-const Slider = styled.div`
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
-  width: 100%;
-  display: flex;
-  align-items: flex-end;
-  background-color: ${(props) => props.theme.cardBgColor};
+  `;
 
-`;
+  const Description = styled.p`
+    font-size: 1vw;
+    font-weight: bold;
+  `;
 
-const Row = styled(motion.div)<{ currentIndex: number }>`
-  display: flex;
-  align-items: flex-end;
-  transition: transform 0.5s ease-in-out;
-  padding-bottom: 50px;
-`;
+  const Slider = styled.div`
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    background-color: ${(props) => props.theme.cardBgColor};
 
-const Box = styled.div<{ isActive: boolean }>`
-  flex: 0 0 auto;
-  width: ${({ isActive }) => (isActive ? '800px' : '500px')};
-  height: ${({ isActive }) => (isActive ? '800px' : '500px')};
-  margin: 0 10px;
-  background-color: white;
-  font-size: ${({ isActive }) => (isActive ? '5rem' : '3rem')};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
-  ${({ isActive }) =>
-    isActive &&
-    `
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  `}
-`;
+  `;
 
-const BoxMover = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-  gap: 1rem;
-`;
+  const Row = styled(motion.div)<{ currentIndex: number }>`
+    display: flex;
+    align-items: flex-end;
+    transition: transform 0.5s ease-in-out;
+    padding-bottom: 50px;
+  `;
 
-const Prev = styled.button`
-  padding: 0.5rem 1rem;
-`;
+  const Box = styled.div<{ isActive: boolean }>`
+    flex: 0 0 auto;
+    width: ${({ isActive }) => (isActive ? '800px' : '500px')};
+    height: ${({ isActive }) => (isActive ? '800px' : '500px')};
+    margin: 0 10px;
+    background-color: white;
+    font-size: ${({ isActive }) => (isActive ? '5rem' : '3rem')};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    ${({ isActive }) =>
+      isActive &&
+      `
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    `}
+  `;
 
-const Next = styled.button`
-  padding: 0.5rem 1rem;
-`;
+  const BoxMover = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    gap: 1rem;
+  `;
 
-const HomeSecondNav = styled.div`
-  height: 46rem;
-  display: flex;
-  ${({theme}) => theme.media.max1300}{
-    height: 15rem;
-  };
-`
-const HomeSecondNavOne = styled.div`
-  height: 100%;
-  width: 100%;
-  background-color: ${(props) => props.theme.bgColor};
-  display: flex;
-  ${({theme}) => theme.media.max1300}{
+  const Prev = styled.button`
+    padding: 0.5rem 1rem;
+  `;
+
+  const Next = styled.button`
+    padding: 0.5rem 1rem;
+  `;
+
+  const HomeSecondNav = styled.div`
+    height: 30vw;
+    display: flex;
+  `
+  const HomeSecondNavOne = styled.div`
     height: 100%;
-  width: 50%;
-  }
+    width: 100%;
+    background-color: ${(props) => props.theme.bgColor};
+    display: flex;
+    ${({theme}) => theme.media.max1300}{
+      height: 100%;
+      width: 50%;
+    }
   `
 
   const HomeSecondNavTwo = styled.div`
     height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #D8D2C2;
-  position: relative; // ✅ 추가
-  ${({theme}) => theme.media.max1300}{
-    height: 100%;
-    width: 70%;
-  }
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #D8D2C2;
+    position: relative; // ✅ 추가
+    ${({theme}) => theme.media.max1300}{
+      height: 100%;
+      width: 70%;
+    }
   `
 
   const HomeSecondNavTwoController = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  width: 70%;
-  height: 70%;
-  position: absolute;
-  left: 0;
-  gap: 0.1rem; /* ✅ 카드 간격 추가 */
-  
-  ${({theme}) => theme.media.max1300}{
-    padding: 0;
-    width: 100%;
-    height: 70%;
-    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
+    height: 25vw;
+    position: absolute;
+    left: 0;
+    gap: 0.1rem; /* ✅ 카드 간격 추가 */
+    padding-left: 2vw;
+    
+    ${({theme}) => theme.media.max1300}{
+      padding: 0;
+      width: 85%;
+      height: 70%;
+      position: static;
 
-  };
-`
+    };
+  `
 
 
 
-const HomeSecondNavEmtyController = styled.div`
-  width: 30%;
-  height: 100%;
-  right: 0;
-  position: absolute; // ✅ 추가
-  ${({theme}) => theme.media.max1300}{
-    height: 0;
-    width: 0;
-  };
-`
+  const HomeSecondNavEmtyController = styled.div`
+    width: 30%;
+    height: 100%;
+    right: 0;
+    position: absolute; // ✅ 추가
+    ${({theme}) => theme.media.max1300}{
+      height: 0;
+      width: 0;
+    };
+  `
 
   const HomeSecondNavTwoCard = styled(Link)`
-display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: calc(33.33% - 1rem); // 3개씩 정렬
-  height: 50%; // 총 높이의 반 (2줄)
-  text-align: center;
-  margin-left: 0.9rem;
-  ${({theme}) => theme.media.max1300} {
-    width: 25%;
-    height: 50%;
-    margin: 0 0.8rem;
-  }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 30%; // 모바일에서 2개씩 정렬
+    text-align: center;
+    position: static;
   `
 
   const HomeSecondNavTwoIcon = styled.div`
     background-color: ${(props) => props.theme.cardBgColor};
-    border-radius: 1rem;
+    border-radius: 1vw;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 120Px;
-    width: 120Px;
-    font-size: 5rem;
-    margin-bottom: 1rem;
+    height: 6vw;
+    width: 6vw;
+    font-size: 4vw;
     color: ${(props) => props.theme.textColor};
     transition: color 1s;
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     }
-        ${({theme}) => theme.media.max1300}{
-        height: 50px;
-        width: 50px;
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
+    ${({theme}) => theme.media.max1300}{
+      height: 7vw;
+      width: 7vw;
     }
   `
 
   const HomeSecondNavTwoTitle = styled.h3`
-   font-size: 1.5rem;
+   font-size: 1.4vw;
+   padding-top: 0.5vw;
    font-weight: bold;
    color: ${(props) => props.theme.textColor};
    transition: color 1s;
-   ${({theme}) => theme.media.max1300}{
-       font-size: 0.6rem;
-   }
+
   `
 
   const HomeWorshipInformation = styled.section`
     background: ${(props) => props.theme.bgColor};
-    padding: 4rem 0;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -570,67 +532,54 @@ display: flex;
   const Wrapper = styled.div`
     width: 70%;
     margin: 0 auto;
-    padding: 2rem;
     display: flex;        /* ✅ flex 추가 */
     gap: 2rem;            /* ✅ 섹션 사이 간격 */
+    padding: 6vw 0;
     justify-content: space-between; /* ✅ 양쪽 정렬 */
     ${({theme}) => theme.media.max1300}{
       width: 100%;
       gap: 1rem;  
-      padding: 1rem;
+      padding: 6vw 1vw;
     }
   `;
 
   const Section = styled.section`
-    margin-bottom: 2.5rem;
-     width: 100%;
-
+    flex: 1;
   `;
-
+/* color: #2c3e50; */
   const WorshipInformationtitle = styled.h2`
-    font-size: 1.5rem;
+    font-size: 1.6vw;
     font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 1rem;
+    color:${(props) => props.theme.textColor};
+    margin-bottom: 0.5vw;
     border-bottom: 2px solid #ddd;
-    padding-bottom: 0.3rem;
+    padding-bottom: 0.3vw;
     text-align: center;
-    ${({theme}) => theme.media.max1300}{
-      font-size: 0.75rem;
-      padding-bottom: 0.1rem;
-      margin-bottom: 0.5rem;
-    }
   `;
 
   const WorshipInformationPlace = styled.div`
     width: 100%;
-    height: 2rem;
+    height: 2vw;
     background-color:${(props) => props.theme.cardBgColor}; 
     display: flex; 
     align-items: center;
     justify-content: center;
-    border-radius: 5px;
-    margin-bottom: 0.5rem;
-   
+    border-radius: 0.2vw;
+    margin-bottom: 0.5vw;
   `
   const WorshipInformationPlaceName = styled.p`
-  font-size: 1.2rem;
-  ${({theme}) => theme.media.max1300}{
-    font-size: 0.7rem;
-  }
+    font-size: 1.4vw;
   `
 
-  const List = styled.ul`
+  const Worshiplist = styled.ul`
     list-style: none;
     padding: 0;
     margin: 0;
   `;
-
+  /* color: #444; */
   const Item = styled.li`
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-    color: #444;
-    ${({theme}) => theme.media.max1300}{
-      font-size: 0.7rem;
-    }
+    margin-bottom: 0.5vw;
+    font-size: 1.1vw;
+    color: ${(props) => props.theme.textColor};
+
   `;
