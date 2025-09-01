@@ -549,10 +549,9 @@ export default Home;
 /* color: #2c3e50; */
   const WorshipInformationtitle = styled.h2`
     font-size: 1.6vw;
-    font-weight: bold;
     color:${(props) => props.theme.textColor};
     margin-bottom: 0.5vw;
-    border-bottom: 2px solid #ddd;
+    border-bottom: 1px solid #ddd;
     padding-bottom: 0.3vw;
     text-align: center;
   `;
@@ -579,7 +578,7 @@ export default Home;
   /* color: #444; */
   const Item = styled.li`
     margin-bottom: 0.5vw;
-    font-size: 1.1vw;
+    font-size: 1vw;
     color: ${(props) => props.theme.textColor};
 
   `;

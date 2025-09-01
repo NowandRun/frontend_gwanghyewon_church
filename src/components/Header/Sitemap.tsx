@@ -229,6 +229,11 @@ const Button = styled(motion.div)`
   }
 `;
 
+/*  👇 스크롤 이벤트 제거 
+  overflow: hidden;      내부 스크롤 막기 
+  touch-action: none;    모바일 터치 스크롤/줌 방지 
+  overscroll-behavior: none; 바운스 스크롤 방지 
+   */
 const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -240,11 +245,6 @@ const Overlay = styled(motion.div)`
   align-items: center;
   background-color: rgba(0, 0, 0, 0); // 초기 상태를 투명으로 설정
   transition: none;
-
-    /* 👇 스크롤 이벤트 제거 */
-  overflow: hidden;      /* 내부 스크롤 막기 */
-  touch-action: none;    /* 모바일 터치 스크롤/줌 방지 */
-  overscroll-behavior: none; /* 바운스 스크롤 방지 */
   
   ${({theme}) => theme.media.max1300} {
     display: flex;
@@ -308,7 +308,6 @@ const ModalBoxWrapper = styled.div`
 `;
 
 const HeaderTitle = styled.div`
-
   background-color: black;
   color: white;
   padding: 20px;
