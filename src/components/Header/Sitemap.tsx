@@ -310,8 +310,12 @@ const ModalBoxWrapper = styled.div`
 const HeaderTitle = styled.div`
   background-color: black;
   color: white;
-  padding: 20px;
-  font-size: 25px;
+  padding: 2vw;
+  font-size: 1.5vw;
+  ${({theme}) => theme.media.max1300} {
+    font-size: 3.5vw;
+    padding: 3vw;
+  }
 `;
 
 const ItemWrapper = styled.div`
@@ -342,7 +346,7 @@ const SubChildListTitle = styled.div`
 `;
 
 const ChildContent = styled.div`
-  padding: 1vw;
+  padding: 2.5vw 1vw;
   display: grid;
   grid-template-columns: repeat(
     4,
@@ -361,6 +365,7 @@ const ChildContent = styled.div`
     left: 0;
     top: 0;
     bottom: 0;
+    padding: 6vw 1vw;
     overflow-y: auto; /* 모바일에서도 스크롤 허용 */
     font-size: 2.5vw;
     /* 스크롤바 숨기기 (크로스 브라우징) */

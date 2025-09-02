@@ -88,7 +88,7 @@ const HomeSecondNavItems = [
 const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 function Home() {
-/*   const [list, setList] = useState(items);
+  const [list, setList] = useState(items);
   const [currentIndex, setCurrentIndex] = useState(0); // 중앙 박스 인
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
 
@@ -108,7 +108,7 @@ function Home() {
       return newList;
     });
     setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
-  }; */
+  };
   return (
     <>
       <HomeWrapper>
@@ -229,20 +229,21 @@ function Home() {
 
           </Wrapper>
         </HomeWorshipInformation>
-      </HomeWrapper>
-      {/* <Slider>
+        {/* <Slider>
         <Row currentIndex={currentIndex}>
-          {videoList.map((video, index) => (
+          {items.map((video, index) => (
             <Box key={video.id} isActive={index === 0}>
               <ReactPlayer url={`https://www.youtube.com/watch?v=${video.id}`} width="100%" height="100%" />
             </Box>
           ))}
         </Row>
-      </Slider>
+      </Slider> */}
       <BoxMover>
           <Prev onClick={prev}>Prev</Prev>
           <Next onClick={next}>Next</Next>
-        </BoxMover> */}
+        </BoxMover>
+      </HomeWrapper>
+      
 
     </>
   );
@@ -519,7 +520,6 @@ export default Home;
    font-weight: bold;
    color: ${(props) => props.theme.textColor};
    transition: color 1s;
-
   `
 
   const HomeWorshipInformation = styled.section`
@@ -533,13 +533,12 @@ export default Home;
     width: 70%;
     margin: 0 auto;
     display: flex;        /* ✅ flex 추가 */
-    gap: 2rem;            /* ✅ 섹션 사이 간격 */
-    padding: 6vw 0;
+    gap: 1vw;            /* ✅ 섹션 사이 간격 */
+    padding: 10vw 0;
     justify-content: space-between; /* ✅ 양쪽 정렬 */
     ${({theme}) => theme.media.max1300}{
       width: 100%;
-      gap: 1rem;  
-      padding: 6vw 1vw;
+      padding: 10vw 1vw;
     }
   `;
 
@@ -575,10 +574,10 @@ export default Home;
     padding: 0;
     margin: 0;
   `;
+
   /* color: #444; */
   const Item = styled.li`
     margin-bottom: 0.5vw;
-    font-size: 1vw;
+    font-size: 1.3vw;
     color: ${(props) => props.theme.textColor};
-
   `;
