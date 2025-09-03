@@ -24,7 +24,7 @@ import Bulletin from "../pages/common/News/child/Bulletin";
 import Online from "../pages/common/Offering/child/Online";
 import Tidings from "../pages/common/News/child/Knell";
 import Offering from "../pages/common/Offering/Offering";
-import YouTubeChannelInfo from "../data/YouTubeData";
+import YouTubeChannelInfo from "../data/youtube/YouTubeData";
 
 
 export const componentMap: Record<string, React.ComponentType<any>> = {
@@ -60,6 +60,4 @@ export const componentMap: Record<string, React.ComponentType<any>> = {
 
   offering: Offering,
   'offering/': Online,
-
-  'youtube': YouTubeChannelInfo,
 };

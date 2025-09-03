@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { ChurchIcon, ChartLineUpIcon,CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon, HeartbeatIcon, CalendarCheckIcon, FilesIcon, YoutubeLogoIcon, MonitorArrowUpIcon } from "@phosphor-icons/react";
 import {motion, AnimatePresence} from 'framer-motion';
 import useWindowDimensions from "../../components/useWindowDimensions";
+import YouTubeMainVideo from '../../data/youtube/YouTubeMainVideo';
 
 const text = `환영합니다!\n광혜원순복음교회입니다.`;
 
@@ -88,27 +89,11 @@ const HomeSecondNavItems = [
 const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 function Home() {
-  const [list, setList] = useState(items);
-  const [currentIndex, setCurrentIndex] = useState(0); // 중앙 박스 인
-  const [direction, setDirection] = useState<'next' | 'prev'>('next');
+  
 
-  const next = () => {
-    setDirection('next');
-    setList((prev) => {
-      const newList = [...prev.slice(1), prev[0]]; // 왼쪽으로 shift
-      return newList;
-    });
-    setCurrentIndex((prev) => (prev + 1) % items.length);
-  };
-
-  const prev = () => {
-    setDirection('prev');
-    setList((prev) => {
-      const newList = [prev[prev.length - 1], ...prev.slice(0, prev.length - 1)];
-      return newList;
-    });
-    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
-  };
+  const playlist = YouTubeMainVideo();
+  console.log(playlist);
+  
   return (
     <>
       <HomeWrapper>
@@ -229,19 +214,8 @@ function Home() {
 
           </Wrapper>
         </HomeWorshipInformation>
-        {/* <Slider>
-        <Row currentIndex={currentIndex}>
-          {items.map((video, index) => (
-            <Box key={video.id} isActive={index === 0}>
-              <ReactPlayer url={`https://www.youtube.com/watch?v=${video.id}`} width="100%" height="100%" />
-            </Box>
-          ))}
-        </Row>
-      </Slider> */}
-      <BoxMover>
-          <Prev onClick={prev}>Prev</Prev>
-          <Next onClick={next}>Next</Next>
-        </BoxMover>
+        
+        <YouTubeMainVideo />
       </HomeWrapper>
       
 
@@ -363,58 +337,6 @@ export default Home;
   const Description = styled.p`
     font-size: 1vw;
     font-weight: bold;
-  `;
-
-  const Slider = styled.div`
-    position: relative;
-    height: 100vh;
-    overflow: hidden;
-    width: 100%;
-    display: flex;
-    align-items: flex-end;
-    background-color: ${(props) => props.theme.cardBgColor};
-
-  `;
-
-  const Row = styled(motion.div)<{ currentIndex: number }>`
-    display: flex;
-    align-items: flex-end;
-    transition: transform 0.5s ease-in-out;
-    padding-bottom: 50px;
-  `;
-
-  const Box = styled.div<{ isActive: boolean }>`
-    flex: 0 0 auto;
-    width: ${({ isActive }) => (isActive ? '800px' : '500px')};
-    height: ${({ isActive }) => (isActive ? '800px' : '500px')};
-    margin: 0 10px;
-    background-color: white;
-    font-size: ${({ isActive }) => (isActive ? '5rem' : '3rem')};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    ${({ isActive }) =>
-      isActive &&
-      `
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    `}
-  `;
-
-  const BoxMover = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-    gap: 1rem;
-  `;
-
-  const Prev = styled.button`
-    padding: 0.5rem 1rem;
-  `;
-
-  const Next = styled.button`
-    padding: 0.5rem 1rem;
   `;
 
   const HomeSecondNav = styled.div`
@@ -553,6 +475,9 @@ export default Home;
     border-bottom: 1px solid #ddd;
     padding-bottom: 0.3vw;
     text-align: center;
+    ${({theme}) => theme.media.max1300}{
+      font-size: 2.4vw;
+    }
   `;
 
   const WorshipInformationPlace = styled.div`
@@ -564,9 +489,16 @@ export default Home;
     justify-content: center;
     border-radius: 0.2vw;
     margin-bottom: 0.5vw;
+    padding: 1.4vw 0;
+    ${({theme}) => theme.media.max1300}{
+      padding: 1.6vw 0;
+    }
   `
   const WorshipInformationPlaceName = styled.p`
     font-size: 1.4vw;
+    ${({theme}) => theme.media.max1300}{
+      font-size: 1.9vw;
+    }
   `
 
   const Worshiplist = styled.ul`
@@ -580,4 +512,7 @@ export default Home;
     margin-bottom: 0.5vw;
     font-size: 1.3vw;
     color: ${(props) => props.theme.textColor};
+    ${({theme}) => theme.media.max1300}{
+      font-size: 1.8vw;
+    }
   `;

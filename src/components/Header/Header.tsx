@@ -132,17 +132,6 @@ export const menuItems = [
       },
     ],
   },
-  {
-    path: 'youtube',
-    subtitle: 'youtube',
-    label: 'Youtube',
-    children: [
-      {
-        path: '',
-        label: 'Youtube',
-      },
-    ],
-  },
 ];
 
 

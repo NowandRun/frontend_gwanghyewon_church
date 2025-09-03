@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Playlist, Video } from "../types/types";
+import { Playlist, Video } from "../../types/types";
 
-function YouTubeChannelInfo() {
+function useYouTubeChannelInfo(): [Playlist[], React.Dispatch<React.SetStateAction<Playlist[]>>] {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const apiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
   const channelId = "UCnzWgg8gW2dNAEH_6EiCD3A";
@@ -50,9 +50,11 @@ function YouTubeChannelInfo() {
     fetchPlaylists();
   }, [apiKey, channelId]);
 
-  if (!playlists.length) return <div>Loading playlists...</div>;
-  console.log("❤️❤️❤️❤️❤️🤩🤩🤩🤩",playlists)
-  return (
+  return [playlists, setPlaylists];
+}
+
+export default useYouTubeChannelInfo;
+/* (
     <div>
       <h2>Playlists & Videos</h2>
       {playlists.map((playlist) => (
@@ -77,7 +79,4 @@ function YouTubeChannelInfo() {
         </div>
       ))}
     </div>
-  );
-}
-
-export default YouTubeChannelInfo;
+  ) */
