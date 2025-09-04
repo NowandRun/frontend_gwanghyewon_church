@@ -6,7 +6,7 @@
   }
 
 // src/types/types.ts
-  export interface Playlist {
+  export interface IGetPlaylist {
 	id: string;
 	snippet: {
 	  title: string;

@@ -41,6 +41,7 @@
     "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.52.1",
     "react-player": "^2.16.0",
+    "react-query": "^3.39.3",
     "react-router-dom": "^6.24.1",
     "react-scripts": "5.0.1",
     "react-session-api": "^1.1.0",
