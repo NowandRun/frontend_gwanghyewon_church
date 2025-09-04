@@ -109,7 +109,6 @@ const HomeYouTubeWapper = styled.div`
   display: flex;
   justify-content: flex-start; // Row가 flex-start 기준으로 이동
   align-items: center;
-  background-color: red;
   width: ${(props) => props.theme.headerWidth.default};
   height: 25vw;
   position: relative; // Row가 absolute일 경우 필요
