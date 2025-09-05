@@ -11,6 +11,7 @@
 	snippet: {
 	  title: string;
 	  description: string;
+	  publishedAt: string;
 	  thumbnails: {
 		default: { url: string };
 		medium: { url: string };
@@ -28,6 +29,7 @@
 	snippet: {
 	  title: string;
 	  description: string;
+	  publishedAt: string; // ✅ 추가
 	  thumbnails: {
 		default: { url: string };
 		medium: { url: string };
