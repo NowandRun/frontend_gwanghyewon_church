@@ -530,7 +530,7 @@ export default Home;
     font-size: 1.3vw;
     color: ${(props) => props.theme.textColor};
     ${({theme}) => theme.media.max1300}{
-      font-size: 1.6vw;
+      font-size: 1.8vw;
     }
   `;
 
