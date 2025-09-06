@@ -25,15 +25,25 @@
   }
   
   export interface Video {
-	id: string;
+	id: string; // playlistItemId
 	snippet: {
 	  title: string;
 	  description: string;
-	  publishedAt: string; // ✅ 추가
+	  publishedAt: string;
 	  thumbnails: {
-		default: { url: string };
-		medium: { url: string };
-		high: { url: string };
+		default?: { url: string };
+		medium?: { url: string };
+		high?: { url: string };
+	  };
+	  resourceId: {
+		kind: string;
+		videoId: string; // ✅ 실제 영상 id
 	  };
 	};
   }
+
+  export interface MainVideos {
+	sunday: Video[];
+	friday: Video[];
+  }
+  

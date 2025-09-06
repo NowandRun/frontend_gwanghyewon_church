@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { HEADER_HEIGHT} from '../../components/Header/Header'
 import ReactPlayer from 'react-player';
 import { Link } from "react-router-dom";
 import { ChurchIcon, ChartLineUpIcon,CrossIcon, GlobeHemisphereEastIcon, HandHeartIcon, HeartbeatIcon, CalendarCheckIcon, FilesIcon, YoutubeLogoIcon, MonitorArrowUpIcon } from "@phosphor-icons/react";
-import {motion, AnimatePresence} from 'framer-motion';
-import useWindowDimensions from "../../components/useWindowDimensions";
-import YouTubeMainVideo from '../../data/youtube/YouTubeMainVideo';
+import { useQuery } from "react-query";
+import { MainVideos, Video } from "../../types/types";
+import { fetchLatestVideosFromMainSundayWorshipPlaylists, fetchLatestVideosFromMainFridayWorshipPlaylists } from "../../types/api";
+import Slider from "../../components/Slider/Slider";
+import {ClockLoader} from "react-spinners";
 
 const text = `환영합니다!\n광혜원순복음교회입니다.`;
 
@@ -86,14 +87,17 @@ const HomeSecondNavItems = [
   },
 ];
 
-const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
 function Home() {
-  
 
-  const playlist = YouTubeMainVideo();
-  console.log(playlist);
-  
+  const { data: latestSundayWorshipVideos, isLoading: isSundayWorshipLoading } = useQuery<Video[]>(
+      ["latestSundayWorshipVideosMain"],
+      fetchLatestVideosFromMainSundayWorshipPlaylists,
+    );
+
+  const { data: latestFridayWorshipVideos, isLoading: isFridayWorshipLoading } = useQuery<Video[]>(
+    ["latestFridayWorshipVideosMain"],
+    fetchLatestVideosFromMainFridayWorshipPlaylists,
+  );
   return (
     <>
       <HomeWrapper>
@@ -214,11 +218,21 @@ function Home() {
 
           </Wrapper>
         </HomeWorshipInformation>
-        
-        <YouTubeMainVideo />
+        <HomeLatestRecommendVideoWrapper>
+        <HomeLatestRecommendVideoControl>
+          {(isSundayWorshipLoading || isFridayWorshipLoading) ? (
+            <HomeLatestRecommendVideoLoading>
+              <ClockLoader color="#ffffff" />
+            </HomeLatestRecommendVideoLoading>
+          ) : (
+            <>
+              <Slider title="주일오전설교" data={latestSundayWorshipVideos ?? []} />
+              <Slider title="금요성령집회" data={latestFridayWorshipVideos ?? []} />
+            </>
+          )}
+        </HomeLatestRecommendVideoControl>
+        </HomeLatestRecommendVideoWrapper>
       </HomeWrapper>
-      
-
     </>
   );
 }
@@ -516,3 +530,33 @@ export default Home;
       font-size: 1.6vw;
     }
   `;
+
+const HomeLatestRecommendVideoWrapper = styled.div`
+      display: flex; 
+    align-items: center;
+    justify-content: center;
+    background-color: ${(props)=> props.theme.cardBgColor};
+    height: 40vw;
+    padding-bottom: 2vw;
+    ${({theme}) => theme.media.max1300}{
+      height: 70vw;
+    }
+`
+
+const HomeLatestRecommendVideoControl = styled.div`
+
+  width:${(props) => props.theme.headerWidth.default};
+  ${({theme}) => theme.media.max1300}{
+    width:${(props) => props.theme.headerWidth.responsive};
+  }
+`
+
+const HomeLatestRecommendVideoLoading = styled.div`
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    height: 40vw;
+    ${({theme}) => theme.media.max1300}{
+      height: 70vw;
+    }
+`

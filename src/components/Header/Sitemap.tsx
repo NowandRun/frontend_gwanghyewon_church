@@ -235,6 +235,7 @@ const Button = styled(motion.div)`
   overscroll-behavior: none; 바운스 스크롤 방지 
    */
 const Overlay = styled(motion.div)`
+
   position: fixed;
   top: 0;
   left: 0;
@@ -270,7 +271,6 @@ const ModalBox = styled(motion.div)`
   };
   position: relative; /* 추가: 내부 요소가 상대적으로 위치할 수 있게 함 */
   will-change: transform, opacity; // 성능 개선을 위한 will-change 추가
-
   ${({theme}) => theme.media.max1300} {
     width: 45%;
     height: 100%;

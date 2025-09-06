@@ -399,6 +399,7 @@ const RightWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 5rem;
+  z-index: 50;
 `;
 
 const SubPage = styled.div`
@@ -427,9 +428,10 @@ const HoverBox = styled.div`
   transform: translateX(-50%); /* 정확히 가운데 정렬 */
   height: 12vw;
   background-color: white;
-  z-index: 10;
+  z-index: 50;
   justify-content: center;
   border-top: 0.05px solid #ccc; /* 오른쪽에 경계선 추가 */
+  border-bottom: 0.05px solid #ccc; /* 오른쪽에 경계선 추가 */
 `;
 
 const ScrollContent = styled.div`
