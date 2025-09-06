@@ -250,6 +250,8 @@ const VideoTitle = styled.div`
   font-weight: 700;
   display: flex;
   align-items: center;     // 세로 중앙 정렬
+  color: ${(props) => props.theme.textColor};
+
   ${({ theme }) => theme.media.max1300} {
     font-size: 3vw;
   }
@@ -257,9 +259,10 @@ const VideoTitle = styled.div`
 
 const VideoIcon = styled.div`
   display: flex;
+
   align-items: center;     // 세로 중앙 정렬
   justify-content: center; // 가로 중앙 정렬
-  
+  font: ${(props)=> props.theme.textColor};
 `
 
 const VideoText = styled.div`

@@ -8,6 +8,7 @@ import { MainVideos, Video } from "../../types/types";
 import { fetchLatestVideosFromMainSundayWorshipPlaylists, fetchLatestVideosFromMainFridayWorshipPlaylists } from "../../types/api";
 import Slider from "../../components/Slider/Slider";
 import {ClockLoader} from "react-spinners";
+import useWindowDimensions from "../../components/useWindowDimensions";
 
 const text = `환영합니다!\n광혜원순복음교회입니다.`;
 
@@ -88,6 +89,8 @@ const HomeSecondNavItems = [
 ];
 
 function Home() {
+  const windowWidth = useWindowDimensions();
+  const spinnerSize = Math.round(windowWidth * 0.06); // 70vw, 소수점 반올림
 
   const { data: latestSundayWorshipVideos, isLoading: isSundayWorshipLoading } = useQuery<Video[]>(
       ["latestSundayWorshipVideosMain"],
@@ -222,7 +225,7 @@ function Home() {
         <HomeLatestRecommendVideoControl>
           {(isSundayWorshipLoading || isFridayWorshipLoading) ? (
             <HomeLatestRecommendVideoLoading>
-              <ClockLoader color="#ffffff" />
+              <ClockLoader size={spinnerSize} color="#ffffff" />
             </HomeLatestRecommendVideoLoading>
           ) : (
             <>
@@ -555,7 +558,7 @@ const HomeLatestRecommendVideoLoading = styled.div`
     display: flex; 
     align-items: center;
     justify-content: center;
-    height: 40vw;
+    
     ${({theme}) => theme.media.max1300}{
       height: 70vw;
     }
