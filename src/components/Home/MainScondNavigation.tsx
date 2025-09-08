@@ -30,6 +30,9 @@ export default MainScondNavigation;
 const HomeSecondNav = styled.div`
   height: 30vw;
   display: flex;
+  ${({ theme }) => theme.media.max1300} {
+    height: 35vw;
+  }
 `;
 const HomeSecondNavOne = styled.div`
   height: 100%;
@@ -116,8 +119,9 @@ const HomeSecondNavTwoIcon = styled.div`
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }
   ${({ theme }) => theme.media.max1300} {
-    height: 7vw;
-    width: 7vw;
+    height: 8vw;
+    width: 8vw;
+    font-size: 5vw;
   }
 `;
 
@@ -127,4 +131,7 @@ const HomeSecondNavTwoTitle = styled.h3`
   font-weight: bold;
   color: ${(props) => props.theme.textColor};
   transition: color 1s;
+  ${({ theme }) => theme.media.max1300} {
+    font-size: 2vw;
+  }
 `;

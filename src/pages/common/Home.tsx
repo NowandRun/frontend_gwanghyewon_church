@@ -5,6 +5,7 @@ import Mainministry from '../../components/Home/MainMinistry';
 import MainWorshipInformation from '../../components/Home/MainWorshipInformation';
 import MainRecommendVideo from '../../components/Home/MainRecommendVidoe';
 import MainScondNavigation from '../../components/Home/MainScondNavigation';
+import MainOfferingInformation from '../../components/Home/MainOfferingInformation';
 
 function Home() {
   return (
@@ -15,6 +16,7 @@ function Home() {
         <MainScondNavigation />
         <MainRecommendVideo />
         <MainWorshipInformation />
+        <MainOfferingInformation />
       </HomeWrapper>
     </>
   );
