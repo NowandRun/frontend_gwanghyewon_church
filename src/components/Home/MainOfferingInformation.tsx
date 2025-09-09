@@ -56,7 +56,8 @@ const MainOfferingInformationWrapper = styled.div`
 
 const MainOfferingInformationController = styled.div`
   width: ${(pers) => pers.theme.headerWidth.default};
-  padding: 4vw 0;
+  padding: 10vw 0;
+
   ${({ theme }) => theme.media.max1300} {
     width: ${(pers) => pers.theme.headerWidth.responsive};
   }
@@ -64,6 +65,7 @@ const MainOfferingInformationController = styled.div`
 
 const MainOfferingInformationTittleController = styled.div`
   display: block;
+
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -71,14 +73,22 @@ const MainOfferingInformationTittleController = styled.div`
 `;
 
 const MainOfferingInformationTittleWrapper = styled.div`
-  font-size: 2vw;
-  padding-bottom: 2vw;
+  font-size: 3vw;
+  padding-bottom: 1vw;
+  ${({ theme }) => theme.media.max1300} {
+    font-size: 4vw;
+    padding-bottom: 1vw;
+  }
 `;
 
 const MainOfferingInformationDescriptionWrapper = styled.div`
   /* 수평 중앙 정렬하기 */
   text-align: center;
-  font-size: 1vw;
+  font-size: 1.3vw;
+  ${({ theme }) => theme.media.max1300} {
+    font-size: 2.2vw;
+    padding-bottom: 1vw;
+  }
 `;
 
 const MainOfferingInformationDescriptionText = styled.span`
@@ -90,23 +100,24 @@ const MainOfferingInformationBank = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  align-items: flex-end;
+  align-items: flex-end; /* 세로 정렬 통일 */
   border-right: 0.05px solid #ccc;
-  min-width: 200px;
-
-  /* 👉 gap과 동일한 패딩 */
-  padding-right: 2rem;
+  padding-right: 2vw;
   ${({ theme }) => theme.media.max1300} {
-    width: 100%;
+    align-items: center;
+    padding-right: 0;
   }
 `;
 
 const MainOfferingInformationBankLogoimageWrapper = styled.div``;
 
 const MainOfferingInformationBankLogoimage = styled.img`
-  width: clamp(60px, 8vw, 120px); /* ✅ 너무 작거나 크지 않게 제한 */
+  width: 7vw;
+  /* width: clamp(60px, 8vw, 120px);  */ /* ✅ 너무 작거나 크지 않게 제한 */
   height: auto;
-  margin-bottom: 0.5rem;
+  ${({ theme }) => theme.media.max1300} {
+    width: 15vw;
+  }
 `;
 const MainOfferingInformationBankAccountInformation = styled.div`
   display: flex;
@@ -114,50 +125,68 @@ const MainOfferingInformationBankAccountInformation = styled.div`
   align-items: center;
 `;
 const MainOfferingInformationBankAccountNumber = styled.span`
-  font-size: 1.8vw;
+  font-size: 1.6vw;
   font-weight: bolder;
   ${({ theme }) => theme.media.max1300} {
-    width: 2.2vw;
+    font-size: 3.3vw;
   }
 `;
 const MainOfferingInformationBankAccountName = styled.span`
-  font-size: clamp(12px, 1vw, 16px);
+  font-size: 1.3vw;
   text-align: center;
+  ${({ theme }) => theme.media.max1300} {
+    font-size: 2.2vw;
+  }
 `;
 
 const MainOfferingInformationBankWrapper = styled.div`
-  margin-top: 1vw;
+  margin-top: 2vw;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
+  justify-content: flex-start; /* 👉 왼쪽 정렬 */
+  align-items: stretch; /* 자식이 부모 높이 다 쓰게 */
+  height: 100%; /* fit-content 대신 부모 높이 강제 */
+  flex: 1;
 `;
 
 const MainOfferingInformationHowToWriteTheAccountName = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
   flex: 1;
   gap: 0.6rem;
-  min-width: 150px; /* ✅ 최소 크기 */
-  background-color: red;
+  position: relative;
+  padding-left: 2vw;
 
+  align-self: stretch; /* flex 아이템이 부모 높이에 맞게 늘어남 */
   ${({ theme }) => theme.media.max1300} {
-    width: 100%;
+    display: flex;
+    justify-content: center; /* 👉 왼쪽 정렬 */
+    align-items: center; /* 자식이 부모 높이 다 쓰게 */
+    gap: 0.25rem;
+    padding: 3.5px 0;
   }
 `;
 
 const MainOfferingInformationHowToWriteTheAccountNameMethod = styled.div`
   background-color: ${(props) => props.theme.cardBgColor};
   border-radius: 0.8rem;
-  font-size: clamp(12px, 1vw, 16px);
+  /* font-size: clamp(12px, 1vw, 16px);
   width: clamp(120px, 12vw, 200px);
-  height: clamp(35px, 3vw, 50px);
-
+  height: clamp(35px, 3vw, 50px); */
+  height: 100%;
+  font-size: 1vw;
+  width: 12vw;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+
+  ${({ theme }) => theme.media.max1300} {
+    font-size: 2.5vw;
+    border-radius: 1.2vw;
+    width: 24vw;
+  }
 `;
 
 const MainOfferingInformationHowToWriteTheAccountNameExample = styled(

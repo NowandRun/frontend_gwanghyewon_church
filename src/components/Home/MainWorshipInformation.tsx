@@ -83,7 +83,7 @@ const WorshipInformationTitle = styled.div`
 const WorshipInformationText = styled.span`
   font-size: 3vw;
   font-weight: bold;
-  color: #f29f58;
+  color: #708993;
   padding-bottom: 0.5vw;
 
   ${({ theme }) => theme.media.max1300} {
