@@ -5,7 +5,7 @@ import { Video } from '../../types/types';
 import {
   fetchLatestVideosFromMainSundayWorshipPlaylists,
   fetchLatestVideosFromMainFridayWorshipPlaylists,
-} from '../../types/api';
+} from '../../types/youtube-api';
 import Slider from '../../components/Slider/Slider';
 import { ClockLoader } from 'react-spinners';
 import useWindowDimensions from '../../components/useWindowDimensions';

@@ -1,4 +1,4 @@
-import { IGetPlaylist, MainVideos, Video } from './types';
+import { IGetPlaylist, Video } from './types';
 
 const apiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
 const channelId = process.env.REACT_APP_YOUTUBE_CHANNEL_ID;

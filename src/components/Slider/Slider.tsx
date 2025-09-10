@@ -5,7 +5,6 @@ import { Video } from '../../types/types';
 import useWindowDimensions from '../useWindowDimensions';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { slideCnt, windowWidthAtom } from '../../types/atoms';
-import { ClockLoader } from 'react-spinners';
 import { SignpostIcon } from '@phosphor-icons/react';
 
 const SliderBoxVariants = {
@@ -27,10 +26,6 @@ export default function Slider({ data, title }: ISLider) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  data.map((data, idx) => {
-    console.log(data.id);
-  });
 
   const offset = useRecoilValue(slideCnt);
 
