@@ -6,7 +6,7 @@ import MainWorshipInformation from '../../components/Home/MainWorshipInformation
 import MainRecommendVideo from '../../components/Home/MainRecommendVidoe';
 import MainScondNavigation from '../../components/Home/MainScondNavigation';
 import MainOfferingInformation from '../../components/Home/MainOfferingInformation';
-import KakaoMapView from '../../components/NaverMap/KaKaoMapView';
+import MainKaKaoMap from '../../components/Home/MainKaKaoMap';
 
 function Home() {
   return (
@@ -18,10 +18,7 @@ function Home() {
         <MainRecommendVideo />
         <MainWorshipInformation />
         <MainOfferingInformation />
-        <KakaoMapView
-          webHeight="40vw"
-          mobileHeight="60vw"
-        />
+        <MainKaKaoMap />
       </HomeWrapper>
     </>
   );
@@ -30,7 +27,7 @@ function Home() {
 export default Home;
 
 const HomeWrapper = styled.div`
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     padding-top: 100px; // 헤더 높이만큼 내려줌
   }
 `;

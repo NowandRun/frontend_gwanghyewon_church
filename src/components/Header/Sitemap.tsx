@@ -15,7 +15,7 @@ interface SitemapProps {
 const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const width = useWindowDimensions();
 
   const openModal = () => {
@@ -27,31 +27,35 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
     onOpenChange(false); // 부모에 알림
   };
 
-    useEffect(() => {
-      const currentIndex = menuItems.findIndex((item) =>
-        location.pathname === `/${item.path}` || location.pathname.startsWith(`/${item.path}/`)
-      );
-      setSelectedIndex(currentIndex !== -1 ? currentIndex : null);
-    }, [location.pathname]);
+  useEffect(() => {
+    const currentIndex = menuItems.findIndex(
+      (item) =>
+        location.pathname === `/${item.path}` || location.pathname.startsWith(`/${item.path}/`),
+    );
+    setSelectedIndex(currentIndex !== -1 ? currentIndex : null);
+  }, [location.pathname]);
 
-    useEffect(() => {
-      if (isOpen) {
-        document.body.style.overflow = "hidden";
-        document.documentElement.style.overflow = "hidden"; // html까지 차단
-      } else {
-        document.body.style.overflow = "";
-        document.documentElement.style.overflow = "";
-      }
-    
-      return () => {
-        document.body.style.overflow = "";
-        document.documentElement.style.overflow = "";
-      };
-    }, [isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden'; // html까지 차단
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [isOpen]);
 
   return (
     <>
-      <Button onClick={openModal} layoutId='Sitemap'>
+      <Button
+        onClick={openModal}
+        layoutId="Sitemap"
+      >
         <FontAwesomeIcon icon={faMapLocationDot} />
         <div>
           <span>SITEMAP</span>
@@ -66,7 +70,7 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
             animate={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
             onClick={closeModal}
           >
-            <ModalBox layoutId='Sitemap'>
+            <ModalBox layoutId="Sitemap">
               <ModalBoxWrapper>
                 <HeaderTitle>
                   <span>사이트 맵</span>
@@ -76,9 +80,9 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
                     <ItemWrapper key={index}>
                       {/* 부모 메뉴 표시 */}
                       <ItemTitle>
-                         <Link to={`/${item.path}`} >
-                            <h3>{item.label}</h3>
-                          </Link>
+                        <Link to={`/${item.path}`}>
+                          <h3>{item.label}</h3>
+                        </Link>
                       </ItemTitle>
                       {/* children이 있는지 확인 후 출력 */}
                       {item.children && (
@@ -86,9 +90,7 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
                           {item.children.map((child, childIndex) => (
                             <SubChildList key={childIndex}>
                               <SubChildListTitle>
-                                <Link to={`/${item.path}/${child.path}`} >
-                                  {child.label}
-                                </Link>
+                                <Link to={`/${item.path}/${child.path}`}>{child.label}</Link>
                               </SubChildListTitle>
                             </SubChildList>
                           ))}
@@ -111,9 +113,9 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
             <ModalBox
               layout={'size'} // 레이아웃 변화를 애니메이션으로 처리
               variants={modalBoxVariants}
-              initial='hidden'
-              animate='visible'
-              exit='exit'
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               transition={{
                 duration: 0.3,
                 type: 'tween',
@@ -131,9 +133,9 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
                     <ItemWrapper key={index}>
                       {/* 부모 메뉴 표시 */}
                       <ItemTitle>
-                         <Link to={`/${item.path}`} >
-                         <h3>{item.label}</h3>
-                                  </Link>
+                        <Link to={`/${item.path}`}>
+                          <h3>{item.label}</h3>
+                        </Link>
                       </ItemTitle>
                       {/* children이 있는지 확인 후 출력 */}
                       {item.children && (
@@ -141,9 +143,7 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
                           {item.children.map((child, childIndex) => (
                             <SubChildList key={childIndex}>
                               <SubChildListTitle>
-                                <Link to={`/${item.path}/${child.path}`} >
-                                  {child.label}
-                                </Link>
+                                <Link to={`/${item.path}/${child.path}`}>{child.label}</Link>
                               </SubChildListTitle>
                             </SubChildList>
                           ))}
@@ -154,7 +154,7 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
                 </ChildContent>
               </ModalBoxWrapper>
               <BottomBox />
-            </ModalBox >
+            </ModalBox>
           </Overlay>
         )}
       </AnimatePresence>
@@ -187,7 +187,7 @@ const Button = styled(motion.div)`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  top:0;
+  top: 0;
   background-color: ${(props) => props.theme.cardBgColor};
   height: 6vw;
   width: 5vw;
@@ -198,12 +198,14 @@ const Button = styled(motion.div)`
     0 2px 3px rgba(0, 0, 0, 0.1),
     0 10px 20px rgba(0, 0, 0, 0.06);
   cursor: pointer;
-  transition: background-color 1s, color 1s;
+  transition:
+    background-color 1s,
+    color 1s;
   /* 첫 번째 자식 요소에만 적용 */
   > :first-child {
     font-size: 2vw;
     position: relative; /* position을 relative로 설정 */
-    ${({theme}) => theme.media.max1300} {
+    ${({ theme }) => theme.media.tablet} {
       font-size: 28px; // 원하는 크기로 조정
     }
   }
@@ -214,18 +216,17 @@ const Button = styled(motion.div)`
     span {
       display: block;
       font-size: 0.8vw;
-      ${({theme}) => theme.media.max1300} {
-          font-size: 0.8rem; // 원하는 크기로 조정
+      ${({ theme }) => theme.media.tablet} {
+        font-size: 0.8rem; // 원하는 크기로 조정
       }
     }
-
   }
 
-  ${({theme}) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     height: 110px;
     width: 80px;
-    right: 0;   /* 모바일에서도 오른쪽 유지 */
-    top: 0;     /* 모바일에서도 상단 유지 */
+    right: 0; /* 모바일에서도 오른쪽 유지 */
+    top: 0; /* 모바일에서도 상단 유지 */
   }
 `;
 
@@ -235,7 +236,6 @@ const Button = styled(motion.div)`
   overscroll-behavior: none; 바운스 스크롤 방지 
    */
 const Overlay = styled(motion.div)`
-
   position: fixed;
   top: 0;
   left: 0;
@@ -246,8 +246,8 @@ const Overlay = styled(motion.div)`
   align-items: center;
   background-color: rgba(0, 0, 0, 0); // 초기 상태를 투명으로 설정
   transition: none;
-  
-  ${({theme}) => theme.media.max1300} {
+
+  ${({ theme }) => theme.media.tablet} {
     display: flex;
     width: 100%;
     height: 100%;
@@ -268,10 +268,10 @@ const ModalBox = styled(motion.div)`
     0 10px 20px rgba(0, 0, 0, 0.06);
   > ::-webkit-scrollbar {
     display: none;
-  };
+  }
   position: relative; /* 추가: 내부 요소가 상대적으로 위치할 수 있게 함 */
   will-change: transform, opacity; // 성능 개선을 위한 will-change 추가
-  ${({theme}) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     width: 45%;
     height: 100%;
     display: flex;
@@ -292,9 +292,9 @@ const ModalBoxWrapper = styled.div`
   max-height: calc(100% - 10px);
   overflow-y: auto; /* 내부 콘텐츠 스크롤 허용 */
 
-  ${({theme}) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     display: flex;
-    width:100%;
+    width: 100%;
     flex-direction: column;
     justify-content: flex-start;
     will-change: transform, opacity; // 성능 개선을 위한 will-change 추가
@@ -312,15 +312,13 @@ const HeaderTitle = styled.div`
   color: white;
   padding: 2vw;
   font-size: 1.5vw;
-  ${({theme}) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 3.5vw;
     padding: 3vw;
   }
 `;
 
-const ItemWrapper = styled.div`
-
-`;
+const ItemWrapper = styled.div``;
 
 const ItemTitle = styled.div`
   display: flex;
@@ -328,7 +326,7 @@ const ItemTitle = styled.div`
   align-items: center;
   border-bottom: 2px solid black;
 
-  ${({theme}) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -336,8 +334,7 @@ const ItemTitle = styled.div`
   }
 `;
 
-const SubChildList = styled.li`
-`;
+const SubChildList = styled.li``;
 
 const SubChildListTitle = styled.div`
   border-bottom: 1.5px dotted rgba(0, 0, 0, 0.4);
@@ -348,15 +345,12 @@ const SubChildListTitle = styled.div`
 const ChildContent = styled.div`
   padding: 2.5vw 1vw;
   display: grid;
-  grid-template-columns: repeat(
-    4,
-    1fr
-  ); /* 2개의 열로 구성, 각 열이 동일한 너비 */
+  grid-template-columns: repeat(4, 1fr); /* 2개의 열로 구성, 각 열이 동일한 너비 */
   gap: 0.8vw; /* 그리드 아이템 간의 간격 */
   max-height: 100%; /* 모달 높이를 벗어나지 않도록 설정 */
   overflow-y: auto; /* 넘칠 경우 스크롤 가능 */
   font-size: 1vw;
-  ${({theme}) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     display: flex;
     flex-direction: column;
     will-change: transform, opacity; // 성능 개선을 위한 will-change 추가
@@ -385,4 +379,3 @@ const BottomBox = styled.div`
   width: 100%; /* 부모의 너비에 맞게 설정 */
   position: absolute;
 `;
-

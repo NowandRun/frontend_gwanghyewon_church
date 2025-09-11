@@ -5,6 +5,10 @@ export interface MenuItem {
   children?: MenuItem[];
 }
 
+interface Thumbnail {
+  url: string;
+}
+
 // src/types/types.ts
 export interface IGetPlaylist {
   id: string;
@@ -35,6 +39,7 @@ export interface Video {
       default?: { url: string };
       medium?: { url: string };
       high?: { url: string };
+      maxres?: Thumbnail; // ✅ 추가
     };
     resourceId: {
       kind: string;

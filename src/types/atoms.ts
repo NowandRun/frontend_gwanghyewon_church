@@ -2,7 +2,7 @@ import { atom, selector } from 'recoil';
 
 // Window innerWidth값 감지
 export const windowWidthAtom = atom({
-  key: "windowWidth",
+  key: 'windowWidth',
   default: window.innerWidth,
 });
 
@@ -33,15 +33,17 @@ export const isdarkAtom = atom({
 
 // Slide 한번에 보여줄 개수 (70vw 기준)
 export const slideCnt = selector({
-  key: "slideCnt",
+  key: 'slideCnt',
   get: ({ get }) => {
     const windowWidth = get(windowWidthAtom);
 
     // 70vw 기준으로 한 번에 보여줄 개수 결정
-    if (windowWidth > 1000) {
+    if (windowWidth > 1150) {
       return 4; // 70vw가 1400px 이상이면 4개
-    } else {
+    } else if (windowWidth > 800) {
       return 3; // 아니면 3개
+    } else {
+      return 2;
     }
   },
 });

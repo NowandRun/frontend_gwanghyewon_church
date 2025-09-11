@@ -11,8 +11,9 @@ declare module 'styled-components' {
       responsive: string;
     };
     media: {
-      max1300: string;
-      min1301: string;
+      desktop: string;
+      tablet: string;
+      mobile: string;
     };
   }
 }

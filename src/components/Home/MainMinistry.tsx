@@ -45,7 +45,7 @@ const MinistryController = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   flex-direction: row; /* ✅ 가로 정렬 */
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     width: ${({ theme }) => theme.headerWidth.responsive};
     display: flex;
     flex-wrap: nowrap; /* ✅ 줄바꿈 방지 */
@@ -68,7 +68,7 @@ const MinistryCard = styled(Link)`
     border-right: none;
   }
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     flex: 1 1 100%;
     border-right: 1px solid rgba(255, 255, 255, 0.3);
   }
@@ -81,7 +81,7 @@ const Icon = styled.div`
 const Title = styled.h3`
   font-size: 1.6vw;
   font-weight: bold;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2.4vw;
   }
 `;
@@ -89,7 +89,7 @@ const Title = styled.h3`
 const Description = styled.p`
   font-size: 1.3vw;
   font-weight: bold;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 1.8vw;
   }
 `;

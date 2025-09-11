@@ -86,7 +86,7 @@ const WorshipInformationText = styled.span`
   color: #708993;
   padding-bottom: 0.5vw;
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 4vw;
   }
 `;
@@ -99,7 +99,7 @@ const SectionWrapper = styled.div`
   gap: 1vw; /* ✅ 섹션 사이 간격 */
   padding: 10vw 0;
   justify-content: space-between; /* ✅ 양쪽 정렬 */
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     width: 100%;
     padding: 10vw 1vw;
   }
@@ -116,7 +116,7 @@ const WorshipInformationtitle = styled.h2`
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.3vw;
   text-align: center;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2.4vw;
   }
 `;
@@ -131,13 +131,13 @@ const WorshipInformationPlace = styled.div`
   border-radius: 0.2vw;
   margin-bottom: 0.5vw;
   padding: 1.4vw 0;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     padding: 1.6vw 0;
   }
 `;
 const WorshipInformationPlaceName = styled.p`
   font-size: 1.4vw;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 1.9vw;
   }
 `;
@@ -153,7 +153,7 @@ const Item = styled.li`
   margin-bottom: 0.5vw;
   font-size: 1.3vw;
   color: ${(props) => props.theme.textColor};
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 1.8vw;
   }
 `;

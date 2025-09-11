@@ -57,16 +57,24 @@ const HomeLatestRecommendVideoWrapper = styled.div`
   align-items: center;
   justify-content: center;
   background-color: ${(props) => props.theme.cardBgColor};
-  height: 40vw;
-  padding-bottom: 2vw;
-  ${({ theme }) => theme.media.max1300} {
-    height: 70vw;
+  height: 30vw;
+  ${({ theme }) => theme.media.tablet} {
+    height: 55vw;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    height: 80vw;
   }
 `;
 
 const HomeLatestRecommendVideoControl = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
   width: ${(props) => props.theme.headerWidth.default};
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     width: ${(props) => props.theme.headerWidth.responsive};
   }
 `;
@@ -76,7 +84,7 @@ const HomeLatestRecommendVideoLoading = styled.div`
   align-items: center;
   justify-content: center;
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     height: 70vw;
   }
 `;

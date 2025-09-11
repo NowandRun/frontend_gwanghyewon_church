@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { LOCATION_ADDRESS } from '../../types/constants';
 
 declare global {
   interface Window {
@@ -10,6 +11,8 @@ declare global {
 interface KakaoMapProps {
   webWidth?: string; // div width, default 100%
   webHeight?: string; // div height, default 400px
+  tabletWidth?: string;
+  tabletHeight?: string;
   mobileWidth?: string;
   mobileHeight?: string;
   level?: number; // 지도 확대 레벨, default 3
@@ -18,11 +21,13 @@ interface KakaoMapProps {
 const KakaoMapGeocode: React.FC<KakaoMapProps> = ({
   webWidth = '70vw',
   webHeight = '400px',
-  mobileWidth = '100%',
+  tabletWidth = '100vw',
+  tabletHeight = '50vw',
+  mobileWidth = '100vw',
   mobileHeight = '5vw',
   level = 2,
 }) => {
-  const address = '충북 진천군 광혜원면 화랑3길 17';
+  const address = LOCATION_ADDRESS;
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -76,20 +81,14 @@ const KakaoMapGeocode: React.FC<KakaoMapProps> = ({
 
   return (
     <KaKaoMapWapper>
-      <KakaoMapInfo>
-        <KaKaoMapTitleWrapper>
-          <KaKaoMapTitle>오시는길</KaKaoMapTitle>
-        </KaKaoMapTitleWrapper>
-        <KaKaoMapAddressWrapper>
-          <KaKaoMapAddress>{address}</KaKaoMapAddress>
-        </KaKaoMapAddressWrapper>
-      </KakaoMapInfo>
       <MapContainer
         id="map"
         webWidth={webWidth}
         webHeight={webHeight}
         mobileWidth={mobileWidth}
         mobileHeight={mobileHeight}
+        tabletWidth={tabletWidth}
+        tabletHeight={tabletHeight}
       />
     </KaKaoMapWapper>
   );
@@ -102,6 +101,8 @@ interface MapContainerProps {
   webHeight: string;
   mobileWidth: string;
   mobileHeight: string;
+  tabletWidth: string;
+  tabletHeight: string;
 }
 
 const KaKaoMapWapper = styled.div`
@@ -111,40 +112,16 @@ const KaKaoMapWapper = styled.div`
   align-items: center;
 `;
 
-const KakaoMapInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const KaKaoMapTitleWrapper = styled.div`
-  font-size: 3vw;
-  padding-bottom: 1vw;
-  ${({ theme }) => theme.media.max1300} {
-    font-size: 4vw;
-    padding-bottom: 1vw;
-  }
-`;
-
-const KaKaoMapTitle = styled.span``;
-
-const KaKaoMapAddressWrapper = styled.div`
-  /* 수평 중앙 정렬하기 */
-  text-align: center;
-  font-size: 1.3vw;
-  ${({ theme }) => theme.media.max1300} {
-    font-size: 2.2vw;
-    padding-bottom: 1vw;
-  }
-`;
-
-const KaKaoMapAddress = styled.span``;
-
 const MapContainer = styled.div<MapContainerProps>`
   width: ${(props) => props.webWidth};
   height: ${(props) => props.webHeight};
-  ${({ theme }) => theme.media.max1300} {
+
+  ${({ theme }) => theme.media.tablet} {
+    width: ${(props) => props.tabletWidth};
+    height: ${(props) => props.tabletHeight};
+  }
+
+  ${({ theme }) => theme.media.mobile} {
     width: ${(props) => props.mobileWidth};
     height: ${(props) => props.mobileHeight};
   }

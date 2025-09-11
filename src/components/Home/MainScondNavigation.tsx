@@ -30,7 +30,7 @@ export default MainScondNavigation;
 const HomeSecondNav = styled.div`
   height: 30vw;
   display: flex;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     height: 35vw;
   }
 `;
@@ -39,7 +39,7 @@ const HomeSecondNavOne = styled.div`
   width: 100%;
   background-color: ${(props) => props.theme.bgColor};
   display: flex;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     height: 100%;
     width: 50%;
   }
@@ -53,7 +53,7 @@ const HomeSecondNavTwo = styled.div`
   justify-content: center;
   background-color: #d8d2c2;
   position: relative; // ✅ 추가
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     height: 100%;
     width: 70%;
   }
@@ -71,7 +71,7 @@ const HomeSecondNavTwoController = styled.div`
   gap: 0.1rem; /* ✅ 카드 간격 추가 */
   padding-left: 2vw;
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     padding: 0;
     width: 85%;
     height: 70%;
@@ -84,7 +84,7 @@ const HomeSecondNavEmtyController = styled.div`
   height: 100%;
   right: 0;
   position: absolute; // ✅ 추가
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     height: 0;
     width: 0;
   }
@@ -118,7 +118,7 @@ const HomeSecondNavTwoIcon = styled.div`
     transform: translateY(-5px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     height: 8vw;
     width: 8vw;
     font-size: 5vw;
@@ -131,7 +131,7 @@ const HomeSecondNavTwoTitle = styled.h3`
   font-weight: bold;
   color: ${(props) => props.theme.textColor};
   transition: color 1s;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2vw;
   }
 `;

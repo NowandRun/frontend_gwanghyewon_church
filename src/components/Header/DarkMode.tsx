@@ -11,11 +11,11 @@ function Mode() {
   return (
     <>
       {!darkAtom ? (
-        <Icon  onClick={toggleDarkAtom}>
+        <Icon onClick={toggleDarkAtom}>
           <FontAwesomeIcon icon={faSun} />
         </Icon>
       ) : (
-        <Icon  onClick={toggleDarkAtom}>
+        <Icon onClick={toggleDarkAtom}>
           <FontAwesomeIcon icon={faMoon} />
         </Icon>
       )}
@@ -24,8 +24,6 @@ function Mode() {
 }
 
 export default Mode;
-
-
 
 const Icon = styled.div`
   cursor: pointer;
@@ -41,10 +39,9 @@ const Icon = styled.div`
       background-color: rgba(0, 0, 0, 0.3 /* 50% 투명도 */);
     }
   }
-  ${({theme}) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     height: 30px;
     width: 30px;
     font-size: 18px;
-  } ;
-
+  }
 `;

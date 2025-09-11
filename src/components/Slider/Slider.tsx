@@ -20,7 +20,7 @@ interface ISLider {
 export default function Slider({ data, title }: ISLider) {
   const setWindowWidth = useSetRecoilState(windowWidthAtom);
   const windowWidth = useWindowDimensions();
-
+  console.log('난 웹페이즈 사이즈야❤️❤️❤️❤️❤️', windowWidth);
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
@@ -181,32 +181,46 @@ export default function Slider({ data, title }: ISLider) {
             animate="center"
             exit="exit"
           >
-            {currentipVideos.map((video) => (
-              <SliderBox
-                key={video.id}
-                variants={SliderBoxVariants}
-                initial="normal"
-                whileHover="hover"
-                offset={offset}
-              >
-                <img
-                  src={video.snippet.thumbnails?.high?.url}
-                  srcSet={`
-                            ${video.snippet.thumbnails?.default?.url} 480w,
-                            ${video.snippet.thumbnails?.medium?.url} 768w,
-                            ${video.snippet.thumbnails?.high?.url} 1280w
-                          `}
-                  sizes="(max-width: 70vw) 70vw, 100vw"
-                  alt={video.snippet.title}
-                  loading="lazy" // 화면에 보여질 때 이미지 로드
-                  style={{
-                    width: '100%', // YouTube default 썸네일은 보통 120px × 90px
-                    height: '100%',
-                    objectFit: 'cover',
-                  }}
-                />
-              </SliderBox>
-            ))}
+            {currentipVideos.map((video) => {
+              const thumb = video.snippet.thumbnails;
+              const mobileSrc = thumb.maxres?.url || thumb.high?.url; // 모바일은 큰 이미지 우선
+              const defaultSrc = thumb.high?.url || thumb.medium?.url;
+
+              return (
+                <SliderBox
+                  key={video.id}
+                  variants={SliderBoxVariants}
+                  initial="normal"
+                  whileHover="hover"
+                  offset={offset}
+                >
+                  <picture>
+                    {/* 모바일용 (max-width: 800px) */}
+                    <source
+                      media="(max-width: 800px)"
+                      srcSet={mobileSrc}
+                    />
+                    {/* 기본 */}
+                    <img
+                      src={defaultSrc}
+                      srcSet={`
+                        ${thumb.default?.url} 480w,
+                        ${thumb.medium?.url} 768w,
+                        ${thumb.high?.url} 1280w
+                      `}
+                      sizes="(max-width: 70vw) 70vw, 100vw"
+                      alt={video.snippet.title}
+                      loading="lazy"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  </picture>
+                </SliderBox>
+              );
+            })}
           </SliderRow>
           <SliderPrev
             onClick={() => onClickToArrowBtn(-1)}
@@ -240,7 +254,7 @@ const VideoTitle = styled.div`
   align-items: center; // 세로 중앙 정렬
   color: ${(props) => props.theme.textColor};
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 3vw;
   }
 `;
@@ -263,8 +277,12 @@ const SliderViewport = styled.div`
   position: relative;
   display: flex;
   aspect-ratio: 14 / 2; // 또는 원하는 높이 계산
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     aspect-ratio: 16 / 3; // 또는 원하는 높이 계산
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    aspect-ratio: 16 / 5; // 또는 원하는 높이 계산
   }
 `;
 
@@ -289,6 +307,10 @@ const SliderBox = styled(motion.div)<{ offset: number }>`
     &:hover {
       z-index: 100;
     }
+  }
+  @media (max-width: 800px) {
+    aspect-ratio: 16 /10;
+    max-width: 70vw; // 뷰포트 기준 최대 너비
   }
 `;
 
@@ -317,7 +339,7 @@ const SliderPrev = styled.button`
     opacity: 0.3;
     cursor: not-allowed;
   }
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2vw;
     width: 3vw;
     height: 3vw;
@@ -350,7 +372,7 @@ const SliderNext = styled.button`
     cursor: not-allowed;
   }
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2vw;
     width: 3vw;
     height: 3vw;

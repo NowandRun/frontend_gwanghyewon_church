@@ -11,8 +11,9 @@ export const darkTheme: DefaultTheme = {
   },
   borderColor: '#E0E0E0',
   media: {
-    max1300: '@media (max-width: 1150px)',
-    min1301: '@media (min-width: 1151px)',
+    desktop: '@media (min-width: 1151px)',
+    tablet: '@media (max-width: 1150px)',
+    mobile: '@media (max-width: 800px)',
   },
 };
 
@@ -27,7 +28,8 @@ export const lightTheme: DefaultTheme = {
     responsive: '100%',
   },
   media: {
-    max1300: '@media (max-width: 1150px)',
-    min1301: '@media (min-width: 1151px)',
+    desktop: '@media (min-width: 1151px)',
+    tablet: '@media (max-width: 1150px)',
+    mobile: '@media (max-width: 800px)',
   },
 };

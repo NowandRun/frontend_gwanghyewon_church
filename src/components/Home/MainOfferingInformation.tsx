@@ -58,7 +58,7 @@ const MainOfferingInformationController = styled.div`
   width: ${(pers) => pers.theme.headerWidth.default};
   padding: 10vw 0;
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     width: ${(pers) => pers.theme.headerWidth.responsive};
   }
 `;
@@ -75,7 +75,7 @@ const MainOfferingInformationTittleController = styled.div`
 const MainOfferingInformationTittleWrapper = styled.div`
   font-size: 3vw;
   padding-bottom: 1vw;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 4vw;
     padding-bottom: 1vw;
   }
@@ -85,7 +85,7 @@ const MainOfferingInformationDescriptionWrapper = styled.div`
   /* 수평 중앙 정렬하기 */
   text-align: center;
   font-size: 1.3vw;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2.2vw;
     padding-bottom: 1vw;
   }
@@ -103,7 +103,7 @@ const MainOfferingInformationBank = styled.div`
   align-items: flex-end; /* 세로 정렬 통일 */
   border-right: 0.05px solid #ccc;
   padding-right: 2vw;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     align-items: center;
     padding-right: 0;
   }
@@ -115,7 +115,7 @@ const MainOfferingInformationBankLogoimage = styled.img`
   width: 7vw;
   /* width: clamp(60px, 8vw, 120px);  */ /* ✅ 너무 작거나 크지 않게 제한 */
   height: auto;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     width: 15vw;
   }
 `;
@@ -127,14 +127,14 @@ const MainOfferingInformationBankAccountInformation = styled.div`
 const MainOfferingInformationBankAccountNumber = styled.span`
   font-size: 1.6vw;
   font-weight: bolder;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 3.3vw;
   }
 `;
 const MainOfferingInformationBankAccountName = styled.span`
   font-size: 1.3vw;
   text-align: center;
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2.2vw;
   }
 `;
@@ -159,7 +159,7 @@ const MainOfferingInformationHowToWriteTheAccountName = styled.div`
   padding-left: 2vw;
 
   align-self: stretch; /* flex 아이템이 부모 높이에 맞게 늘어남 */
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     display: flex;
     justify-content: center; /* 👉 왼쪽 정렬 */
     align-items: center; /* 자식이 부모 높이 다 쓰게 */
@@ -182,7 +182,7 @@ const MainOfferingInformationHowToWriteTheAccountNameMethod = styled.div`
   justify-content: center;
   text-align: center;
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     font-size: 2.5vw;
     border-radius: 1.2vw;
     width: 24vw;

@@ -49,7 +49,7 @@ const VideoWrapper = styled.div`
     height: 100%;
   }
 
-  ${({ theme }) => theme.media.max1300} {
+  ${({ theme }) => theme.media.tablet} {
     top: 0;
   }
 `;
