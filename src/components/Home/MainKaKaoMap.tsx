@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import KakaoMapView from '../../components/KaKaoMap/KaKaoMapView';
 import { LOCATION_ADDRESS } from '../../types/constants';
+import { MapPinLineIcon } from '@phosphor-icons/react/dist/ssr';
 
 const MainKaKaoMap = () => {
   const address = LOCATION_ADDRESS;
@@ -10,9 +11,12 @@ const MainKaKaoMap = () => {
     <MainKaKaoMapWrapper>
       <KakaoMapInfo>
         <KaKaoMapTitleWrapper>
-          <KaKaoMapTitle>오시는길</KaKaoMapTitle>
+          <KaKaoMapTitle>교회방문하기</KaKaoMapTitle>
         </KaKaoMapTitleWrapper>
         <KaKaoMapAddressWrapper>
+          <KaKaoMapAddressIcon>
+            <MapPinLineIcon />
+          </KaKaoMapAddressIcon>
           <KaKaoMapAddress>{address}</KaKaoMapAddress>
         </KaKaoMapAddressWrapper>
       </KakaoMapInfo>
@@ -66,10 +70,28 @@ const KaKaoMapTitle = styled.span``;
 const KaKaoMapAddressWrapper = styled.div`
   /* 수평 중앙 정렬하기 */
   text-align: center;
-  font-size: 1.3vw;
+  font-size: 1.5vw;
+  display: flex;
   ${({ theme }) => theme.media.tablet} {
-    font-size: 2.2vw;
+    font-size: 2.5vw;
     padding-bottom: 1vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 3.5vw;
+    padding-bottom: 1vw;
+  }
+`;
+
+const KaKaoMapAddressIcon = styled.div`
+  display: flex;
+  align-items: end;
+  font-size: 2.5vw;
+  color: ${(props) => props.theme.accentColor};
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 3.5vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 4.5vw;
   }
 `;
 

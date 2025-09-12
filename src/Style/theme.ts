@@ -3,7 +3,7 @@ import { DefaultTheme } from 'styled-components';
 export const darkTheme: DefaultTheme = {
   bgColor: '#424242',
   textColor: '#F5F5F5',
-  accentColor: '#229799',
+  accentColor: '#DC143C',
   cardBgColor: '#48CFCB',
   headerWidth: {
     default: '70vw',
@@ -20,7 +20,7 @@ export const darkTheme: DefaultTheme = {
 export const lightTheme: DefaultTheme = {
   bgColor: '#FCFAFA',
   textColor: '#4F81C7',
-  accentColor: '#64C4ED',
+  accentColor: '#0046FF',
   cardBgColor: '#F0D78C',
   borderColor: '#E0E0E0',
   headerWidth: {

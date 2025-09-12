@@ -313,7 +313,7 @@ const HeaderTitle = styled.div`
   padding: 2vw;
   font-size: 1.5vw;
   ${({ theme }) => theme.media.tablet} {
-    font-size: 3.5vw;
+    font-size: 5vw;
     padding: 3vw;
   }
 `;
@@ -327,10 +327,12 @@ const ItemTitle = styled.div`
   border-bottom: 2px solid black;
 
   ${({ theme }) => theme.media.tablet} {
-    display: flex;
+    font-size: 3.5vw;
     justify-content: flex-start;
-    align-items: center;
-    border-bottom: 2px solid black;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 4vw;
   }
 `;
 
@@ -359,9 +361,9 @@ const ChildContent = styled.div`
     left: 0;
     top: 0;
     bottom: 0;
-    padding: 6vw 1vw;
+    padding: 10vw 1vw;
     overflow-y: auto; /* 모바일에서도 스크롤 허용 */
-    font-size: 2.5vw;
+    font-size: 3vw;
     /* 스크롤바 숨기기 (크로스 브라우징) */
     -ms-overflow-style: none; /* IE, Edge */
     scrollbar-width: none; /* Firefox */
@@ -369,6 +371,10 @@ const ChildContent = styled.div`
     &::-webkit-scrollbar {
       display: none; /* Chrome, Safari */
     }
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 4vw;
   }
 `;
 
