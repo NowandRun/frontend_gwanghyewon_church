@@ -4,6 +4,12 @@ import styled from 'styled-components';
 function MainWorshipInformation() {
   return (
     <HomeWorshipInformation>
+      <HomeWorshipInformationBackgroundImage
+        src={
+          process.env.PUBLIC_URL +
+          '/images/Main-Images/Main-Background-Image/메인-예배-안내 이미지.jpg'
+        }
+      />
       <SectionWrapper>
         <WorshipInformationTitle>
           <WorshipInformationText>예배안내</WorshipInformationText>
@@ -70,8 +76,22 @@ function MainWorshipInformation() {
 export default MainWorshipInformation;
 
 const HomeWorshipInformation = styled.section`
-  background: ${(props) => props.theme.bgColor};
+  position: relative;
   display: block;
+  overflow: hidden;
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+`;
+const HomeWorshipInformationBackgroundImage = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ✅ background-size: cover와 동일한 효과 */
+  z-index: 0;
 `;
 
 const WorshipInformationTitle = styled.div`

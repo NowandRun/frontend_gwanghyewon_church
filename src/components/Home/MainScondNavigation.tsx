@@ -1,12 +1,30 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { HomeSecondNavItems } from './MainNavitationPart';
 import { Link } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { isdarkAtom } from '../../types/atoms';
 
 function MainScondNavigation() {
+  const isDark = useRecoilValue(isdarkAtom);
+
   return (
     <HomeSecondNav>
-      <HomeSecondNavOne></HomeSecondNavOne>
+      <HomeSecondNavOne>
+        <HomeSecondNavOneImageContainer>
+          <HomeSecondNavOneImage
+            key={isDark ? 'dark' : 'light'} // src 바뀔 때 React가 새로 렌더링하도록
+            src={
+              isDark
+                ? process.env.PUBLIC_URL +
+                  '/images/Main-Images/Main-Phrase-Image/로고 문구(사랑안에서 진리로 성장하는)_초록버전.png'
+                : process.env.PUBLIC_URL +
+                  '/images/Main-Images/Main-Phrase-Image/로고 문구(사랑안에서 진리로 성장하는)_노랑버전.png'
+            }
+            alt="예배 안내"
+          />
+        </HomeSecondNavOneImageContainer>
+      </HomeSecondNavOne>
       <HomeSecondNavTwo>
         <HomeSecondNavTwoController>
           {HomeSecondNavItems.map((items, index) => (
@@ -34,14 +52,36 @@ const HomeSecondNav = styled.div`
     height: 35vw;
   }
 `;
+
 const HomeSecondNavOne = styled.div`
-  height: 100%;
   width: 100%;
   background-color: ${(props) => props.theme.bgColor};
   display: flex;
+  justify-content: flex-end;
   ${({ theme }) => theme.media.tablet} {
     height: 100%;
     width: 50%;
+  }
+`;
+
+const HomeSecondNavOneImageContainer = styled.div`
+  height: 100%;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${({ theme }) => theme.media.tablet} {
+    width: 100%;
+  }
+`;
+
+const HomeSecondNavOneImage = styled.img`
+  width: 30vw;
+  max-width: 100%; /* 부모 영역 안 넘치지 않도록 */
+  height: auto;
+  object-fit: contain; /* 이미지 비율 유지하면서 빈 공간 처리 */
+  ${({ theme }) => theme.media.tablet} {
+    width: 35vw;
   }
 `;
 
