@@ -32,6 +32,7 @@ export default MainKaKaoMap;
 
 const MainKaKaoMapWrapper = styled.div`
   background-color: ${(props) => props.theme.cardBgColor};
+  color: ${(props) => props.theme.textColor};
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -86,7 +87,7 @@ const KaKaoMapAddressIcon = styled.div`
   display: flex;
   align-items: end;
   font-size: 2.5vw;
-  color: ${(props) => props.theme.accentColor};
+  color: ${(props) => props.theme.mainNavigationIcon};
   ${({ theme }) => theme.media.tablet} {
     font-size: 3.5vw;
   }

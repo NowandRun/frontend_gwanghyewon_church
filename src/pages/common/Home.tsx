@@ -7,6 +7,7 @@ import MainRecommendVideo from '../../components/Home/MainRecommendVidoe';
 import MainScondNavigation from '../../components/Home/MainScondNavigation';
 import MainOfferingInformation from '../../components/Home/MainOfferingInformation';
 import MainKaKaoMap from '../../components/Home/MainKaKaoMap';
+import MainVisionStateMent from '../../components/Home/MainVisionStatement';
 
 function Home() {
   return (
@@ -17,8 +18,9 @@ function Home() {
         <MainScondNavigation />
         <MainRecommendVideo />
         <MainWorshipInformation />
-        <MainOfferingInformation />
         <MainKaKaoMap />
+        <MainVisionStateMent />
+        <MainOfferingInformation />
       </HomeWrapper>
     </>
   );

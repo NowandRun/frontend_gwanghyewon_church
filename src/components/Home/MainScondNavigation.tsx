@@ -17,9 +17,9 @@ function MainScondNavigation() {
             src={
               isDark
                 ? process.env.PUBLIC_URL +
-                  '/images/Main-Images/Main-Phrase-Image/로고 문구(사랑안에서 진리로 성장하는)_초록버전.png'
-                : process.env.PUBLIC_URL +
                   '/images/Main-Images/Main-Phrase-Image/로고 문구(사랑안에서 진리로 성장하는)_노랑버전.png'
+                : process.env.PUBLIC_URL +
+                  '/images/Main-Images/Main-Phrase-Image/로고 문구(사랑안에서 진리로 성장하는)_초록버전.png'
             }
             alt="예배 안내"
           />

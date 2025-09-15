@@ -103,7 +103,7 @@ const WorshipInformationTitle = styled.div`
 const WorshipInformationText = styled.span`
   font-size: 3vw;
   font-weight: bold;
-  color: #708993;
+  color: #ffff;
   padding-bottom: 0.5vw;
 
   ${({ theme }) => theme.media.tablet} {
@@ -131,7 +131,7 @@ const Section = styled.section`
 /* color: #2c3e50; */
 const WorshipInformationtitle = styled.h2`
   font-size: 1.6vw;
-  color: ${(props) => props.theme.textColor};
+  color: #ffff;
   margin-bottom: 0.5vw;
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.3vw;
@@ -145,6 +145,7 @@ const WorshipInformationPlace = styled.div`
   width: 100%;
   height: 2vw;
   background-color: ${(props) => props.theme.cardBgColor};
+  color: ${(props) => props.theme.textColor};
   display: flex;
   align-items: center;
   justify-content: center;

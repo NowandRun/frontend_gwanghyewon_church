@@ -1,11 +1,10 @@
 import { DefaultTheme } from 'styled-components';
 
 export const darkTheme: DefaultTheme = {
-  isDark: true,
-  bgColor: '#424242',
-  textColor: '#F5F5F5',
-  accentColor: '#DC143C',
-  cardBgColor: '#48CFCB',
+  bgColor: '#213555',
+  textColor: '#F5EFE7',
+  cardBgColor: '#3E5879',
+  mainNavigationIcon: '#FF8989',
   headerWidth: {
     default: '70vw',
     responsive: '100%',
@@ -19,11 +18,11 @@ export const darkTheme: DefaultTheme = {
 };
 
 export const lightTheme: DefaultTheme = {
-  isDark: false,
   bgColor: '#FCFAFA',
-  textColor: '#4F81C7',
-  accentColor: '#0046FF',
-  cardBgColor: '#F0D78C',
+  textColor: '#F5F5F5',
+  mainNavigationIcon: '#2C3930',
+
+  cardBgColor: '#48CFCB',
   borderColor: '#E0E0E0',
   headerWidth: {
     default: '70vw',

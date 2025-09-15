@@ -28,7 +28,7 @@ const StyledFooter = styled.footer`
   align-items: center;
   height: 200px;
   width: 100%;
-  background-color: ${(props) => props.theme.bgColor};
+  background-color: ${(props) => props.theme.cardBgColor};
   ${({ theme }) => theme.media.tablet} {
     height: 100px;
   }
@@ -55,6 +55,6 @@ const FooterMiddleTexttwo = styled.p`
   color: ${(props) => props.theme.textColor};
   span {
     text-transform: uppercase;
-    color: #78b9b5;
+    color: #b17f59;
   }
 `;

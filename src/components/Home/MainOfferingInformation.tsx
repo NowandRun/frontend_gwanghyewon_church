@@ -170,6 +170,7 @@ const MainOfferingInformationHowToWriteTheAccountName = styled.div`
 
 const MainOfferingInformationHowToWriteTheAccountNameMethod = styled.div`
   background-color: ${(props) => props.theme.cardBgColor};
+  color: ${(props) => props.theme.textColor};
   border-radius: 0.8rem;
   /* font-size: clamp(12px, 1vw, 16px);
   width: clamp(120px, 12vw, 200px);
