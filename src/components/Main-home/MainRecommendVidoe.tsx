@@ -6,9 +6,9 @@ import {
   fetchLatestVideosFromMainSundayWorshipPlaylists,
   fetchLatestVideosFromMainFridayWorshipPlaylists,
 } from '../../types/youtube-api';
-import Slider from '../../components/Slider/Slider';
+import Slider from '../Slider/Slider';
 import { ClockLoader } from 'react-spinners';
-import useWindowDimensions from '../../components/useWindowDimensions';
+import useWindowDimensions from '../useWindowDimensions';
 
 function MainRecommendVideo() {
   const windowWidth = useWindowDimensions();

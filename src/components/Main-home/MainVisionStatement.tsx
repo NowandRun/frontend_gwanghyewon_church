@@ -48,7 +48,14 @@ const MainVisionStateMentWrapperBackground = styled.div`
   justify-content: center;
   align-items: center;
   height: 50vw;
-  border-bottom: 0.1vw solid #00a0d1;
+  border-bottom: 0.1vw solid ${(props) => props.theme.mainHomePage.mainVisionStatementLine};
+  transition: border 0.3s ease-in-out;
+  ${({ theme }) => theme.media.tablet} {
+    height: 65vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    height: 70vw;
+  }
 `;
 
 const MainVisionStateMentBackgroundImageWapper = styled.div`
@@ -58,6 +65,9 @@ const MainVisionStateMentBackgroundImageWapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  ${({ theme }) => theme.media.tablet} {
+    width: 100%;
+  }
 `;
 
 const MainVisionStateMentBackgroundImage = styled.img`
@@ -86,21 +96,23 @@ const MainVisionStateMentTitleWapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  font-size: 3vw;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 4vw;
+  }
 `;
 
 const MainVisionStateMentFirstTitle = styled.span`
-  font-size: 3vw;
   font-weight: 400;
   margin-top: 8vw;
-  color: #00a0d1;
+  color: ${(props) => props.theme.mainHomePage.mainVisionStatementTitle};
 `;
 
 const MainVisionStateMentLastTitle = styled.span`
-  font-size: 3vw;
   margin-left: 1vw;
   font-weight: 600;
   margin-top: 8vw;
-  color: #00a0d1;
+  color: ${(props) => props.theme.mainHomePage.mainVisionStatementTitle};
 `;
 
 const MainVisionStateMentBoderline = styled.div`
@@ -116,15 +128,23 @@ const MainVisionStateMentBoderline = styled.div`
 const Line = styled.div`
   flex: 1;
   height: 0.1vw;
-  background-color: #00a0d1;
+  background-color: ${(props) => props.theme.mainHomePage.mainVisionStatementLine};
 `;
 
 const StarShape = styled.div`
   margin: 0 20px; /* ✅ 별 좌우 여백 */
   width: 3vw;
   height: 3vw;
-  background: #00a0d1;
+  background-color: ${(props) => props.theme.mainHomePage.mainVisionStatementStar};
   clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%, 40% 40%);
+  ${({ theme }) => theme.media.tablet} {
+    width: 4vw;
+    height: 4vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    width: 5vw;
+    height: 5vw;
+  }
 `;
 
 const MainVisionStateMentTextWapper = styled.div`
@@ -146,6 +166,12 @@ const MainVisionStateMentOneText = styled.div`
   font-size: 1.4vw;
   font-weight: 400;
   z-index: 2;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 2vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 2.5vw;
+  }
 `;
 
 const MainVisionStateMentTwoText = styled.div`
@@ -158,4 +184,10 @@ const MainVisionStateMentTwoText = styled.div`
   font-size: 1.4vw;
   font-weight: 400;
   z-index: 2;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 2vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 2.5vw;
+  }
 `;

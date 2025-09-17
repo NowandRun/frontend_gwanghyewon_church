@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import Mainbanner from '../../components/Home/MainBanner';
-import Mainministry from '../../components/Home/MainMinistry';
-import MainWorshipInformation from '../../components/Home/MainWorshipInformation';
-import MainRecommendVideo from '../../components/Home/MainRecommendVidoe';
-import MainScondNavigation from '../../components/Home/MainScondNavigation';
-import MainOfferingInformation from '../../components/Home/MainOfferingInformation';
-import MainKaKaoMap from '../../components/Home/MainKaKaoMap';
-import MainVisionStateMent from '../../components/Home/MainVisionStatement';
+import Mainbanner from '../../components/Main-home/MainBanner';
+import Mainministry from '../../components/Main-home/MainMinistry';
+import MainWorshipInformation from '../../components/Main-home/MainWorshipInformation';
+import MainRecommendVideo from '../../components/Main-home/MainRecommendVidoe';
+import MainScondNavigation from '../../components/Main-home/MainScondNavigation';
+import MainOfferingInformation from '../../components/Main-home/MainOfferingInformation';
+import MainKaKaoMap from '../../components/Main-home/MainKaKaoMap';
+import MainVisionStateMent from '../../components/Main-home/MainVisionStatement';
 
 function Home() {
   return (

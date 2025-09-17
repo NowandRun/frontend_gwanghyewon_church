@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import KakaoMapView from '../../components/KaKaoMap/KaKaoMapView';
+import KakaoMapView from '../KaKaoMap/KaKaoMapView';
 import { LOCATION_ADDRESS } from '../../types/constants';
 import { MapPinLineIcon } from '@phosphor-icons/react/dist/ssr';
 
@@ -87,7 +87,7 @@ const KaKaoMapAddressIcon = styled.div`
   display: flex;
   align-items: end;
   font-size: 2.5vw;
-  color: ${(props) => props.theme.mainNavigationIcon};
+  color: ${(props) => props.theme.mainHomePage.mainNavigationIcon};
   ${({ theme }) => theme.media.tablet} {
     font-size: 3.5vw;
   }

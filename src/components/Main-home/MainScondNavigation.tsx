@@ -91,7 +91,7 @@ const HomeSecondNavTwo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #d8d2c2;
+  background-color: #a8bba3;
   position: relative; // ✅ 추가
   ${({ theme }) => theme.media.tablet} {
     height: 100%;
