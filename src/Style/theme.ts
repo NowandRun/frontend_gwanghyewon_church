@@ -21,17 +21,17 @@ export const darkTheme: DefaultTheme = {
     mobile: '@media (max-width: 800px)',
   },
 };
-
+/* carBgColor:896C6C , BF9264, C599B6, 819A91 */
 export const lightTheme: DefaultTheme = {
   bgColor: '#FCFAFA',
   textColor: '#F5F5F5',
-  cardBgColor: '#FFA673',
+  cardBgColor: '#819A91',
   borderColor: '#E0E0E0',
   mainHomePage: {
     mainNavigationIcon: '#2C3930',
-    mainVisionStatementTitle: '#FFA673',
-    mainVisionStatementLine: '#FFA673',
-    mainVisionStatementStar: '#FFA673',
+    mainVisionStatementTitle: '#819A91',
+    mainVisionStatementLine: '#819A91',
+    mainVisionStatementStar: '#819A91',
   },
   headerWidth: {
     default: '70vw',

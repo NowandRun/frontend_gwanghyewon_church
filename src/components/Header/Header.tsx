@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import Sitemap from './Sitemap';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import TopButton from './TopButton';
 
 export const sharedHeaderWidth = css`
   width: 70%;
@@ -305,6 +306,7 @@ function Header() {
             >
               {/* <span>회원가입</span>
               <span>로그인</span> */}
+              <TopButton />
               <ModeWrapper>
                 <Mode />
               </ModeWrapper>
@@ -382,7 +384,7 @@ const Logoimage = styled.img`
   height: auto;
   display: block;
   ${({ theme }) => theme.media.tablet} {
-    width: 165px;
+    width: 245px;
   }
 `;
 
@@ -523,6 +525,7 @@ const UserFeat = styled.div<{
 const ModeWrapper = styled.div`
   ${({ theme }) => theme.media.tablet} {
     margin-right: 8px; /* 여유 공간 확보 */
+    padding-left: 10px; /* 여유 공간 확보 */
   }
 `;
 

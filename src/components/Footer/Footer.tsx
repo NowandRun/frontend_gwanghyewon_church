@@ -25,16 +25,22 @@ function Footer() {
         </FooterMiddleWapper>
 
         <FooterLastWapper>
-          <CircleIconWrapper>
-            <YouTubeIconWrapper>
-              <VideoIcon weight="fill" />
-            </YouTubeIconWrapper>
-            <FooterLastYouTubeText>
-              {footerYoutubeText.split('\n').map((line, idx) => (
-                <div key={idx}>{line}</div>
-              ))}
-            </FooterLastYouTubeText>
-          </CircleIconWrapper>
+          <a
+            href="https://www.youtube.com/@Mrssomman"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <CircleIconWrapper>
+              <YouTubeIconWrapper>
+                <VideoIcon weight="fill" />
+              </YouTubeIconWrapper>
+              <FooterLastYouTubeText>
+                {footerYoutubeText.split('\n').map((line, idx) => (
+                  <div key={idx}>{line}</div>
+                ))}
+              </FooterLastYouTubeText>
+            </CircleIconWrapper>
+          </a>
         </FooterLastWapper>
       </StyledFooterWrapper>
     </StyledFooter>
@@ -53,6 +59,9 @@ const StyledFooter = styled.footer`
   background-color: ${(props) => props.theme.cardBgColor};
   ${({ theme }) => theme.media.tablet} {
     height: 14vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    height: 20vw;
   }
 `;
 
@@ -106,7 +115,7 @@ const FooterMiddleTexttwo = styled.p`
   color: ${(props) => props.theme.textColor};
   span {
     text-transform: uppercase;
-    color: #b17f59;
+    color: #f2c078;
   }
 `;
 
@@ -117,7 +126,7 @@ const FooterLastWapper = styled.div`
 `;
 
 const CircleIconWrapper = styled.div`
-  font-size: 1.5vw;
+  font-size: 1.6vw;
   width: 5vw;
   height: 5vw;
   border: 3px solid ${(props) => props.theme.textColor};
@@ -132,13 +141,15 @@ const CircleIconWrapper = styled.div`
   }
 
   ${({ theme }) => theme.media.tablet} {
-    width: 6.5vw;
-    height: 6.5vw;
+    font-size: 2.4vw;
+    width: 7vw;
+    height: 7vw;
     border: 2px solid ${(props) => props.theme.textColor};
   }
   ${({ theme }) => theme.media.mobile} {
-    width: 7.5vw;
-    height: 7.5vw;
+    font-size: 2.8vw;
+    width: 8vw;
+    height: 8vw;
     border: 1px solid ${(props) => props.theme.textColor};
   }
 `;
@@ -152,9 +163,9 @@ const FooterLastYouTubeText = styled.span`
   text-align: center;
   color: ${(props) => props.theme.textColor};
   ${({ theme }) => theme.media.tablet} {
-    font-size: 1vw;
+    font-size: 1.2vw;
   }
   ${({ theme }) => theme.media.mobile} {
-    font-size: 1.2vw;
+    font-size: 1.4vw;
   }
 `;
