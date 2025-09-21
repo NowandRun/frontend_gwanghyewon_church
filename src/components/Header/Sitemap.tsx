@@ -4,8 +4,8 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useWindowDimensions from '../useWindowDimensions';
-import { menuItems } from './Header';
 import { Link, useLocation } from 'react-router-dom';
+import { menuItems } from '../Navicaton';
 
 // onOpenChange의 타입을 함수로 정의
 interface SitemapProps {
@@ -189,8 +189,8 @@ const Button = styled(motion.div)`
   flex-direction: column;
   top: 0;
   background-color: ${(props) => props.theme.cardBgColor};
-  height: 6vw;
-  width: 5vw;
+  height: 7vw;
+  width: 6vw;
   color: ${(props) => props.theme.textColor};
   text-align: center;
   font-weight: 600;

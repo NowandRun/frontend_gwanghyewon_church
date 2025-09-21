@@ -5,6 +5,7 @@ import Sitemap from './Sitemap';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TopButton from './TopButton';
+import { menuItems } from '../Navicaton';
 
 export const sharedHeaderWidth = css`
   width: 70%;
@@ -13,127 +14,6 @@ export const sharedHeaderWidth = css`
     width: 100%;
   }
 `;
-
-export const menuItems = [
-  {
-    path: 'info',
-    subtitle: 'about church',
-    label: '교회소개',
-    children: [
-      {
-        path: '',
-        label: '담임목사 인사말',
-      },
-      {
-        path: 'minister',
-        label: '섬기는분들',
-      },
-      {
-        path: 'guide',
-        label: '예배안내',
-      },
-      {
-        path: 'location',
-        label: '찾아오시는 길',
-      },
-    ],
-  },
-  {
-    path: 'youth',
-    subtitle: 'youth',
-    label: '교회학교',
-    children: [
-      {
-        path: '',
-        label: '하꿈주일학교',
-      },
-      {
-        path: 'students',
-        label: '예람청소년부',
-      },
-      {
-        path: 'young-adult',
-        label: '하람청년부',
-      },
-    ],
-  },
-  {
-    path: 'broadcast',
-    subtitle: 'gs broadcast',
-    label: 'GS방송',
-    children: [
-      {
-        path: '',
-        label: '주일설교',
-      },
-      {
-        path: 'friday',
-        label: '금요설교',
-      },
-      {
-        path: 'special',
-        label: '기타영상',
-      },
-    ],
-  },
-  {
-    path: 'group',
-    subtitle: '새가족',
-    label: '새가족',
-    children: [
-      {
-        path: '',
-        label: '새가족',
-      },
-      {
-        path: 'worship',
-        label: '예배',
-      },
-      {
-        path: 'nurture',
-        label: '양육',
-      },
-      {
-        path: 'baptism',
-        label: '세례',
-      },
-      {
-        path: 'ministration',
-        label: '봉사',
-      },
-    ],
-  },
-  {
-    path: 'news',
-    subtitle: 'news',
-    label: '교회소식',
-    children: [
-      {
-        path: '',
-        label: '교회소식',
-      },
-      {
-        path: 'album',
-        label: '교우동정',
-      },
-      {
-        path: 'bulletin',
-        label: '교회주보',
-      },
-    ],
-  },
-  {
-    path: 'offering',
-    subtitle: 'online offering',
-    label: '온라인 헌금',
-    children: [
-      {
-        path: '',
-        label: '온라인 헌금',
-      },
-    ],
-  },
-];
 
 export const HEADER_HEIGHT = 0;
 
@@ -363,7 +243,7 @@ const HeaderWrapper = styled.div`
   align-items: center;
   margin-left: auto;
   margin-right: auto;
-  height: 5vw; /* 고정된 높이 */
+  height: 6vw; /* 고정된 높이 */
   ${({ theme }) => theme.media.tablet} {
     max-width: none; /* 2xl screen size */
     display: flex;
@@ -380,11 +260,14 @@ const LeftWrapper = styled.div`
 `;
 
 const Logoimage = styled.img`
-  width: 13vw; /* 원하면 2px 대신 원하는 값 */
+  width: 16vw; /* 원하면 2px 대신 원하는 값 */
   height: auto;
   display: block;
   ${({ theme }) => theme.media.tablet} {
-    width: 245px;
+    width: 240px;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    width: 180px;
   }
 `;
 
@@ -537,7 +420,7 @@ const SitemapWrapper = styled.div`
 `;
 
 const SubHeaderPage = styled.span`
-  font-size: 0.95vw;
+  font-size: 1.2vw;
   font-weight: 550;
 `;
 

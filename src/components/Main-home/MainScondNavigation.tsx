@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { HomeSecondNavItems } from './MainNavitationPart';
 import { Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { isdarkAtom } from '../../types/atoms';
+import { HomeSecondNavItems } from '../Navicaton';
 
 function MainScondNavigation() {
   const isDark = useRecoilValue(isdarkAtom);

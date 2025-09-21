@@ -2,9 +2,13 @@ import { ControlIcon } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
+import useWindowDimensions from '../useWindowDimensions';
 
 function TopButton() {
+  const windowWidth = useWindowDimensions();
   const [showButton, setShowButton] = useState(false);
+
+  const mobileSize = windowWidth > 480;
 
   const scrollToTop = () => {
     window.scroll({
@@ -28,7 +32,7 @@ function TopButton() {
     };
   }, []);
 
-  return showButton ? (
+  return showButton && mobileSize ? (
     <ScrollWrapper className="scroll__container">
       <button
         id="top"

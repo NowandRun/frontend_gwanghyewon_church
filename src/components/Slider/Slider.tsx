@@ -20,7 +20,6 @@ interface ISLider {
 export default function Slider({ data, title }: ISLider) {
   const setWindowWidth = useSetRecoilState(windowWidthAtom);
   const windowWidth = useWindowDimensions();
-  console.log('난 웹페이즈 사이즈야❤️❤️❤️❤️❤️', windowWidth);
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);

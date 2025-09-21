@@ -17,6 +17,10 @@ declare module 'styled-components' {
       mainVisionStatementStar: string;
     };
 
+    SubPage: {
+      WebSubNavTitleBg: string;
+    };
+
     media: {
       desktop: string;
       tablet: string;

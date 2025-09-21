@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ReactPlayer from 'react-player';
-import { mainVidoeTopText } from './MainNavitationPart';
+import { mainVidoeTopText } from '../Navicaton';
 
 function Mainbanner() {
   return (

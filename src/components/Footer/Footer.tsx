@@ -58,10 +58,10 @@ const StyledFooter = styled.footer`
   width: 100%;
   background-color: ${(props) => props.theme.cardBgColor};
   ${({ theme }) => theme.media.tablet} {
-    height: 14vw;
+    height: 120px;
   }
   ${({ theme }) => theme.media.mobile} {
-    height: 20vw;
+    height: 90px;
   }
 `;
 
@@ -72,8 +72,12 @@ const StyledFooterWrapper = styled.div`
   width: ${(props) => props.theme.headerWidth.default};
   height: 100%;
   ${({ theme }) => theme.media.tablet} {
+    width: 80vw;
+    padding: 0 2vw;
+  }
+  ${({ theme }) => theme.media.tablet} {
     width: ${(props) => props.theme.headerWidth.responsive};
-    padding: 0 4vw;
+    padding: 0 2vw;
   }
 `;
 
@@ -82,14 +86,11 @@ const FooterLogoWrapper = styled.div`
 `;
 
 const FooterLogo = styled.img`
-  width: 15vw;
+  width: 12vw; /* 원하면 2px 대신 원하는 값 */
   height: 100%;
   ${({ theme }) => theme.media.tablet} {
     padding-right: 20px;
-    width: 18vw;
-  }
-  ${({ theme }) => theme.media.tablet} {
-    width: 21vw;
+    width: 120px;
   }
 `;
 
@@ -104,10 +105,10 @@ const FooterMiddleWapper = styled.div`
 const FooterMiddleControl = styled.div`
   font-size: 1vw;
   ${({ theme }) => theme.media.tablet} {
-    font-size: 1.2vw;
+    font-size: 10px;
   }
-  ${({ theme }) => theme.media.mobile} {
-    font-size: 1.4vw;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 1.2vw;
   }
 `;
 

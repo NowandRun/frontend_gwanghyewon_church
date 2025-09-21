@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ministryItems } from './MainNavitationPart';
 import { Link } from 'react-router-dom';
+import { ministryItems } from '../Navicaton';
 
 function Mainministry() {
   return (
@@ -79,7 +79,7 @@ const Icon = styled.div`
 `;
 
 const Title = styled.h3`
-  font-size: 1.6vw;
+  font-size: 1.8vw;
   font-weight: bold;
   ${({ theme }) => theme.media.tablet} {
     font-size: 2.4vw;
