@@ -54,17 +54,16 @@ const linkVariants = {
 };
 
 const SubPageNavWrapper = styled.nav`
-  position: fixed;
+  position: sticky; /* ✅ sticky로 변경 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   left: 15%;
-  top: 30%;
-  width: 10vw;
+  top: 60vh;
+  width: 16vw;
   border: 1px solid #ccc;
   border-radius: 6px;
-  width: 260px;
   ${({ theme }) => theme.media.tablet} {
     left: 1%;
     top: 30%;
