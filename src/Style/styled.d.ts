@@ -18,7 +18,8 @@ declare module 'styled-components' {
     };
 
     SubPage: {
-      WebSubNavTitleBg: string;
+      WebSubBannerBg: string;
+      WebSubBannerSubTitle: string;
     };
 
     media: {

@@ -13,7 +13,8 @@ export const darkTheme: DefaultTheme = {
     mainVisionStatementStar: '#3E5879',
   },
   SubPage: {
-    WebSubNavTitleBg: '#FFDDAB',
+    WebSubBannerBg: '#2A4759' /*183B4E,2A4759, 254D70, 3674B5 */,
+    WebSubBannerSubTitle: 'linear-gradient(90deg, #fceabb, #f8b500)',
   },
   headerWidth: {
     default: '70vw',
@@ -42,7 +43,8 @@ export const lightTheme: DefaultTheme = {
     responsive: '100%',
   },
   SubPage: {
-    WebSubNavTitleBg: '#DDA853',
+    WebSubBannerBg: '#e5d0ac',
+    WebSubBannerSubTitle: 'linear-gradient(90deg, #497D74, #27445D)',
   },
   media: {
     desktop: '@media (min-width: 1024px)',
