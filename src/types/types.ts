@@ -52,3 +52,13 @@ export interface MainVideos {
   sunday: Video[];
   friday: Video[];
 }
+
+// src/constants/subPageBannerImages.ts
+export const SubPageBannerImages = {
+  Pastor: process.env.PUBLIC_URL + '/images/SubPage/250923-SubPage-배너-담임목사-사진.png',
+  School: process.env.PUBLIC_URL + '/images/SubPage/250923-SubPage-배너-주일학교.png',
+  Worship: process.env.PUBLIC_URL + '/images/SubPage/250923-SubPage-배너-예배.png',
+} as const;
+
+// 타입은 객체의 key를 그대로 활용
+export type SubPageBannerImageKey = keyof typeof SubPageBannerImages;

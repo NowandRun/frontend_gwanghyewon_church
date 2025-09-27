@@ -60,18 +60,23 @@ const SubPageNavWrapper = styled.nav`
   justify-content: center;
   align-items: center;
   left: 15%;
-  top: 60vh;
+  margin-top: 5vw;
   width: 16vw;
   border: 1px solid #ccc;
   border-radius: 6px;
   ${({ theme }) => theme.media.tablet} {
     left: 1%;
-    top: 30%;
     width: 25vw;
+    margin-top: 2vw;
   }
   ${({ theme }) => theme.media.mobile} {
-    position: none;
-    display: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: none;
+    width: 100%;
   }
 `;
 
@@ -111,10 +116,17 @@ const ChildLinkWrapper = styled.div`
   font-weight: 500;
   width: 100%;
   padding: 1rem;
-
   ${({ theme }) => theme.media.tablet} {
     font-size: 2vw;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
     padding: 0.5rem;
+    font-size: 2.3vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
   }
 
   a {
@@ -126,6 +138,11 @@ const ChildLinkWrapper = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem; // 아이콘과 텍스트 간격
+
+    ${({ theme }) => theme.media.mobile} {
+      padding: 1.5vw;
+    }
+
     &.active {
       transition:
         color 0s,
@@ -152,8 +169,17 @@ const MotionNavLink = styled(motion(NavLink))`
   text-decoration: none;
   font-weight: 500;
   margin-bottom: 0.5rem;
+  ${({ theme }) => theme.media.mobile} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0.5rem;
+  }
 `;
 
 const StyledPushPinIcon = styled(PushPin)`
   margin-right: 0.5rem; // 아이콘 오른쪽 여백
+  ${({ theme }) => theme.media.mobile} {
+    margin-right: 0.01rem; // 아이콘 오른쪽 여백
+  }
 `;

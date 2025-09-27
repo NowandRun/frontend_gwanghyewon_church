@@ -1,15 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
+import { SubPageBannerImages, SubPageBannerImageKey } from '../../types/types';
 
-const SubPageBanner = () => {
+type SubPageBannerProps = {
+  subPageBannerTitle: string;
+  imageKey: SubPageBannerImageKey; // 'Pastor' | 'School' | 'Worship' ...
+};
+
+const SubPageBanner = ({ subPageBannerTitle, imageKey }: SubPageBannerProps) => {
   return (
     <SubPageBannerWapper>
       <SubPageBannerImage
-        src={process.env.PUBLIC_URL + '/images/SubPage/250923-SubPage-배너-담임목사-사진.png'}
+        src={SubPageBannerImages[imageKey]}
+        alt={subPageBannerTitle}
       />
       <SubPageBannerTextWrapper>
         <BigSubTitle>“Together in His Grace”</BigSubTitle>
-        <BigMainTitle>환영합니다, 주님의 사랑 안에서</BigMainTitle>
+        <BigMainTitle>{subPageBannerTitle}</BigMainTitle>
       </SubPageBannerTextWrapper>
     </SubPageBannerWapper>
   );
@@ -69,19 +76,23 @@ const SubPageBannerTextWrapper = styled.div`
   position: absolute;
   top: 50%;
   left: 45%; /* 이미지가 왼쪽에 있으니 살짝 오른쪽으로 */
-  transform: translateY(-40%);
+  transform: translateY(-30%);
   padding: 2rem 3rem;
   text-align: left; /* 교회 소개 느낌은 가운데보단 왼쪽 정렬이 안정적임 */
 
   ${({ theme }) => theme.media.tablet} {
-    left: 60%;
-    transform: translate(-50%, -50%);
-    text-align: center;
+    transform: translate(-26%, -40%);
+    padding: 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 `;
 
 const BigSubTitle = styled.h2`
-  font-size: clamp(1.2rem, 2vw, 2rem);
+  font-size: 1.5vw;
   font-weight: 400;
   letter-spacing: 0.15em;
   margin-bottom: 1rem;
@@ -93,12 +104,21 @@ const BigSubTitle = styled.h2`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
   font-family: 'Georgia', serif;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 2.5vw;
+    letter-spacing: 0.05rem;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    font-size: 2.8vw;
+    letter-spacing: 0.05rem;
+  }
 `;
 
 const BigMainTitle = styled.h1`
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: 2.8vw;
   font-weight: 700;
   line-height: 1.3;
   color: #ffffff;
@@ -107,6 +127,16 @@ const BigMainTitle = styled.h1`
   text-shadow: 0 3px 12px rgba(0, 0, 0, 0.7);
 
   animation: fadeIn 1.5s ease forwards;
+
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 3.8vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 4.3vw;
+
+    /* 따뜻한 그림자 */
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+  }
 
   @keyframes fadeIn {
     from {

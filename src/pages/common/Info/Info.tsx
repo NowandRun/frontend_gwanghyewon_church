@@ -9,7 +9,10 @@ function Info() {
   const isDark = useRecoilValue(isdarkAtom);
   return (
     <>
-      <SubPageBanner />
+      <SubPageBanner
+        subPageBannerTitle={'환영합니다, 주님의 사랑 안에서'}
+        imageKey="Pastor"
+      />
       <SubPageNav /> {/* 재사용 */}
       <Outlet />
     </>
