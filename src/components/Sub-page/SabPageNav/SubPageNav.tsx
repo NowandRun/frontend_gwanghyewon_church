@@ -60,7 +60,6 @@ const SubPageNavWrapper = styled.nav`
   justify-content: center;
   align-items: center;
   left: 15%;
-  margin-top: 5vw;
   width: 16vw;
   border: 1px solid #ccc;
   border-radius: 6px;
