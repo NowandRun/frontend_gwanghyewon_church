@@ -118,6 +118,9 @@ const GreetingImgTextOne = styled(motion.span)`
   ${({ theme }) => theme.media.tablet} {
     font-size: 2vw;
   }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 2.2vw;
+  }
 `;
 
 const GreetingImgTextTwo = styled(motion.span)`
@@ -126,6 +129,9 @@ const GreetingImgTextTwo = styled(motion.span)`
   font-size: 2vw;
   ${({ theme }) => theme.media.tablet} {
     font-size: 3.5vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 3.7vw;
   }
 `;
 
@@ -141,6 +147,9 @@ const GreetingMainBordBigText = styled.p`
   ${({ theme }) => theme.media.tablet} {
     font-size: 1.5vw;
   }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 1.9vw;
+  }
 `;
 
 const GreetingMainBordSmallText = styled.p`
@@ -149,6 +158,9 @@ const GreetingMainBordSmallText = styled.p`
   white-space: pre-line; /* ✅ \n 줄바꿈 적용 */
   ${({ theme }) => theme.media.tablet} {
     font-size: 1.4vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 1.7vw;
   }
 `;
 
@@ -171,6 +183,9 @@ const GreetingAutorPosition = styled.p`
   ${({ theme }) => theme.media.tablet} {
     font-size: 1.7vw;
   }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 2.1vw;
+  }
 `;
 
 const GreetingAutorName = styled.p`
@@ -182,5 +197,8 @@ const GreetingAutorName = styled.p`
   font-family: 'Great Vibes', cursive; /* 👉 흘림체 느낌 */
   ${({ theme }) => theme.media.tablet} {
     font-size: 2.4vw;
+  }
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 3.2vw;
   }
 `;
