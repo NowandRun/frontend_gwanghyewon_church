@@ -37,6 +37,17 @@ const SubIntroLayout = styled.div`
   width: 70vw;
   margin: 5vw auto 0 auto; /* ✅ 좌우 자동 마진으로 중앙 배치 */
   gap: 2rem;
+  ${({ theme }) => theme.media.tablet} {
+    width: 100%;
+    gap: 2vw;
+    width: 95vw;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    flex-direction: column;
+    margin: 1vw auto 0 auto; /* ✅ 좌우 자동 마진으로 중앙 배치 */
+    gap: 0;
+  }
 `;
 
 const SubLeftNavWrapper = styled.div`
@@ -50,4 +61,10 @@ const RightContentWrapper = styled.div`
   display: flex;
   justify-content: center; /* ✅ 가운데 정렬 */
   align-items: center; /* ✅ 세로 방향도 가운데 (필요시) */
+  ${({ theme }) => theme.media.tablet} {
+    flex: unset; /* ✅ flex:1 해제 */
+    width: auto; /* ✅ 내용 크기에 맞게 */
+    max-width: 95vw; /* ✅ 너무 넓어지지 않게 */
+    margin: 0 auto; /* ✅ 좌우 자동 여백으로 센터링 */
+  }
 `;

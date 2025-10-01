@@ -50,6 +50,10 @@ function Greeting() {
           
           하나님의 은혜와 평강이 여러분과 가정에 늘 충만하시기를 기도합니다.`}
         </GreetingMainBordSmallText>
+        <GreetingAutorWrapper>
+          <GreetingAutorPosition>담임목사</GreetingAutorPosition>
+          <GreetingAutorName>원솜니</GreetingAutorName>
+        </GreetingAutorWrapper>
       </GreetingMainTextWrapper>
     </GreetingWrapper>
   );
@@ -63,6 +67,13 @@ const GreetingWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   margin-bottom: 8vw;
+  ${({ theme }) => theme.media.tablet} {
+    margin-top: 2vw;
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    position: static; /* ✅ sticky로 변경 */
+  }
 `;
 
 const GreetingTitle = styled.div`
@@ -71,6 +82,11 @@ const GreetingTitle = styled.div`
   padding: 2vw 0;
   display: flex;
   align-items: center;
+  ${({ theme }) => theme.media.tablet} {
+    height: 4vw; /* 예: 60px 고정 */
+    padding: 3vw 0;
+    font-size: 3vw;
+  }
 `;
 
 const GreetingImgWrapper = styled.div`
@@ -82,6 +98,9 @@ const GreetingImg = styled.img`
   width: 40%;
   height: auto;
   display: block;
+  ${({ theme }) => theme.media.tablet} {
+    width: 43%;
+  }
 `;
 
 const GreetingImgTextWrapper = styled.div`
@@ -96,12 +115,18 @@ const GreetingImgTextOne = styled(motion.span)`
   color: white;
   display: block;
   font-size: 1.2vw;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 2vw;
+  }
 `;
 
 const GreetingImgTextTwo = styled(motion.span)`
   color: white;
   display: block;
-  font-size: 2.5vw;
+  font-size: 2vw;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 3.5vw;
+  }
 `;
 
 const GreetingMainTextWrapper = styled.div`
@@ -113,10 +138,49 @@ const GreetingMainBordBigText = styled.p`
   line-height: 1.8; /* ✅ 줄 간격 넉넉히 */
   color: #333;
   white-space: pre-line; /* ✅ \n 줄바꿈 적용 */
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 1.5vw;
+  }
 `;
 
 const GreetingMainBordSmallText = styled.p`
   font-size: 1vw;
   margin-top: 1.5vw;
   white-space: pre-line; /* ✅ \n 줄바꿈 적용 */
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 1.4vw;
+  }
+`;
+
+const GreetingAutorWrapper = styled.div`
+  margin-top: 3vw;
+  margin-right: 3vw;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end; /* 👉 오른쪽 정렬 */
+  justify-content: flex-end;
+  gap: 0.5vw;
+`;
+
+const GreetingAutorPosition = styled.p`
+  font-size: 1.3vw;
+  color: #555;
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif; /* 👉 깔끔한 한글 기본 */
+  display: block;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 1.7vw;
+  }
+`;
+
+const GreetingAutorName = styled.p`
+  font-size: 2vw;
+  font-weight: 400;
+  margin: 0;
+  color: #222;
+  display: block;
+  font-family: 'Great Vibes', cursive; /* 👉 흘림체 느낌 */
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 2.4vw;
+  }
 `;

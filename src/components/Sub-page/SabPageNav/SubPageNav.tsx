@@ -54,7 +54,7 @@ const linkVariants = {
 };
 
 const SubPageNavWrapper = styled.nav`
-  position: sticky; /* ✅ sticky로 변경 */
+  position: sticky;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -63,19 +63,25 @@ const SubPageNavWrapper = styled.nav`
   width: 16vw;
   border: 1px solid #ccc;
   border-radius: 6px;
+
   ${({ theme }) => theme.media.tablet} {
     left: 1%;
     width: 25vw;
     margin-top: 2vw;
   }
+
   ${({ theme }) => theme.media.mobile} {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    /* ✅ 블럭처럼 아래 요소와 겹치지 않도록 */
+    position: relative; /* absolute → relative */
+    display: block;
+    width: 100vw; /* 뷰포트 전체 폭 */
+    max-width: 100vw;
+
     border: none;
-    border-radius: none;
-    width: 100%;
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    left: 0;
   }
 `;
 
@@ -83,7 +89,6 @@ const SubPageNavTitleWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
   width: 100%;
   border-bottom: 1px solid #ccc;
 
@@ -99,7 +104,7 @@ const SubPageNavTitle = styled.span`
   font-size: 1.5vw;
 
   ${({ theme }) => theme.media.tablet} {
-    font-size: 2.5vw;
+    font-size: 3vw;
   }
 `;
 
@@ -120,7 +125,7 @@ const ChildLinkWrapper = styled.div`
   }
 
   ${({ theme }) => theme.media.mobile} {
-    padding: 0.5rem;
+    padding: 0;
     font-size: 2.3vw;
     display: flex;
     flex-direction: row;
