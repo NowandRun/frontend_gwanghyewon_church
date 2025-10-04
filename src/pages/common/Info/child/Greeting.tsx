@@ -160,7 +160,7 @@ const GreetingMainBordSmallText = styled.p`
     font-size: 1.4vw;
   }
   ${({ theme }) => theme.media.mobile} {
-    font-size: 1.7vw;
+    font-size: 1.75vw;
   }
 `;
 

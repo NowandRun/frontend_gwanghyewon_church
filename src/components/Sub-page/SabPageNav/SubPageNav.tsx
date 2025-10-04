@@ -72,11 +72,7 @@ const SubPageNavWrapper = styled.nav`
 
   ${({ theme }) => theme.media.mobile} {
     /* ✅ 블럭처럼 아래 요소와 겹치지 않도록 */
-    position: relative; /* absolute → relative */
-    display: block;
-    width: 100vw; /* 뷰포트 전체 폭 */
-    max-width: 100vw;
-
+    width: 100%;
     border: none;
     border-radius: 0;
     margin: 0;
@@ -125,7 +121,7 @@ const ChildLinkWrapper = styled.div`
   }
 
   ${({ theme }) => theme.media.mobile} {
-    padding: 0;
+    padding-top: 0.5vw;
     font-size: 2.3vw;
     display: flex;
     flex-direction: row;
@@ -177,13 +173,13 @@ const MotionNavLink = styled(motion(NavLink))`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 0.5rem;
+    margin-left: 1vw;
   }
 `;
 
 const StyledPushPinIcon = styled(PushPin)`
   margin-right: 0.5rem; // 아이콘 오른쪽 여백
   ${({ theme }) => theme.media.mobile} {
-    margin-right: 0.01rem; // 아이콘 오른쪽 여백
+    margin-right: 0;
   }
 `;

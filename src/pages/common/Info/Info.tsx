@@ -40,18 +40,19 @@ const SubIntroLayout = styled.div`
   ${({ theme }) => theme.media.tablet} {
     width: 100%;
     gap: 2vw;
-    width: 95vw;
   }
 
   ${({ theme }) => theme.media.mobile} {
     flex-direction: column;
-    margin: 1vw auto 0 auto; /* ✅ 좌우 자동 마진으로 중앙 배치 */
+    margin: 0; /* ✅ 좌우 자동 마진으로 중앙 배치 */
     gap: 0;
   }
 `;
 
 const SubLeftNavWrapper = styled.div`
-  z-index: 2; /* 항상 위에 */
+  ${({ theme }) => theme.media.mobile} {
+    width: 100%;
+  }
 `;
 
 const RightContentWrapper = styled.div`
