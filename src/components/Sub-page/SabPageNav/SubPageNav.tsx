@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 import { menuItems } from '../../Navicaton';
 import { PushPinIcon as PushPin } from '@phosphor-icons/react/dist/ssr';
@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 
 const SubPageNav = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname.split('/')[1]; // 첫 번째 경로 segment
   const currentMenu = menuItems.find((item) => item.path === currentPath);
 
@@ -28,6 +29,15 @@ const SubPageNav = () => {
             variants={linkVariants}
             initial="hidden"
             animate="visible"
+            onClick={(e) => {
+              e.preventDefault(); // NavLink 기본 동작 막기
+              // SPA 상태를 유지하면서 원하는 경로로 이동
+              navigate(`/${currentMenu.path}${child.path ? `/${child.path}` : ''}`, {
+                replace: false,
+              });
+              // 페이지 새로고침
+              window.scrollTo(0, 0); // 상단으로 스크롤
+            }}
           >
             <StyledPushPinIcon />
             {child.label}
@@ -57,9 +67,7 @@ const SubPageNavWrapper = styled.nav`
   position: sticky;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  left: 15%;
   width: 16vw;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -118,6 +126,7 @@ const ChildLinkWrapper = styled.div`
   padding: 1rem;
   ${({ theme }) => theme.media.tablet} {
     font-size: 2vw;
+    padding: 0.5rem;
   }
 
   ${({ theme }) => theme.media.mobile} {
@@ -169,6 +178,7 @@ const MotionNavLink = styled(motion(NavLink))`
   text-decoration: none;
   font-weight: 500;
   margin-bottom: 0.5rem;
+
   ${({ theme }) => theme.media.mobile} {
     display: flex;
     justify-content: center;
