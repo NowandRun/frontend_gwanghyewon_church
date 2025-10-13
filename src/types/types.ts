@@ -53,9 +53,9 @@ export interface MainVideos {
   friday: Video[];
 }
 
-// src/constants/subPageBannerImages.ts
+// src/constants/subPageBannerImages.ts    /images/SubPage/250923-SubPage-배너-담임목사-사진.png
 export const SubPageBannerImages = {
-  Pastor: process.env.PUBLIC_URL + '/images/SubPage/250923-SubPage-배너-담임목사-사진.png',
+  Pastor: process.env.PUBLIC_URL + '/images/SubPage/SubPageBanner/251013-2025-단체사진.jpg',
   School: process.env.PUBLIC_URL + '/images/SubPage/250923-SubPage-배너-주일학교.png',
   Worship: process.env.PUBLIC_URL + '/images/SubPage/250923-SubPage-배너-예배.png',
 } as const;

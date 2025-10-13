@@ -53,12 +53,12 @@ const SubPageBannerWapper = styled.div`
 `;
 
 const SubPageBannerImage = styled.img`
-  width: 28%;
-  height: auto; /* 원본 비율 유지 */
+  width: auto;
+  height: 28vw; /* 원본 비율 유지 */
   position: absolute;
   bottom: 0; /* ✅ 항상 아래쪽 고정 */
-  left: 26%;
-  transform: translateX(-50%); /* 가운데 정렬 */
+  left: 0;
+  transform: none; /* 중앙 정렬 해제 */
   object-fit: cover;
   object-position: bottom; /* ✅ 이미지 잘릴 때 아래쪽 기준 */
 
@@ -70,6 +70,19 @@ const SubPageBannerImage = styled.img`
     left: 18%;
     width: 45%;
   }
+
+  /* ✅ 좌우 흐려지는 마스크 적용 */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 5%,
+    black 5%,
+    black 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 90%, transparent 100%);
+
+  -webkit-mask-size: 40% 40%;
+  mask-size: 100% 100%;
 `;
 
 const SubPageBannerTextWrapper = styled.div`
