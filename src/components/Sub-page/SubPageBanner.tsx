@@ -73,11 +73,11 @@ const SubPageBannerImage = styled.img`
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 5%,
-    black 5%,
+    black 0,
     black 90%,
     transparent 100%
   );
-  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 0, black 90%, transparent 100%);
 
   -webkit-mask-size: 40% 40%;
   mask-size: 100% 100%;
