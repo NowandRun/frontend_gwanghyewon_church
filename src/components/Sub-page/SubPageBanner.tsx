@@ -63,12 +63,10 @@ const SubPageBannerImage = styled.img`
   object-position: bottom; /* ✅ 이미지 잘릴 때 아래쪽 기준 */
 
   ${({ theme }) => theme.media.tablet} {
-    left: 18%;
-    width: 42%;
+    height: 35vw; /* 원본 비율 유지 */
   }
   ${({ theme }) => theme.media.mobile} {
-    left: 18%;
-    width: 45%;
+    height: 42vw; /* 원본 비율 유지 */
   }
 
   /* ✅ 좌우 흐려지는 마스크 적용 */
