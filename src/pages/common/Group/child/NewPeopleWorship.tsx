@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FaPenNib, FaComments, FaChalkboardTeacher, FaMedal } from 'react-icons/fa';
 
-function NewPeople() {
+function NewPeopleWorship() {
   const steps = [
     {
       icon: <FaPenNib />,
@@ -27,32 +27,31 @@ function NewPeople() {
       description: '3주간의 양육교육을 수료하신 분께는 양육수료증을 드립니다.',
     },
   ];
-
   return (
-    <NewPeopleWrapper>
-      <NewPeopleTitle>새가족</NewPeopleTitle>
-      <NewPeopleTableWrapper>
+    <NewPeopleWorshipWrapper>
+      <NewPeopleWorshipTitle>예배</NewPeopleWorshipTitle>
+      <NewPeopleWorshipTableWrapper>
         {steps.map((step, index) => (
-          <NewPeopleTableRow key={index}>
-            <NewPeopleIconBoxWrapper>
-              <NewPeopleIconBox>{step.icon}</NewPeopleIconBox>
-            </NewPeopleIconBoxWrapper>
-            <NewPeopleContentBox>
-              <NewPeopleStepTitleWrapper>
-                <NewPeopleStepTitle>{step.title}</NewPeopleStepTitle>
-              </NewPeopleStepTitleWrapper>
-              <NewPeopleStepDescription>{step.description}</NewPeopleStepDescription>
-            </NewPeopleContentBox>
-          </NewPeopleTableRow>
+          <NewPeopleWorshipTableRow key={index}>
+            <NewPeopleWorshipIconBoxWrapper>
+              <NewPeopleWorshipIconBox>{step.icon}</NewPeopleWorshipIconBox>
+            </NewPeopleWorshipIconBoxWrapper>
+            <NewPeopleWorshipContentBox>
+              <NewPeopleWorshipStepTitleWrapper>
+                <NewPeopleWorshipStepTitle>{step.title}</NewPeopleWorshipStepTitle>
+              </NewPeopleWorshipStepTitleWrapper>
+              <NewPeopleWorshipStepDescription>{step.description}</NewPeopleWorshipStepDescription>
+            </NewPeopleWorshipContentBox>
+          </NewPeopleWorshipTableRow>
         ))}
-      </NewPeopleTableWrapper>
-    </NewPeopleWrapper>
+      </NewPeopleWorshipTableWrapper>
+    </NewPeopleWorshipWrapper>
   );
 }
 
-export default NewPeople;
+export default NewPeopleWorship;
 
-const NewPeopleWrapper = styled.div`
+const NewPeopleWorshipWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -66,31 +65,27 @@ const NewPeopleWrapper = styled.div`
   }
 `;
 
-const NewPeopleTitle = styled.div`
+const NewPeopleWorshipTitle = styled.div`
   font-size: 1.5vw;
   height: 3vw;
   padding: 2vw 0;
   display: flex;
   align-items: center;
   ${({ theme }) => theme.media.tablet} {
-    height: 4vw;
+    height: 4vw; /* 예: 60px 고정 */
     padding: 3vw 0;
     font-size: 3vw;
   }
 `;
 
 /* ✅ 표 스타일 */
-const NewPeopleTableWrapper = styled.div`
+const NewPeopleWorshipTableWrapper = styled.div`
   display: flex;
   flex-direction: column;
-
   border-top: 1px solid #e5e5e5;
-  ${({ theme }) => theme.media.mobile} {
-    align-items: center;
-  }
 `;
 
-const NewPeopleTableRow = styled.div`
+const NewPeopleWorshipTableRow = styled.div`
   display: flex;
   align-items: center;
   gap: 2vw;
@@ -109,7 +104,7 @@ const NewPeopleTableRow = styled.div`
   }
 `;
 
-const NewPeopleIconBoxWrapper = styled.div`
+const NewPeopleWorshipIconBoxWrapper = styled.div`
   ${({ theme }) => theme.media.mobile} {
     display: flex;
     justify-content: center; /* ✅ 중앙 정렬 */
@@ -118,7 +113,7 @@ const NewPeopleIconBoxWrapper = styled.div`
   }
 `;
 
-const NewPeopleIconBox = styled.div`
+const NewPeopleWorshipIconBox = styled.div`
   font-size: 2.5vw;
   color: #00b8b0;
   min-width: 80px;
@@ -130,11 +125,11 @@ const NewPeopleIconBox = styled.div`
   }
 
   ${({ theme }) => theme.media.mobile} {
-    font-size: 8vw;
+    font-size: 10vw;
   }
 `;
 
-const NewPeopleContentBox = styled.div`
+const NewPeopleWorshipContentBox = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -142,13 +137,13 @@ const NewPeopleContentBox = styled.div`
   padding-left: 0; /* 기본 padding 제거 */
 `;
 
-const NewPeopleStepTitleWrapper = styled.div`
+const NewPeopleWorshipStepTitleWrapper = styled.div`
   ${({ theme }) => theme.media.mobile} {
     text-align: center;
   }
 `;
 
-const NewPeopleStepTitle = styled.p`
+const NewPeopleWorshipStepTitle = styled.p`
   color: #00b8b0;
   font-size: 1.5vw;
   margin-bottom: 0.5rem;
@@ -161,7 +156,7 @@ const NewPeopleStepTitle = styled.p`
   }
 `;
 
-const NewPeopleStepDescription = styled.p`
+const NewPeopleWorshipStepDescription = styled.p`
   color: #333;
   line-height: 1.6;
   font-size: 1vw;
@@ -171,6 +166,6 @@ const NewPeopleStepDescription = styled.p`
   }
 
   ${({ theme }) => theme.media.mobile} {
-    font-size: 2.6vw;
+    font-size: 2.2vw;
   }
 `;
