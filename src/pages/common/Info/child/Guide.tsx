@@ -189,6 +189,62 @@ function Guide() {
             </tbody>
           </ServiceTable>
         </MotionBlock>
+
+        {/* ===== 교회시설 안내 ===== */}
+        <ServiceHeader>
+          <HeaderContent
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <ServiceIcon>
+              <NotePencilIcon />
+            </ServiceIcon>
+            교회시설 안내
+          </HeaderContent>
+        </ServiceHeader>
+
+        <MotionBlock
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 }}
+        >
+          <FacilityGrid>
+            <FacilityCard>
+              <FacilityTitle>본당</FacilityTitle>
+              <FacilityImg
+                src={process.env.PUBLIC_URL + '/images/facilities/본당.JPG'}
+                alt="본당"
+              />
+            </FacilityCard>
+
+            <FacilityCard>
+              <FacilityTitle>유초등부실</FacilityTitle>
+              <FacilityImg
+                src={process.env.PUBLIC_URL + '/images/facilities/유초등부실.jpg'}
+                alt="유초등부실"
+              />
+            </FacilityCard>
+
+            <FacilityCard>
+              <FacilityTitle>학생청년부실</FacilityTitle>
+              <FacilityImg
+                src={process.env.PUBLIC_URL + '/images/facilities/학생청년부실.jpg'}
+                alt="학생청년부실"
+              />
+            </FacilityCard>
+
+            <FacilityCard>
+              <FacilityTitle>카페</FacilityTitle>
+              <FacilityImg
+                src={process.env.PUBLIC_URL + '/images/facilities/카페.jpg'}
+                alt="카페"
+              />
+            </FacilityCard>
+          </FacilityGrid>
+        </MotionBlock>
       </ServiceSection>
     </GuideWrapper>
   );
@@ -353,4 +409,47 @@ const LeftCell = styled.td`
 
 const RightCell = styled.td`
   width: 25%;
+`;
+
+const FacilityGrid = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2vw;
+
+  ${({ theme }) => theme.media.tablet} {
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+  }
+`;
+
+const FacilityCard = styled.div`
+  background-color: #ffffff;
+`;
+
+const FacilityImg = styled.img`
+  width: 100%;
+  height: 30vw;
+  object-fit: cover;
+  ${({ theme }) => theme.media.tablet} {
+    height: 25vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    height: 45vw;
+  }
+`;
+
+const FacilityTitle = styled.div`
+  font-size: 1.5vw;
+  font-weight: 700;
+  padding: 1vw 0;
+  color: #333;
+  text-align: center;
+  ${({ theme }) => theme.media.tablet} {
+    font-size: 1.9vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 2.4vw;
+  }
 `;
