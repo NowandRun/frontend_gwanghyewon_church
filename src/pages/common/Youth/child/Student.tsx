@@ -10,6 +10,14 @@ function Students() {
         <StudentsBannerTitleOne>중·고등부</StudentsBannerTitleOne>
         <StudentsBannerTitleTwo>광혜원순복음 학생부</StudentsBannerTitleTwo>
       </StudentsBanner>
+
+      <StudentsImageSection>
+        <StudentsImage
+          src={process.env.PUBLIC_URL + '/images/SubPage/Church-School/청소년부.JPG'}
+          alt="예배 안내 배경"
+        />
+      </StudentsImageSection>
+
       <StudentsVisionContentWrapper>
         <StudentsVisionTitle>Vision</StudentsVisionTitle>
         <StudentsVisionWrapper>
@@ -136,6 +144,30 @@ const StudentsBanner = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+const StudentsImageSection = styled.div`
+  position: relative;
+  width: 100%;
+  height: 25vw;
+  overflow: hidden;
+  border-radius: 1vw;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+  ${({ theme }) => theme.media.tablet} {
+    height: 35vw;
+  }
+  ${({ theme }) => theme.media.mobile} {
+    height: 50vw;
+    border-radius: 2vw;
+  }
+`;
+
+const StudentsImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율 유지하며 꽉 채우기 */
+  transform: scale(1.05);
 `;
 
 const StudentsBannerTitleOne = styled.p`
