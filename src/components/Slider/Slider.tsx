@@ -6,6 +6,7 @@ import useWindowDimensions from '../useWindowDimensions';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { slideCnt, windowWidthAtom } from '../../types/atoms';
 import { SignpostIcon } from '@phosphor-icons/react';
+import { useNavigate } from 'react-router-dom';
 
 const SliderBoxVariants = {
   normal: { scale: 1 },
@@ -15,9 +16,10 @@ const SliderBoxVariants = {
 interface ISLider {
   data: Video[];
   title: string;
+  onVideoClick?: (video: Video) => void; // ✅ prop 추가
 }
 
-export default function Slider({ data, title }: ISLider) {
+export default function Slider({ data, title, onVideoClick }: ISLider) {
   const setWindowWidth = useSetRecoilState(windowWidthAtom);
   const windowWidth = useWindowDimensions();
   useEffect(() => {
@@ -33,6 +35,7 @@ export default function Slider({ data, title }: ISLider) {
   const [isRight, setIsRight] = useState<number>(1); // 1 = next, -1 = prev
   const [startX, setStartX] = useState<number | null>(null);
   const [sliderWidth, setSliderWidth] = useState<number>(windowWidth);
+  const navigate = useNavigate(); // <-- useNavigate 훅
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
 
@@ -153,6 +156,11 @@ export default function Slider({ data, title }: ISLider) {
     return () => window.removeEventListener('resize', updateWidth);
   }, [windowWidth]);
 
+  /** ✅ 영상 클릭 시 VideoDetail로 이동 + video 데이터 전달 */
+  const handleVideoClick = (video: Video) => {
+    navigate(`${video.videoId}`, { state: { video, sectionName: '금요설교' } }); // /broadcast/friday/:videoId
+  };
+
   return (
     <SliderWrapper ref={sliderRef}>
       <VideoTitle>
@@ -192,6 +200,7 @@ export default function Slider({ data, title }: ISLider) {
                   initial="normal"
                   whileHover="hover"
                   offset={offset}
+                  onClick={() => onVideoClick?.(video)} // ✅ 클릭 시 prop 호출
                 >
                   <picture>
                     {/* 모바일용 (max-width: 800px) */}

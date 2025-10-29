@@ -9,10 +9,12 @@ import {
 import Slider from '../Slider/Slider';
 import { ClockLoader } from 'react-spinners';
 import useWindowDimensions from '../useWindowDimensions';
+import { useNavigate } from 'react-router-dom';
 
 function MainRecommendVideo() {
   const windowWidth = useWindowDimensions();
   const spinnerSize = Math.round(windowWidth * 0.06); // 70vw, 소수점 반올림
+  const navigate = useNavigate();
 
   const { data: latestSundayWorshipVideos, isLoading: isSundayWorshipLoading } = useQuery<Video[]>(
     ['latestSundayWorshipVideosMain'],
@@ -23,6 +25,12 @@ function MainRecommendVideo() {
     ['latestFridayWorshipVideosMain'],
     fetchLatestVideosFromMainFridayWorshipPlaylists,
   );
+
+  // ✅ Slider 클릭 시 VideoDetail로 이동
+  const handleVideoClick = (whatRouter: string, video: Video, sectionName: string) => {
+    navigate(`/${whatRouter}/${video.videoId}`, { state: { video, sectionName } });
+  };
+
   return (
     <HomeLatestRecommendVideoWrapper>
       <HomeLatestRecommendVideoControl>
@@ -38,10 +46,14 @@ function MainRecommendVideo() {
             <Slider
               title="주일오전설교"
               data={latestSundayWorshipVideos ?? []}
+              onVideoClick={(video: Video) => handleVideoClick('broadcast', video, '주일설교')}
             />
             <Slider
               title="금요성령집회"
               data={latestFridayWorshipVideos ?? []}
+              onVideoClick={(video: Video) =>
+                handleVideoClick('broadcast/friday', video, '금요성령집회')
+              }
             />
           </>
         )}

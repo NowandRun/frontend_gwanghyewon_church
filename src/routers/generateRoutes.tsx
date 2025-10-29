@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router-dom';
 import React from 'react';
-import { MenuItem } from "../types/types";
-import { componentMap } from "../components/Map";
+import { MenuItem } from '../types/types';
+import { componentMap } from '../components/Map';
 
 export function generateRoutes(menuItems: MenuItem[], parentPath = ''): RouteObject[] {
   return menuItems.map((item) => {

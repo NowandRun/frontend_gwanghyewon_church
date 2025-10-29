@@ -1,30 +1,36 @@
-import Friday from '../pages/common/Broadcast/child/Friday';
-import Special from '../pages/common/Broadcast/child/Special';
-import Worship from '../pages/common/Broadcast/child/Worship';
-import Upbringing from '../pages/common/Group/child/Upbringing';
-import Baptism from '../pages/common/Group/child/Baptism';
-import NewPeopleWorship from '../pages/common/Group/child/NewPeopleWorship';
-import Service from '../pages/common/Group/child/Service';
-import NewPeople from '../pages/common/Group/child/NewPeople';
-import Home from '../pages/common/Home';
-import Guide from '../pages/common/Info/child/Guide';
-import Location from '../pages/common/Info/child/Location';
-import Album from '../pages/common/News/child/Album';
-import News from '../pages/common/News/News';
-import Elementary from '../pages/common/Youth/child/Elementary';
-import Students from '../pages/common/Youth/child/Student';
-import YoungAdult from '../pages/common/Youth/child/Young-Adult';
-import Greeting from '../pages/common/Info/child/Greeting';
-import Minister from '../pages/common/Info/child/Minister';
-import Info from '../pages/common/Info/Info';
-import Youth from '../pages/common/Youth/Youth';
-import Broadcast from '../pages/common/Broadcast/Broadcast';
-import Group from '../pages/common/Group/Group';
-import Bulletin from '../pages/common/News/child/Bulletin';
-import Online from '../pages/common/Offering/child/Online';
-import Tidings from '../pages/common/News/child/Knell';
-import Offering from '../pages/common/Offering/Offering';
+import React from 'react';
+import { RouteObject } from 'react-router-dom';
+import {
+  Home,
+  Info,
+  Greeting,
+  Minister,
+  Guide,
+  Location,
+  Youth,
+  Elementary,
+  Students,
+  YoungAdult,
+  Broadcast,
+  Worship,
+  Friday,
+  Special,
+  Group,
+  NewPeople,
+  NewPeopleWorship,
+  Upbringing,
+  Baptism,
+  Service,
+  News,
+  Tidings,
+  Album,
+  Bulletin,
+  Offering,
+  Online,
+  VideoDetail,
+} from '../components/pageImports';
 
+// ✅ 각 페이지를 key-value 형태로 정리
 export const componentMap: Record<string, React.ComponentType<any>> = {
   '/': Home,
 
@@ -59,3 +65,37 @@ export const componentMap: Record<string, React.ComponentType<any>> = {
   'offering': Offering,
   'offering/': Online,
 };
+
+// ✅ menuItems 기반 중첩 라우트 + 동적 라우트 자동 추가
+export function generateRoutes(menuItems: any[], parentPath = ''): RouteObject[] {
+  return menuItems.map((menu: any) => {
+    const fullPath = parentPath ? `${parentPath}/${menu.path}` : menu.path;
+    const Component = componentMap[fullPath];
+
+    // 자식 메뉴가 있는 경우 (Outlet 포함)
+    if (menu.children && menu.children.length > 0) {
+      const children = generateRoutes(menu.children, fullPath);
+
+      // ✅ Broadcast 계열에 대해 동적 라우트 추가
+      if (menu.path === 'broadcast') {
+        children.push(
+          { path: ':videoId', element: <VideoDetail /> },
+          { path: 'friday/:videoId', element: <VideoDetail /> },
+          { path: 'special/:videoId', element: <VideoDetail /> },
+        );
+      }
+
+      return {
+        path: menu.path,
+        element: Component ? <Component /> : undefined,
+        children,
+      };
+    }
+
+    // 자식 메뉴가 없는 경우
+    return {
+      path: menu.path,
+      element: Component ? <Component /> : undefined,
+    };
+  });
+}

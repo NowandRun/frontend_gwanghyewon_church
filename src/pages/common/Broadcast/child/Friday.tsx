@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Video } from '../../../../types/types';
 import { fetchFromFridayWorshipPlaylists } from '../../../../types/youtube-api';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom'; // <-- 변경
 
 function Friday() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageGroup, setPageGroup] = useState<number>(0); // 현재 페이지 그룹 (0부터 시작)
+  const [loading, setLoading] = useState<boolean>(true); // ✅ 로딩 상태 추가
   const maxVisible = 6; // 한 번에 보일 페이지 버튼 수
+  const navigate = useNavigate(); // <-- useNavigate 훅
 
   useEffect(() => {
     const loadVideos = async () => {
@@ -18,6 +21,8 @@ function Friday() {
         setTotalPages(totalPages);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false); // ✅ 요청 완료 후
       }
     };
 
@@ -46,54 +51,83 @@ function Friday() {
     }
   }, [pageGroup]);
 
+  /** ✅ 영상 클릭 시 VideoDetail로 이동 + video 데이터 전달 */
+  const handleVideoClick = (video: Video) => {
+    navigate(`${video.videoId}`, { state: { video, sectionName: '금요설교' } }); // /broadcast/friday/:videoId
+  };
+
   return (
     <FridayWrapper>
       <FridayTitle>금요설교</FridayTitle>
+      {/* ✅ 로딩 중 */}
+      {loading ? (
+        <FridayLoadingWrapper>
+          <FridaySkeletonGrid>
+            {Array.from({ length: 9 }).map((_, idx) => (
+              <FridaySkeletonCard key={idx}>
+                <FridaySkeletonThumb />
+                <FridaySkeletonText />
+              </FridaySkeletonCard>
+            ))}
+          </FridaySkeletonGrid>
 
-      {/* 영상 리스트 */}
-      <FridayVideoGrid>
-        {videos.map((video) => (
-          <FridayVideoCard key={video.videoId}>
-            <FridayThumbnail
-              src={video.snippet.thumbnails?.medium?.url || ''}
-              alt={video.snippet.title}
-            />
-            <FridayVideoTitle>{video.snippet.title}</FridayVideoTitle>
-          </FridayVideoCard>
-        ))}
-      </FridayVideoGrid>
+          {/* ✅ 스켈레톤 위로 겹치게 올림 */}
+          <FridayLoadingOverlay>
+            <Spinner />
+            <FridayLoadingText>영상을 불러오는 중입니다...</FridayLoadingText>
+          </FridayLoadingOverlay>
+        </FridayLoadingWrapper>
+      ) : (
+        <>
+          {/* 영상 리스트 */}
+          <FridayVideoGrid>
+            {videos.map((video) => (
+              <FridayVideoCard
+                key={video.videoId}
+                onClick={() => handleVideoClick(video)}
+              >
+                <FridayThumbnail
+                  src={video.snippet.thumbnails?.medium?.url || ''}
+                  alt={video.snippet.title}
+                />
+                <FridayVideoTitle>{video.snippet.title}</FridayVideoTitle>
+              </FridayVideoCard>
+            ))}
+          </FridayVideoGrid>
 
-      {/* ✅ 페이지네이션 */}
-      <FridayPaginationWrapper>
-        {totalPages > maxVisible && (
-          <FridayPagnationArrowButton
-            onClick={handlePrevGroup}
-            disabled={pageGroup === 0}
-          >
-            〈
-          </FridayPagnationArrowButton>
-        )}
+          {/* ✅ 페이지네이션 */}
+          <FridayPaginationWrapper>
+            {totalPages > maxVisible && (
+              <FridayPagnationArrowButton
+                onClick={handlePrevGroup}
+                disabled={pageGroup === 0}
+              >
+                〈
+              </FridayPagnationArrowButton>
+            )}
 
-        {pagesToShow.map((page) => (
-          <FridayPageNationButton
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            disabled={page === currentPage}
-            active={page === currentPage}
-          >
-            {page}
-          </FridayPageNationButton>
-        ))}
+            {pagesToShow.map((page) => (
+              <FridayPageNationButton
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                disabled={page === currentPage}
+                active={page === currentPage}
+              >
+                {page}
+              </FridayPageNationButton>
+            ))}
 
-        {totalPages > maxVisible && (
-          <FridayPagnationArrowButton
-            onClick={handleNextGroup}
-            disabled={(pageGroup + 1) * maxVisible >= totalPages}
-          >
-            〉
-          </FridayPagnationArrowButton>
-        )}
-      </FridayPaginationWrapper>
+            {totalPages > maxVisible && (
+              <FridayPagnationArrowButton
+                onClick={handleNextGroup}
+                disabled={(pageGroup + 1) * maxVisible >= totalPages}
+              >
+                〉
+              </FridayPagnationArrowButton>
+            )}
+          </FridayPaginationWrapper>
+        </>
+      )}
     </FridayWrapper>
   );
 }
@@ -125,6 +159,88 @@ const FridayTitle = styled.div`
     padding: 3vw 0;
     font-size: 3vw;
   }
+`;
+
+const FridayLoadingWrapper = styled.div`
+  width: 100%;
+  position: relative; /* ✅ overlay를 위한 기준 컨테이너 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+`;
+
+const FridayLoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10; /* ✅ 스켈레톤보다 위 */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(2px); /* ✅ 살짝 흐리게 */
+  background: rgba(255, 255, 255, 0.4); /* ✅ 투명 배경 */
+`;
+
+const Spinner = styled.div`
+  width: 48px;
+  height: 48px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #0056ff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const FridayLoadingText = styled.p`
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #444;
+  font-weight: 500;
+`;
+
+const FridaySkeletonGrid = styled.div`
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+`;
+
+const FridaySkeletonCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const FridaySkeletonThumb = styled.div`
+  width: 100%;
+  height: 180px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #e2e2e2 25%, #f5f5f5 50%, #e2e2e2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  @keyframes shimmer {
+    to {
+      background-position: -200% 0;
+    }
+  }
+`;
+
+const FridaySkeletonText = styled.div`
+  width: 80%;
+  height: 16px;
+  margin-top: 0.8rem;
+  border-radius: 6px;
+  background: #ececec;
 `;
 
 /* ✅ 썸네일 리스트 그리드 */
