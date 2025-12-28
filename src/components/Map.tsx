@@ -67,17 +67,28 @@ export const componentMap: Record<string, React.ComponentType<any>> = {
 };
 
 // ✅ menuItems 기반 중첩 라우트 + 동적 라우트 자동 추가
-export function generateRoutes(menuItems: any[], parentPath = ''): RouteObject[] {
+export function generateRoutes(menuItems: any[], parentPath = '', isAdmin = false): RouteObject[] {
   return menuItems.map((menu: any) => {
     const fullPath = parentPath ? `${parentPath}/${menu.path}` : menu.path;
+
+    // ✅ 관리자 메뉴인 경우: component 직접 지정됨
+    if (isAdmin && menu.component) {
+      const Component = menu.component;
+      return {
+        path: menu.path,
+        element: <Component />,
+      };
+    }
+
+    // ✅ 2️⃣ 일반 페이지의 경우 componentMap에서 매핑
     const Component = componentMap[fullPath];
 
     // 자식 메뉴가 있는 경우 (Outlet 포함)
     if (menu.children && menu.children.length > 0) {
       const children = generateRoutes(menu.children, fullPath);
 
-      // ✅ Broadcast 계열에 대해 동적 라우트 추가
-      if (menu.path === 'broadcast') {
+      // ✅ Broadcast 동영상 페이지 처리 (일반 사용자만)
+      if (!isAdmin && menu.path === 'broadcast') {
         children.push(
           { path: ':videoId', element: <VideoDetail /> },
           { path: 'friday/:videoId', element: <VideoDetail /> },

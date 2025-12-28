@@ -1,8 +1,29 @@
+import { UserRole } from '../gql/graphql';
+
+export type AuthErrorReason = 'EXPIRED' | 'INVALID' | 'IDLE_TIMEOUT' | 'FORCE_LOGOUT' | null;
+
+export type ServerAuthReason =
+  | 'TOKEN_EXPIRED'
+  | 'INVALID_TOKEN'
+  | 'NO_TOKEN'
+  | 'USER_NOT_FOUND'
+  | 'FORBIDDEN'
+  | 'IDLE_TIMEOUT'
+  | 'FORCE_LOGOUT';
+
+export interface AuthMe {
+  id: number;
+  userId: string;
+  role: UserRole;
+}
+
 export interface MenuItem {
   path: string;
   subtitle?: string;
   label: string;
+  component?: React.ComponentType<any>; // ✅ component 추가
   children?: MenuItem[];
+  isAdmin?: boolean; // 관리자 메뉴인지 여부
 }
 
 interface Thumbnail {

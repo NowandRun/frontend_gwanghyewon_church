@@ -8,20 +8,19 @@ import { ThemeProvider } from 'styled-components';
 import { darkTheme, lightTheme } from './Style/theme';
 import GlobalStyle from './Style/GlobalStyle';
 import { isdarkAtom } from './types/atoms';
-import router from "./routers/router";
-
+import router from './routers/router';
 
 const App = () => {
-  const isLoggedIn = useReactiveVar(isLoggedInAccessTokenVar);
+  /* useReactiveVar(isLoggedInAccessTokenVar); */
+
   const isDark = useRecoilValue(isdarkAtom);
 
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <GlobalStyle />
-      <RouterProvider router={isLoggedIn ? loggedInRouter : router} />
+      <RouterProvider router={router} />
     </ThemeProvider>
   );
 };
 
 export default App;
-
