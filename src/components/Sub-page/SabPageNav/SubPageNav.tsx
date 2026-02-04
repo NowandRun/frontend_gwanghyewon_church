@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { menuItems } from '../../Navicaton';
 import { PushPinIcon as PushPin } from '@phosphor-icons/react/dist/ssr';
 import { motion } from 'framer-motion';
@@ -22,25 +22,26 @@ const SubPageNav = () => {
         {currentMenu.children.map((child, index) => (
           <MotionNavLink
             key={child.path || 'root'}
-            to={`/${currentMenu.path}${child.path ? `/${child.path}` : ''}`}
-            end={child.path === ''}
-            className={({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '')}
             custom={index}
             variants={linkVariants}
             initial="hidden"
             animate="visible"
-            onClick={(e) => {
-              e.preventDefault(); // NavLink 기본 동작 막기
-              // SPA 상태를 유지하면서 원하는 경로로 이동
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              e.preventDefault();
               navigate(`/${currentMenu.path}${child.path ? `/${child.path}` : ''}`, {
                 replace: false,
               });
-              // 페이지 새로고침
-              window.scrollTo(0, 0); // 상단으로 스크롤
+              window.scrollTo(0, 0);
             }}
           >
-            <StyledPushPinIcon />
-            {child.label}
+            <NavLink
+              to={`/${currentMenu.path}${child.path ? `/${child.path}` : ''}`}
+              end={child.path === ''}
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
+              <StyledPushPinIcon />
+              {child.label}
+            </NavLink>
           </MotionNavLink>
         ))}
       </ChildLinkWrapper>
@@ -169,7 +170,7 @@ const ChildLinkWrapper = styled.div`
   }
 `;
 
-const MotionNavLink = styled(motion(NavLink))`
+const MotionNavLink = styled(motion.div)`
   padding: 0.25vw;
   border-radius: 5px;
   display: flex;

@@ -51,11 +51,15 @@ const AdminSidebar: React.FC = () => {
 
   return (
     <SidebarWrapper>
-      <SidebarTitle>Admin Panel</SidebarTitle>
+      <SidebarTitle>
+        광혜원순복음교회
+        <br />
+        관리자 사이트
+      </SidebarTitle>
 
       <UserInfo>
         <strong>{data.me.userId}</strong>
-        <Role>{data.me.role}</Role>
+        <Role>{data.me.userName}</Role>
       </UserInfo>
 
       <NavList>

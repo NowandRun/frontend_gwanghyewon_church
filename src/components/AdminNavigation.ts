@@ -1,14 +1,15 @@
 // src/components/AdminNavigation.ts
 import { MenuItem } from '../types/types';
-import AdminDashboard from '../pages/admin/Dashboard';
 import SystemLog from '../pages/admin/SystemLog';
 import UserManage from '../pages/admin/UserManage';
+import CreateCharchInformationBoard from '../pages/admin/Charch-Information/Charch-Information-Board-Create';
+import CharchInformationBoard from '../pages/admin/Charch-Information/Charch-Information-Board';
 
 export const adminMenuItems: MenuItem[] = [
   {
-    label: 'Dashboard',
-    path: 'dashboard',
-    component: AdminDashboard,
+    label: 'Charch Information',
+    path: 'charch-info',
+    component: CharchInformationBoard,
     isAdmin: true,
   },
   {

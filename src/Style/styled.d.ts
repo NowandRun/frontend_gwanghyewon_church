@@ -5,6 +5,7 @@ declare module 'styled-components' {
     textColor: string;
     bgColor: string;
     cardBgColor: string;
+    borderColor: string;
     headerWidth: {
       default: string;
       responsive: string;

@@ -18,17 +18,33 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type CharchInformationBoard = {
+  __typename?: 'CharchInformationBoard';
+  author: Scalars['String']['output'];
+  content: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['Int']['output'];
+  thumbnailUrl?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type CoreOutput = {
+  __typename?: 'CoreOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+};
+
 export type CreateAccountInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   consentToCollectPersonalData: Scalars['Boolean']['input'];
-  numberOfLoginAttempts?: InputMaybe<Scalars['Int']['input']>;
+  nickname: Scalars['String']['input'];
   outsourcingTheProcessingOfPersonalData: Scalars['Boolean']['input'];
   parish?: InputMaybe<Scalars['String']['input']>;
   password: Scalars['String']['input'];
   passwordCheakFindWord: Scalars['String']['input'];
   passwordCheakRole: PasswordCheakRole;
   religious?: InputMaybe<Scalars['String']['input']>;
-  role: UserRole;
   termsOfService: Scalars['Boolean']['input'];
   userId: Scalars['String']['input'];
   userName?: InputMaybe<Scalars['String']['input']>;
@@ -39,6 +55,20 @@ export type CreateAccountOutput = {
   __typename?: 'CreateAccountOutput';
   error?: Maybe<Scalars['String']['output']>;
   ok: Scalars['Boolean']['output'];
+};
+
+export type CreateAdminInput = {
+  nickname: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  role: UserRole;
+  userId: Scalars['String']['input'];
+  userName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateCharchInformationBoardDto = {
+  content: Scalars['String']['input'];
+  thumbnailUrl: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type FindUserIdInput = {
@@ -73,7 +103,8 @@ export type LogoutOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createAccount: CreateAccountOutput;
-  createAdminAccount: CreateAccountOutput;
+  createAdmin: CreateAccountOutput;
+  createCharchInformationBoard: CoreOutput;
   login: LoginOutput;
   logout: LogoutOutput;
   updateByUserPassword: UpdateUserPasswordOutput;
@@ -85,8 +116,13 @@ export type MutationCreateAccountArgs = {
 };
 
 
-export type MutationCreateAdminAccountArgs = {
-  input: CreateAccountInput;
+export type MutationCreateAdminArgs = {
+  input: CreateAdminInput;
+};
+
+
+export type MutationCreateCharchInformationBoardArgs = {
+  input: CreateCharchInformationBoardDto;
 };
 
 
@@ -117,7 +153,9 @@ export enum PasswordCheakRole {
 
 export type Query = {
   __typename?: 'Query';
+  findAll: Array<CharchInformationBoard>;
   findByUserId: FindUserIdOutput;
+  findOne: CharchInformationBoard;
   me: User;
   userProfile: UserProfileOutput;
 };
@@ -125,6 +163,11 @@ export type Query = {
 
 export type QueryFindByUserIdArgs = {
   input: FindUserIdInput;
+};
+
+
+export type QueryFindOneArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -157,6 +200,7 @@ export type User = {
   address?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['Float']['output'];
+  nickname: Scalars['String']['output'];
   numberOfLoginAttempts?: Maybe<Scalars['Int']['output']>;
   parish?: Maybe<Scalars['String']['output']>;
   password: Scalars['String']['output'];
@@ -178,13 +222,14 @@ export type UserProfileOutput = {
 
 export enum UserRole {
   Admin = 'Admin',
-  Client = 'Client'
+  Client = 'Client',
+  SuperAdmin = 'SuperAdmin'
 }
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, userId: string, role: UserRole } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, userId: string, role: UserRole, nickname: string, userName?: string | null } };
 
 export type CreateAccountMutationVariables = Exact<{
   input: CreateAccountInput;
@@ -201,6 +246,6 @@ export type LoginMutationVariables = Exact<{
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginOutput', ok: boolean, token?: string | null, error?: string | null } };
 
 
-export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
+export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
 export const CreateAccountDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createAccount"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateAccountInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createAccount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CreateAccountMutation, CreateAccountMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;

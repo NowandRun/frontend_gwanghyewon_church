@@ -7,6 +7,8 @@ const ME_QUERY = gql`
       id
       userId
       role
+      nickname
+      userName
     }
   }
 `;

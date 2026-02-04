@@ -13,6 +13,7 @@ import LoggedInRouter from './logged-in-router';
 import AdminRoot from '../AdminRoot';
 import PublicOnlyRouter from './public-only-router';
 import AdminIdleGuard from './AdminIdleGuard';
+import CreateCharchInformationBoard from '../pages/admin/Charch-Information/Charch-Information-Board-Create';
 
 const generatedRoutes = generateRoutes(menuItems);
 
@@ -49,12 +50,13 @@ const router = createHashRouter([
   },
 
   // 🔐 관리자 영역 (로그인 필수)
+  // 🔐 관리자 영역
   {
     path: '/admin',
     element: <LoggedInRouter />,
     children: [
       {
-        element: <AdminIdleGuard />, // ⭐ 추가
+        element: <AdminIdleGuard />,
         children: [
           {
             element: <AdminRoot />,
@@ -63,12 +65,20 @@ const router = createHashRouter([
                 index: true,
                 element: (
                   <Navigate
-                    to="dashboard"
+                    to="charch-info"
                     replace
                   />
                 ),
               },
+
+              // 📌 메뉴 기반 라우트
               ...adminGeneratedRoutes,
+
+              // 📌 메뉴에 안 보이는 라우트 (중요)
+              {
+                path: 'charch-info/create',
+                element: <CreateCharchInformationBoard />,
+              },
             ],
           },
         ],

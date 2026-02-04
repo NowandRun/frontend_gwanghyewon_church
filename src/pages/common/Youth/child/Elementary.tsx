@@ -1,6 +1,6 @@
 import { RiDoubleQuotesL, RiDoubleQuotesR } from 'react-icons/ri';
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 // ✅ 아이콘 등록
 

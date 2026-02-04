@@ -6,15 +6,12 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
-import { AuthErrorReason, ServerAuthReason } from './types';
 
 const token = localStorage.getItem(LOCALSTORAGE_TOKEN);
 
 export const isLoggedInAccessTokenVar = makeVar(Boolean(token)); // 초기값은 false로 설정
 
 export const authTokenVar = makeVar(token);
-
-export const authErrorReasonVar = makeVar<AuthErrorReason>(null);
 
 // Apollo Subscription을 사용하기 위한 웹소켓 통신
 const wsLink = new GraphQLWsLink(
@@ -23,9 +20,9 @@ const wsLink = new GraphQLWsLink(
       process.env.NODE_ENV === 'production'
         ? 'wss://web-restaurants-backend-78a7ec1afcae.herokuapp.com/graphql'
         : 'ws://localhost:4000/graphql',
-    connectionParams: () => ({
+    connectionParams: {
       'x-jwt': authTokenVar() || '',
-    }),
+    },
   }),
 );
 
@@ -48,6 +45,25 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    for (const err of graphQLErrors) {
+      const message = err.message;
+
+      // jwt 만료 감지
+      if (message === 'jwt expired') {
+        // 1️⃣ 토큰 제거
+        localStorage.removeItem(LOCALSTORAGE_TOKEN);
+        authTokenVar('');
+        isLoggedInAccessTokenVar(false);
+
+        // 2️⃣ 로그인 페이지에서 알림을 보여주기 위한 flag 저장
+        sessionStorage.setItem('authError', 'token-expired');
+      }
+    }
+  }
+});
+
 // websoket과 http link 연결시 사용하기 위한 기준
 const splitLink = split(
   ({ query }) => {
@@ -57,51 +73,10 @@ const splitLink = split(
   wsLink,
   authLink.concat(httpLink),
 );
-const errorLink = onError(({ graphQLErrors }) => {
-  if (!graphQLErrors) return;
-
-  for (const error of graphQLErrors) {
-    if (error.extensions?.code !== 'UNAUTHENTICATED') continue;
-
-    // 1️⃣ 서버 reason → 클라이언트 reason 매핑
-    const serverReason = error.extensions?.reason as ServerAuthReason | undefined;
-
-    let clientReason: AuthErrorReason = 'INVALID';
-
-    switch (serverReason) {
-      case 'TOKEN_EXPIRED':
-        clientReason = 'EXPIRED';
-        break;
-
-      case 'IDLE_TIMEOUT':
-        clientReason = 'IDLE_TIMEOUT';
-        break;
-
-      case 'FORCE_LOGOUT':
-        clientReason = 'FORCE_LOGOUT';
-        break;
-    }
-
-    // 2️⃣ 이미 reason이 있으면 덮어쓰지 마라 ⭐
-    if (!authErrorReasonVar()) {
-      authErrorReasonVar(clientReason);
-      localStorage.setItem('LAST_LOGOUT_REASON', clientReason);
-    }
-
-    // 3️⃣ 로그아웃 (단 한 번)
-    localStorage.removeItem(LOCALSTORAGE_TOKEN);
-    authTokenVar(null);
-    isLoggedInAccessTokenVar(false);
-
-    return; // ⭐ 여기서 종료 (중요)
-  }
-});
-
-const link = from([errorLink, splitLink]);
 
 export const client = new ApolloClient({
   /* authLink.concat을 활용하여 여러 Link를 사용하는 방법 */
-  link,
+  link: from([errorLink, splitLink]),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {

@@ -1,6 +1,6 @@
 import { UserRole } from '../gql/graphql';
 
-export type AuthErrorReason = 'EXPIRED' | 'INVALID' | 'IDLE_TIMEOUT' | 'FORCE_LOGOUT' | null;
+export type AuthErrorReason = 'EXPIRED' | 'INVALID' | 'IDLE_TIMEOUT' | null;
 
 export type ServerAuthReason =
   | 'TOKEN_EXPIRED'
@@ -8,8 +8,7 @@ export type ServerAuthReason =
   | 'NO_TOKEN'
   | 'USER_NOT_FOUND'
   | 'FORBIDDEN'
-  | 'IDLE_TIMEOUT'
-  | 'FORCE_LOGOUT';
+  | 'IDLE_TIMEOUT';
 
 export interface AuthMe {
   id: number;
@@ -83,3 +82,17 @@ export const SubPageBannerImages = {
 
 // 타입은 객체의 key를 그대로 활용
 export type SubPageBannerImageKey = keyof typeof SubPageBannerImages;
+
+// src/types/board.ts
+export type BoardBlock =
+  | {
+      id: string;
+      type: 'text';
+      content: string;
+    }
+  | {
+      id: string;
+      type: 'image';
+      file: File;
+      previewUrl: string;
+    };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { gql, useMutation } from '@apollo/client';
 import { Link } from 'react-router-dom';
@@ -10,9 +10,6 @@ import { FormError } from '../../components/User-Element/form-error';
 import { LoginMutation, LoginMutationVariables } from '../../gql/graphql';
 import { useNavigate } from 'react-router-dom';
 import { LOCALSTORAGE_TOKEN } from '../../types/constants';
-import { useReactiveVar } from '@apollo/client';
-import { authErrorReasonVar } from '../../types/apollo';
-import { AuthErrorReason } from '../../types/types';
 
 export const LOGIN_MUTATION = gql`
   mutation login($loginInput: LoginInput!) {
@@ -29,17 +26,18 @@ interface ILoginForm {
   password: string;
 }
 
+type AuthAlertType = 'token-expired' | 'idle-timeout';
+
 export const Login = () => {
   const navigate = useNavigate();
-  const authErrorReason = useReactiveVar(authErrorReasonVar);
+  const [authAlert, setAuthAlert] = useState<AuthAlertType | null>(null);
 
-  // ⭐ 여기에 둔다
   useEffect(() => {
-    const reason = localStorage.getItem('LAST_LOGOUT_REASON');
+    const authError = sessionStorage.getItem('authError') as AuthAlertType | null;
 
-    if (reason) {
-      authErrorReasonVar(reason as AuthErrorReason);
-      localStorage.removeItem('LAST_LOGOUT_REASON'); // 1회성
+    if (authError) {
+      setAuthAlert(authError);
+      sessionStorage.removeItem('authError');
     }
   }, []);
 
@@ -55,11 +53,10 @@ export const Login = () => {
       login: { ok, token },
     } = data;
     if (ok && token) {
+      setAuthAlert(null); // ✅ 알림 제거
       localStorage.setItem(LOCALSTORAGE_TOKEN, token);
       authTokenVar(token);
       isLoggedInAccessTokenVar(true);
-
-      authErrorReasonVar(null); // ⭐ 반드시 초기화
 
       navigate('/admin'); // 여기까지만
     }
@@ -88,31 +85,24 @@ export const Login = () => {
       </HelmetProvider>
 
       <Card>
-        {authErrorReason === 'EXPIRED' && (
-          <AuthAlert type="token-expired">
-            ⏰ 로그인 시간이 만료되었습니다.
+        <Title>관리자 사이트</Title>
+        <Subtitle>광혜원순복음교회</Subtitle>
+
+        {authAlert === 'idle-timeout' && (
+          <AuthAlert>
+            ⏱ 장시간 활동이 없어
             <br />
-            보안을 위해 다시 로그인해주세요.
+            자동으로 로그아웃되었습니다.
           </AuthAlert>
         )}
 
-        {authErrorReason === 'INVALID' && (
-          <AuthAlert type="token-invalid">
-            ⚠️ 인증 정보가 유효하지 않습니다.
+        {authAlert === 'token-expired' && (
+          <AuthAlert>
+            ⏰ 세션이 만료되었습니다.
             <br />
             다시 로그인해주세요.
           </AuthAlert>
         )}
-
-        {authErrorReason === 'IDLE_TIMEOUT' && (
-          <AuthAlert type="idle-timeout">
-            ⏰ 장시간 활동이 없어 로그아웃되었습니다.
-            <br />
-            보안을 위해 다시 로그인해주세요.
-          </AuthAlert>
-        )}
-        <Title>관리자 사이트</Title>
-        <Subtitle>광혜원순복음교회</Subtitle>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input
@@ -188,46 +178,36 @@ const Card = styled.div`
   }
 `;
 
-type AuthAlertType = 'token-expired' | 'token-invalid' | 'idle-timeout';
-
-const alertTheme: Record<AuthAlertType, { bg: string; shadow: string }> = {
-  'token-expired': {
-    bg: 'linear-gradient(135deg, #f97316, #ea580c)',
-    shadow: 'rgba(249, 115, 22, 0.35)',
-  },
-  'idle-timeout': {
-    bg: 'linear-gradient(135deg, #eab308, #ca8a04)',
-    shadow: 'rgba(234, 179, 8, 0.35)',
-  },
-  'token-invalid': {
-    bg: 'linear-gradient(135deg, #ef4444, #b91c1c)',
-    shadow: 'rgba(239, 68, 68, 0.45)',
-  },
-};
-
-const AuthAlert = styled.div<{ type: AuthAlertType }>`
+const AuthAlert = styled.div`
   margin-bottom: 1.5rem;
-  padding: 1.1rem 1.3rem;
+  padding: 1rem 1.2rem;
   border-radius: 14px;
 
-  font-weight: 800;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #ffffff;
+
   font-size: 0.95rem;
-  line-height: 1.5;
+  font-weight: 700;
+  line-height: 1.4;
   text-align: center;
   letter-spacing: -0.01em;
 
-  color: #ffffff;
-
-  background: ${({ type }) => alertTheme[type].bg};
-  box-shadow: 0 12px 30px ${({ type }) => alertTheme[type].shadow};
+  box-shadow: 0 12px 28px rgba(249, 115, 22, 0.4);
 
   animation:
-    shake 0.35s ease,
-    fadeIn 0.25s ease;
+    fadeIn 0.25s ease-out,
+    shake 0.35s ease;
 
-  /* 접근성 */
-  role: alert;
-  aria-live: assertive;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   @keyframes shake {
     0% {
@@ -247,17 +227,6 @@ const AuthAlert = styled.div<{ type: AuthAlertType }>`
     }
     100% {
       transform: translateX(0);
-    }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
     }
   }
 `;

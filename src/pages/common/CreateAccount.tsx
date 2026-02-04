@@ -31,7 +31,7 @@ interface ICreateAccountForm {
   religious?: string;
   passwordCheakRole: PasswordCheakRole;
   passwordCheakFindWord: string;
-
+  nickname: string;
   // ✅ 추가
   termsOfService: boolean;
   consentToCollectPersonalData: boolean;
@@ -94,8 +94,7 @@ export const CreateAccount = () => {
           address: formData.address,
           parish: formData.parish,
           religious: formData.religious,
-          // ✅ 핵심 수정
-          role: UserRole.Client,
+          nickname: formData.nickname,
 
           passwordCheakFindWord: formData.passwordCheakFindWord,
           passwordCheakRole: formData.passwordCheakRole,
@@ -143,6 +142,12 @@ export const CreateAccount = () => {
               placeholder="아이디"
             />
             <FormError errorMessage={errors.userId?.message} />
+
+            <Input
+              {...register('nickname', { required: '게시판용 닉네임은 필수입니다.' })}
+              placeholder="닉네임"
+            />
+            <FormError errorMessage={errors.nickname?.message} />
 
             <Input
               type="password"

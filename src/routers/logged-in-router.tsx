@@ -1,28 +1,17 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useMe } from '../hooks/useMe';
-import { useReactiveVar } from '@apollo/client';
-import { authErrorReasonVar } from '../types/apollo';
 
 const LoggedInRouter = () => {
   const { data, loading } = useMe();
-  const authErrorReason = useReactiveVar(authErrorReasonVar);
 
-  // 🔥 로그아웃 사유 발생 시 즉시 이동
-  if (authErrorReason) {
-    return (
-      <Navigate
-        to="/admin/login"
-        replace
-      />
-    );
-  }
-
+  // 2️⃣ 인증은 됐지만 유저 정보 로딩 중
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!data) {
+  // 3️⃣ 토큰은 있지만 유저 없음 → 비정상
+  if (!data?.me) {
     return (
       <Navigate
         to="/admin/login"

@@ -11,9 +11,15 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * 3. It does not support dead code elimination, so it will add unused operations.
  *
  * Therefore it is highly recommended to use the babel or swc plugin for production.
+ * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
-const documents = {
-    "\n  query me {\n    me {\n      id\n      userId\n      role\n    }\n  }\n": types.MeDocument,
+type Documents = {
+    "\n  query me {\n    me {\n      id\n      userId\n      role\n      nickname\n      userName\n    }\n  }\n": typeof types.MeDocument,
+    "\n  mutation createAccount($input: CreateAccountInput!) {\n    createAccount(input: $input) {\n      ok\n      error\n    }\n  }\n": typeof types.CreateAccountDocument,
+    "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      token\n      error\n    }\n  }\n": typeof types.LoginDocument,
+};
+const documents: Documents = {
+    "\n  query me {\n    me {\n      id\n      userId\n      role\n      nickname\n      userName\n    }\n  }\n": types.MeDocument,
     "\n  mutation createAccount($input: CreateAccountInput!) {\n    createAccount(input: $input) {\n      ok\n      error\n    }\n  }\n": types.CreateAccountDocument,
     "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      token\n      error\n    }\n  }\n": types.LoginDocument,
 };
@@ -35,7 +41,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query me {\n    me {\n      id\n      userId\n      role\n    }\n  }\n"): (typeof documents)["\n  query me {\n    me {\n      id\n      userId\n      role\n    }\n  }\n"];
+export function graphql(source: "\n  query me {\n    me {\n      id\n      userId\n      role\n      nickname\n      userName\n    }\n  }\n"): (typeof documents)["\n  query me {\n    me {\n      id\n      userId\n      role\n      nickname\n      userName\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
