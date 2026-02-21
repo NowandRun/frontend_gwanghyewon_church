@@ -83,16 +83,29 @@ export const SubPageBannerImages = {
 // 타입은 객체의 key를 그대로 활용
 export type SubPageBannerImageKey = keyof typeof SubPageBannerImages;
 
-// src/types/board.ts
+type BaseBoardBlock = {
+  id: string;
+  selected?: boolean; // ✅ 모든 블럭 공통
+};
+
+type BaseBlock = {
+  id: string;
+  selected: boolean;
+};
+
 export type BoardBlock =
-  | {
-      id: string;
+  | (BaseBlock & {
       type: 'text';
       content: string;
-    }
-  | {
-      id: string;
+    })
+  | (BaseBlock & {
       type: 'image';
       file: File;
       previewUrl: string;
-    };
+      fileName: string;
+      isThumbnail: boolean;
+    });
+
+export enum BoardType {
+  CHARCH_INFORMATION = 'CHARCH_INFORMATION',
+}

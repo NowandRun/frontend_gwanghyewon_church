@@ -1,15 +1,18 @@
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import React from 'react';
 import styled from 'styled-components';
 import { FIND_ALL_CHARCH_INFORMATION_BOARD } from '../../../gql/mutations/docs';
 import { useNavigate } from 'react-router-dom';
-
 function CharchInformationBoard() {
   const navigate = useNavigate();
   const { data, loading, error } = useQuery(FIND_ALL_CHARCH_INFORMATION_BOARD);
 
   if (loading) return <p>로딩중...</p>;
-  if (error) return <p>에러 발생 😥</p>;
+
+  if (error) {
+    console.log(error);
+    return <p>에러 발생 😥</p>;
+  }
 
   return (
     <Container>
@@ -19,7 +22,7 @@ function CharchInformationBoard() {
       </Header>
 
       <Grid>
-        {data.findAll.map((board: any) => (
+        {data.findAllCharchInformationBoards.map((board: any) => (
           <Card key={board.id}>
             <Thumbnail
               src={board.thumbnailUrl || '/no-image.png'}
@@ -31,6 +34,18 @@ function CharchInformationBoard() {
                 <span>{board.author}</span>
                 <span>{new Date(board.createdAt).toLocaleDateString()}</span>
               </Meta>
+              {/* 필요하면 blocks 렌더링 */}
+              {board.blocks.map((block: any, idx: number) =>
+                block.type === 'TEXT' ? (
+                  <p key={idx}>{block.content}</p>
+                ) : (
+                  <img
+                    key={idx}
+                    src={block.url}
+                    alt=""
+                  />
+                ),
+              )}
             </CardBody>
           </Card>
         ))}

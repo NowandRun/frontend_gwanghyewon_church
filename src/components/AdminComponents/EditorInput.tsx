@@ -1,30 +1,33 @@
-// components/AdminComponents/EditorInput.tsx
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
-type EditorInputProps = {
+interface EditorInputProps {
   placeholder?: string;
-};
+  value?: string;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+}
 
-const EditorInput = forwardRef<HTMLInputElement, EditorInputProps>(({ placeholder }, ref) => {
-  return (
-    <Input
-      ref={ref}
-      placeholder={placeholder}
-    />
-  );
-});
+const EditorInput = forwardRef<HTMLInputElement, EditorInputProps>(
+  ({ placeholder, value, onChange }, ref) => {
+    return (
+      <Input
+        ref={ref}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  },
+);
 
 export default EditorInput;
 
 const Input = styled.input`
-  width: 100%;
   height: 48px;
-  padding: 0 14px;
-
-  font-size: 14px;
+  padding: 0 16px;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
 
   &:focus {
     outline: none;

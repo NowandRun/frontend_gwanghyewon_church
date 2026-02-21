@@ -2,11 +2,15 @@ import { gql } from '@apollo/client';
 
 export const FIND_ALL_CHARCH_INFORMATION_BOARD = gql`
   query findAll {
-    findAll {
+    findAllCharchInformationBoards {
       id
       title
       author
-      content
+      blocks {
+        type
+        content
+        url
+      }
       thumbnailUrl
       createdAt
     }
@@ -32,7 +36,11 @@ export const CREATE_CHARCH_INFORMATION_BOARD = gql`
       id
       title
       author
-      content
+      blocks {
+        type
+        content
+        url
+      }
       thumbnailUrl
       createdAt
     }

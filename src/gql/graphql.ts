@@ -18,10 +18,28 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type BoardBlock = {
+  __typename?: 'BoardBlock';
+  content?: Maybe<Scalars['String']['output']>;
+  type: BoardBlockType;
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type BoardBlockInput = {
+  content?: InputMaybe<Scalars['String']['input']>;
+  type: BoardBlockType;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum BoardBlockType {
+  Image = 'IMAGE',
+  Text = 'TEXT'
+}
+
 export type CharchInformationBoard = {
   __typename?: 'CharchInformationBoard';
   author: Scalars['String']['output'];
-  content: Scalars['String']['output'];
+  blocks: Array<BoardBlock>;
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['Int']['output'];
   thumbnailUrl?: Maybe<Scalars['String']['output']>;
@@ -66,8 +84,8 @@ export type CreateAdminInput = {
 };
 
 export type CreateCharchInformationBoardDto = {
-  content: Scalars['String']['input'];
-  thumbnailUrl: Scalars['String']['input'];
+  blocks: Array<BoardBlockInput>;
+  thumbnailUrl?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
 };
 
@@ -153,7 +171,7 @@ export enum PasswordCheakRole {
 
 export type Query = {
   __typename?: 'Query';
-  findAll: Array<CharchInformationBoard>;
+  findAllCharchInformationBoards: Array<CharchInformationBoard>;
   findByUserId: FindUserIdOutput;
   findOne: CharchInformationBoard;
   me: User;

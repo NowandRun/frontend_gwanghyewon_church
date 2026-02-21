@@ -1,19 +1,19 @@
 // src/AdminRoot.tsx
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import AdminSidebar from './components/AdminComponents/Admin.Sidebar';
 import styled from 'styled-components';
+import AdminHeader from './components/AdminComponents/AdminSidebar';
 
 const AdminRoot = () => {
   return (
     <AdminLayout>
-      <AdminSidebar />
+      <AdminHeader />
 
       <AdminMain>
-        <AdminHeader>
+        <PageHeader>
           <h1>관리자 대시보드</h1>
           <span>게시판 관리</span>
-        </AdminHeader>
+        </PageHeader>
 
         <AdminContent>
           <ContentCard>
@@ -26,12 +26,12 @@ const AdminRoot = () => {
 };
 
 export default AdminRoot;
-
 const AdminLayout = styled.div`
-  display: flex;
   width: 100%;
   min-height: 100vh;
   background-color: ${({ theme }) => theme.bgColor || '#f4f6fb'};
+  display: flex;
+  flex-direction: column;
 `;
 
 const AdminMain = styled.div`
@@ -40,8 +40,8 @@ const AdminMain = styled.div`
   flex-direction: column;
 `;
 
-const AdminHeader = styled.header`
-  padding: 20px 28px;
+const PageHeader = styled.div`
+  padding: 24px 40px;
   border-bottom: 1px solid #e5e7eb;
   background-color: #ffffff;
 
@@ -59,14 +59,14 @@ const AdminHeader = styled.header`
 
 const AdminContent = styled.main`
   flex: 1;
-  padding: 28px;
+  padding: 40px;
   overflow-y: auto;
 `;
 
 const ContentCard = styled.section`
   background-color: #ffffff;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   min-height: 100%;
 `;
