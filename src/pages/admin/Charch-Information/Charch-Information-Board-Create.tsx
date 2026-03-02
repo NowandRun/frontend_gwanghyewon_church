@@ -1,15 +1,23 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { arrayMove } from '@dnd-kit/sortable';
-import { CREATE_CHARCH_INFORMATION_BOARD } from '../../../gql/mutations/docs';
 import BlockToolbar from '../../../components/AdminComponents/BlockToolbar';
 import { BoardBlock } from '../../../types/types';
 import { useMe } from '../../../hooks/useMe';
 import BoadBlockEditor from './Charch-Information-BlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
+
+const CREATE_CHARCH_INFORMATION_BOARD = gql`
+  mutation createCharchInformationBoard($input: CreateCharchInformationBoardDto!) {
+    createCharchInformationBoard(input: $input) {
+      ok
+      error
+    }
+  }
+`;
 
 export default function CreateCharchInformationBoard() {
   const navigate = useNavigate();
@@ -42,12 +50,7 @@ export default function CreateCharchInformationBoard() {
   /* =============================
      GraphQL
   ============================== */
-  const [createBoard, { loading }] = useMutation(CREATE_CHARCH_INFORMATION_BOARD, {
-    onCompleted: () => {
-      alert('게시글이 등록되었습니다.');
-      navigate('/admin/charch-info');
-    },
-  });
+  const [createBoard, { loading }] = useMutation(CREATE_CHARCH_INFORMATION_BOARD);
 
   /* =============================
      블록 로직
@@ -156,45 +159,93 @@ export default function CreateCharchInformationBoard() {
     if (meLoading) return;
 
     const trimmedTitle = title.trim();
-    if (!trimmedTitle) return alert('제목을 입력해주세요.');
+    if (!trimmedTitle) {
+      alert('제목을 입력해주세요.');
+      return;
+    }
 
-    if (!title) return alert('제목을 입력해주세요.');
-    if (!blocks.length) return alert('내용을 입력해주세요.');
+    if (!blocks.length) {
+      alert('내용을 입력해주세요.');
+      return;
+    }
 
     try {
       setUploading(true);
 
-      const uploadedBlocks = await Promise.all(
-        blocks.map(async (block) => {
-          if (block.type === 'text') {
-            if (!block.content?.trim()) return null;
-            return { type: 'TEXT', content: block.content };
-          }
+      // 🔥 1. 블록 정리 + 업로드
+      const finalBlocks = [];
 
-          if (block.type === 'image') {
-            const url = await uploadImageToS3(block.file);
-            return { type: 'IMAGE', url, isThumbnail: block.isThumbnail };
-          }
+      for (const block of blocks) {
+        if (block.type === 'text') {
+          if (!block.content || !block.content.trim()) continue;
 
-          return null;
-        }),
-      );
+          finalBlocks.push({
+            type: 'TEXT',
+            content: block.content, // 🔥 HTML 그대로 보존
+          });
+        }
 
-      const filtered = uploadedBlocks.filter(Boolean);
-      const thumbnailBlock = filtered.find((b: any) => b.isThumbnail);
+        if (block.type === 'image') {
+          if (!block.file) continue;
 
-      await createBoard({
+          const uploadedUrl = await uploadImageToS3(block.file);
+
+          finalBlocks.push({
+            type: 'IMAGE',
+            url: uploadedUrl,
+          });
+        }
+      }
+
+      if (!finalBlocks.length) {
+        alert('내용이 비어 있습니다.');
+        return;
+      }
+
+      // 🔥 2. 썸네일 처리
+      const thumbnailBlock = finalBlocks.find((b) => b.type === 'IMAGE');
+
+      // ✅ 여기!
+      console.log('=== GraphQL 전송 데이터 ===');
+      console.log({
+        title: trimmedTitle,
+        blocks: finalBlocks,
+        thumbnailUrl: thumbnailBlock?.url ?? null,
+      });
+      console.log(JSON.stringify(finalBlocks, null, 2));
+
+      const result = await createBoard({
         variables: {
           input: {
             title: trimmedTitle,
-            blocks: filtered,
-            thumbnailUrl: thumbnailBlock?.url || '',
+            blocks: finalBlocks,
+            // 서버 스키마가 String! (필수)라면 null을 보내면 에러납니다.
+            thumbnailUrl: thumbnailBlock?.url || 'default_image_url_or_empty_string',
           },
         },
       });
-    } catch (error) {
+
+      console.log('mutation result:', result);
+
+      if (result.errors?.length) {
+        throw new Error(result.errors[0].message);
+      }
+
+      if (!result.data) {
+        throw new Error('서버 응답이 없습니다.');
+      }
+
+      const response = result.data.createCharchInformationBoard;
+
+      if (!response?.ok) {
+        throw new Error(response?.error || '게시글 생성 실패');
+      }
+
+      alert('게시글이 등록되었습니다.');
+      navigate('/admin/charch-info');
+    } catch (error: any) {
       console.error(error);
-      alert('게시글 생성 실패');
+      alert(error.message || '게시글 생성 실패');
     } finally {
       setUploading(false);
     }

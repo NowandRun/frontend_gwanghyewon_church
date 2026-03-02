@@ -14,7 +14,7 @@ const AdminHeader: React.FC = () => {
         <Logo>광혜원순복음교회 관리자 사이트</Logo>
 
         <NavList>
-          <NavItem to="/admin/dashboard">대시보드</NavItem>
+          <NavItem to="/admin/charch-info">교회소식</NavItem>
 
           {(data.me.role === 'Admin' || data.me.role === 'Client') && (
             <NavItem to="/admin/users">사용자 관리</NavItem>

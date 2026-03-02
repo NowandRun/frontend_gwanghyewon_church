@@ -16,30 +16,14 @@ export type Scalars = {
   Float: { input: number; output: number; }
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: { input: any; output: any; }
 };
-
-export type BoardBlock = {
-  __typename?: 'BoardBlock';
-  content?: Maybe<Scalars['String']['output']>;
-  type: BoardBlockType;
-  url?: Maybe<Scalars['String']['output']>;
-};
-
-export type BoardBlockInput = {
-  content?: InputMaybe<Scalars['String']['input']>;
-  type: BoardBlockType;
-  url?: InputMaybe<Scalars['String']['input']>;
-};
-
-export enum BoardBlockType {
-  Image = 'IMAGE',
-  Text = 'TEXT'
-}
 
 export type CharchInformationBoard = {
   __typename?: 'CharchInformationBoard';
   author: Scalars['String']['output'];
-  blocks: Array<BoardBlock>;
+  blocks: Scalars['JSON']['output'];
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['Int']['output'];
   thumbnailUrl?: Maybe<Scalars['String']['output']>;
@@ -84,8 +68,8 @@ export type CreateAdminInput = {
 };
 
 export type CreateCharchInformationBoardDto = {
-  blocks: Array<BoardBlockInput>;
-  thumbnailUrl?: InputMaybe<Scalars['String']['input']>;
+  blocks: Scalars['JSON']['input'];
+  thumbnailUrl: Scalars['String']['input'];
   title: Scalars['String']['input'];
 };
 
@@ -249,6 +233,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, userId: string, role: UserRole, nickname: string, userName?: string | null } };
 
+export type CreateCharchInformationBoardMutationVariables = Exact<{
+  input: CreateCharchInformationBoardDto;
+}>;
+
+
+export type CreateCharchInformationBoardMutation = { __typename?: 'Mutation', createCharchInformationBoard: { __typename?: 'CoreOutput', ok: boolean, error?: string | null } };
+
 export type CreateAccountMutationVariables = Exact<{
   input: CreateAccountInput;
 }>;
@@ -265,5 +256,6 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Lo
 
 
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
+export const CreateCharchInformationBoardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createCharchInformationBoard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateCharchInformationBoardDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCharchInformationBoard"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CreateCharchInformationBoardMutation, CreateCharchInformationBoardMutationVariables>;
 export const CreateAccountDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createAccount"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateAccountInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createAccount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CreateAccountMutation, CreateAccountMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
