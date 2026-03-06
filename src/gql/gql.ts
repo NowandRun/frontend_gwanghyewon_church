@@ -16,12 +16,18 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 type Documents = {
     "\n  query me {\n    me {\n      id\n      userId\n      role\n      nickname\n      userName\n    }\n  }\n": typeof types.MeDocument,
     "\n  mutation createCharchInformationBoard($input: CreateCharchInformationBoardDto!) {\n    createCharchInformationBoard(input: $input) {\n      ok\n      error\n    }\n  }\n": typeof types.CreateCharchInformationBoardDocument,
+    "\n  mutation deleteCharchInformationBoards($input: DeleteCharchInformationBoardsInput!) {\n    deleteCharchInformationBoards(input: $input) {\n      ok\n      error\n    }\n  }\n": typeof types.DeleteCharchInformationBoardsDocument,
+    "\n  query findCharchInformationBoardById($id: Float!) {\n    findCharchInformationBoardById(id: $id) {\n      ok\n      error\n      result {\n        id\n        title\n        author\n        thumbnailUrl\n        blocks\n      }\n    }\n  }\n": typeof types.FindCharchInformationBoardByIdDocument,
+    "\n  mutation editCharchInformationBoard($input: EditCharchInformationBoardDto!) {\n    editCharchInformationBoard(input: $input) {\n      ok\n      error\n    }\n  }\n": typeof types.EditCharchInformationBoardDocument,
     "\n  mutation createAccount($input: CreateAccountInput!) {\n    createAccount(input: $input) {\n      ok\n      error\n    }\n  }\n": typeof types.CreateAccountDocument,
     "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      token\n      error\n    }\n  }\n": typeof types.LoginDocument,
 };
 const documents: Documents = {
     "\n  query me {\n    me {\n      id\n      userId\n      role\n      nickname\n      userName\n    }\n  }\n": types.MeDocument,
     "\n  mutation createCharchInformationBoard($input: CreateCharchInformationBoardDto!) {\n    createCharchInformationBoard(input: $input) {\n      ok\n      error\n    }\n  }\n": types.CreateCharchInformationBoardDocument,
+    "\n  mutation deleteCharchInformationBoards($input: DeleteCharchInformationBoardsInput!) {\n    deleteCharchInformationBoards(input: $input) {\n      ok\n      error\n    }\n  }\n": types.DeleteCharchInformationBoardsDocument,
+    "\n  query findCharchInformationBoardById($id: Float!) {\n    findCharchInformationBoardById(id: $id) {\n      ok\n      error\n      result {\n        id\n        title\n        author\n        thumbnailUrl\n        blocks\n      }\n    }\n  }\n": types.FindCharchInformationBoardByIdDocument,
+    "\n  mutation editCharchInformationBoard($input: EditCharchInformationBoardDto!) {\n    editCharchInformationBoard(input: $input) {\n      ok\n      error\n    }\n  }\n": types.EditCharchInformationBoardDocument,
     "\n  mutation createAccount($input: CreateAccountInput!) {\n    createAccount(input: $input) {\n      ok\n      error\n    }\n  }\n": types.CreateAccountDocument,
     "\n  mutation login($loginInput: LoginInput!) {\n    login(input: $loginInput) {\n      ok\n      token\n      error\n    }\n  }\n": types.LoginDocument,
 };
@@ -48,6 +54,18 @@ export function graphql(source: "\n  query me {\n    me {\n      id\n      userI
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation createCharchInformationBoard($input: CreateCharchInformationBoardDto!) {\n    createCharchInformationBoard(input: $input) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation createCharchInformationBoard($input: CreateCharchInformationBoardDto!) {\n    createCharchInformationBoard(input: $input) {\n      ok\n      error\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation deleteCharchInformationBoards($input: DeleteCharchInformationBoardsInput!) {\n    deleteCharchInformationBoards(input: $input) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation deleteCharchInformationBoards($input: DeleteCharchInformationBoardsInput!) {\n    deleteCharchInformationBoards(input: $input) {\n      ok\n      error\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query findCharchInformationBoardById($id: Float!) {\n    findCharchInformationBoardById(id: $id) {\n      ok\n      error\n      result {\n        id\n        title\n        author\n        thumbnailUrl\n        blocks\n      }\n    }\n  }\n"): (typeof documents)["\n  query findCharchInformationBoardById($id: Float!) {\n    findCharchInformationBoardById(id: $id) {\n      ok\n      error\n      result {\n        id\n        title\n        author\n        thumbnailUrl\n        blocks\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation editCharchInformationBoard($input: EditCharchInformationBoardDto!) {\n    editCharchInformationBoard(input: $input) {\n      ok\n      error\n    }\n  }\n"): (typeof documents)["\n  mutation editCharchInformationBoard($input: EditCharchInformationBoardDto!) {\n    editCharchInformationBoard(input: $input) {\n      ok\n      error\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

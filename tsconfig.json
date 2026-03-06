@@ -7,6 +7,11 @@
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "dayjs": ["node_modules/dayjs"]
+    },
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["src/types", "node_modules/@types"]

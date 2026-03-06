@@ -2,7 +2,6 @@
 import { MenuItem } from '../types/types';
 import SystemLog from '../pages/admin/SystemLog';
 import UserManage from '../pages/admin/UserManage';
-import CreateCharchInformationBoard from '../pages/admin/Charch-Information/Charch-Information-Board-Create';
 import CharchInformationBoard from '../pages/admin/Charch-Information/Charch-Information-Board';
 
 export const adminMenuItems: MenuItem[] = [

@@ -14,6 +14,7 @@ import AdminRoot from '../AdminRoot';
 import PublicOnlyRouter from './public-only-router';
 import AdminIdleGuard from './AdminIdleGuard';
 import CreateCharchInformationBoard from '../pages/admin/Charch-Information/Charch-Information-Board-Create';
+import EditCharchInformationBoard from '../pages/admin/Charch-Information/EditCharchInformationBoard';
 
 const generatedRoutes = generateRoutes(menuItems);
 
@@ -78,6 +79,10 @@ const router = createHashRouter([
               {
                 path: 'charch-info/create',
                 element: <CreateCharchInformationBoard />,
+              },
+              {
+                path: 'charch-info/edit/:id', // 👈 수정 페이지 라우트 추가
+                element: <EditCharchInformationBoard />,
               },
             ],
           },

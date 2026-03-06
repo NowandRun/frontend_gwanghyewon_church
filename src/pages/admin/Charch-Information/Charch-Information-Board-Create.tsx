@@ -69,13 +69,17 @@ export default function CreateCharchInformationBoard() {
   };
 
   const addImageBlock = (files: FileList) => {
-    const newBlocks: BoardBlock[] = Array.from(files).map((file) => ({
+    // 현재 이미지 블록이 하나도 없는지 확인
+    const noImagesYet = !blocks.some((b) => b.type === 'image');
+
+    const newBlocks: BoardBlock[] = Array.from(files).map((file, index) => ({
       id: crypto.randomUUID(),
       type: 'image',
       file,
       previewUrl: URL.createObjectURL(file),
       fileName: file.name,
-      isThumbnail: false,
+      // 처음 올리는 파일들 중 첫 번째 파일만 썸네일로 자동 지정 (나중에 변경 가능)
+      isThumbnail: noImagesYet && index === 0,
       selected: false,
     }));
 
@@ -155,6 +159,9 @@ export default function CreateCharchInformationBoard() {
      제출
   ============================== */
 
+  /* =============================
+      제출 로직 수정
+  ============================== */
   const onSubmit = async () => {
     if (meLoading) return;
 
@@ -172,80 +179,67 @@ export default function CreateCharchInformationBoard() {
     try {
       setUploading(true);
 
-      // 🔥 1. 블록 정리 + 업로드
       const finalBlocks = [];
+      let finalThumbnailUrl = '';
 
+      // 1. 블록 순회하며 업로드 및 데이터 정리
       for (const block of blocks) {
         if (block.type === 'text') {
           if (!block.content || !block.content.trim()) continue;
-
-          finalBlocks.push({
-            type: 'TEXT',
-            content: block.content, // 🔥 HTML 그대로 보존
-          });
+          finalBlocks.push({ type: 'TEXT', content: block.content });
         }
 
         if (block.type === 'image') {
+          // 이미 업로드된 이미지(URL이 있는 경우) 처리
+          if (!block.file && block.previewUrl) {
+            finalBlocks.push({ type: 'IMAGE', url: block.previewUrl });
+            if (block.isThumbnail) finalThumbnailUrl = block.previewUrl;
+            continue;
+          }
+
           if (!block.file) continue;
 
+          // 새 파일 S3 업로드 실행
           const uploadedUrl = await uploadImageToS3(block.file);
+          finalBlocks.push({ type: 'IMAGE', url: uploadedUrl });
 
-          finalBlocks.push({
-            type: 'IMAGE',
-            url: uploadedUrl,
-          });
+          if (block.isThumbnail) {
+            finalThumbnailUrl = uploadedUrl;
+          }
         }
       }
 
-      if (!finalBlocks.length) {
-        alert('내용이 비어 있습니다.');
-        return;
+      // 2. 썸네일 보정
+      if (!finalThumbnailUrl) {
+        const firstImage = finalBlocks.find((b) => b.type === 'IMAGE');
+        finalThumbnailUrl = (firstImage as any)?.url || '';
       }
 
-      // 🔥 2. 썸네일 처리
-      const thumbnailBlock = finalBlocks.find((b) => b.type === 'IMAGE');
-
-      // ✅ 여기!
-      console.log('=== GraphQL 전송 데이터 ===');
-      console.log({
-        title: trimmedTitle,
-        blocks: finalBlocks,
-        thumbnailUrl: thumbnailBlock?.url ?? null,
-      });
-      console.log(JSON.stringify(finalBlocks, null, 2));
-
+      // 3. Mutation 실행
       const result = await createBoard({
         variables: {
           input: {
             title: trimmedTitle,
             blocks: finalBlocks,
-            // 서버 스키마가 String! (필수)라면 null을 보내면 에러납니다.
-            thumbnailUrl: thumbnailBlock?.url || 'default_image_url_or_empty_string',
+            thumbnailUrl: finalThumbnailUrl || 'https://placehold.co/280x180?text=No+Image',
           },
         },
       });
 
-      console.log('mutation result:', result);
+      // ✅ 핵심 수정 부분: 서버 응답 결과에 따른 분기 처리
+      const { ok, error } = result.data?.createCharchInformationBoard || {};
 
-      if (result.errors?.length) {
-        throw new Error(result.errors[0].message);
+      if (ok) {
+        alert('게시글이 성공적으로 처리되었습니다.');
+        navigate('/admin/charch-info');
+      } else {
+        // 서버에서 전달한 구체적인 에러 메시지(error)를 보여줍니다.
+        alert(`저장 실패: ${error || '알 수 없는 에러가 발생했습니다.'}`);
       }
-
-      if (!result.data) {
-        throw new Error('서버 응답이 없습니다.');
-      }
-
-      const response = result.data.createCharchInformationBoard;
-
-      if (!response?.ok) {
-        throw new Error(response?.error || '게시글 생성 실패');
-      }
-
-      alert('게시글이 등록되었습니다.');
-      navigate('/admin/charch-info');
     } catch (error: any) {
-      console.error(error);
-      alert(error.message || '게시글 생성 실패');
+      // 네트워크 에러나 런타임 에러 발생 시
+      console.error('상세 에러 로그:', error);
+      alert(`시스템 오류: ${error.message || '서버와 통신 중 문제가 발생했습니다.'}`);
     } finally {
       setUploading(false);
     }

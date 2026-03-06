@@ -69,8 +69,40 @@ export type CreateAdminInput = {
 
 export type CreateCharchInformationBoardDto = {
   blocks: Scalars['JSON']['input'];
-  thumbnailUrl: Scalars['String']['input'];
+  thumbnailUrl?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
+};
+
+export type DeleteCharchInformationBoardsInput = {
+  ids: Array<Scalars['Int']['input']>;
+};
+
+export type EditCharchInformationBoardDto = {
+  blocks?: InputMaybe<Scalars['JSON']['input']>;
+  id: Scalars['Float']['input'];
+  thumbnailUrl?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type FindAllCharchInformationBoardsOutput = {
+  __typename?: 'FindAllCharchInformationBoardsOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  results?: Maybe<Array<CharchInformationBoard>>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  totalResults?: Maybe<Scalars['Int']['output']>;
+};
+
+export type FindAllCharchInformationBoardsPaginationInput = {
+  page?: Scalars['Int']['input'];
+  take?: Scalars['Int']['input'];
+};
+
+export type FindCharchInformationBoardOutput = {
+  __typename?: 'FindCharchInformationBoardOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  result?: Maybe<CharchInformationBoard>;
 };
 
 export type FindUserIdInput = {
@@ -107,6 +139,8 @@ export type Mutation = {
   createAccount: CreateAccountOutput;
   createAdmin: CreateAccountOutput;
   createCharchInformationBoard: CoreOutput;
+  deleteCharchInformationBoards: CoreOutput;
+  editCharchInformationBoard: CoreOutput;
   login: LoginOutput;
   logout: LogoutOutput;
   updateByUserPassword: UpdateUserPasswordOutput;
@@ -125,6 +159,16 @@ export type MutationCreateAdminArgs = {
 
 export type MutationCreateCharchInformationBoardArgs = {
   input: CreateCharchInformationBoardDto;
+};
+
+
+export type MutationDeleteCharchInformationBoardsArgs = {
+  input: DeleteCharchInformationBoardsInput;
+};
+
+
+export type MutationEditCharchInformationBoardArgs = {
+  input: EditCharchInformationBoardDto;
 };
 
 
@@ -155,11 +199,16 @@ export enum PasswordCheakRole {
 
 export type Query = {
   __typename?: 'Query';
-  findAllCharchInformationBoards: Array<CharchInformationBoard>;
+  findAllCharchInformationBoards: FindAllCharchInformationBoardsOutput;
   findByUserId: FindUserIdOutput;
-  findOne: CharchInformationBoard;
+  findCharchInformationBoardById: FindCharchInformationBoardOutput;
   me: User;
   userProfile: UserProfileOutput;
+};
+
+
+export type QueryFindAllCharchInformationBoardsArgs = {
+  input: FindAllCharchInformationBoardsPaginationInput;
 };
 
 
@@ -168,8 +217,8 @@ export type QueryFindByUserIdArgs = {
 };
 
 
-export type QueryFindOneArgs = {
-  id: Scalars['String']['input'];
+export type QueryFindCharchInformationBoardByIdArgs = {
+  id: Scalars['Float']['input'];
 };
 
 
@@ -240,6 +289,27 @@ export type CreateCharchInformationBoardMutationVariables = Exact<{
 
 export type CreateCharchInformationBoardMutation = { __typename?: 'Mutation', createCharchInformationBoard: { __typename?: 'CoreOutput', ok: boolean, error?: string | null } };
 
+export type DeleteCharchInformationBoardsMutationVariables = Exact<{
+  input: DeleteCharchInformationBoardsInput;
+}>;
+
+
+export type DeleteCharchInformationBoardsMutation = { __typename?: 'Mutation', deleteCharchInformationBoards: { __typename?: 'CoreOutput', ok: boolean, error?: string | null } };
+
+export type FindCharchInformationBoardByIdQueryVariables = Exact<{
+  id: Scalars['Float']['input'];
+}>;
+
+
+export type FindCharchInformationBoardByIdQuery = { __typename?: 'Query', findCharchInformationBoardById: { __typename?: 'FindCharchInformationBoardOutput', ok: boolean, error?: string | null, result?: { __typename?: 'CharchInformationBoard', id: number, title: string, author: string, thumbnailUrl?: string | null, blocks: any } | null } };
+
+export type EditCharchInformationBoardMutationVariables = Exact<{
+  input: EditCharchInformationBoardDto;
+}>;
+
+
+export type EditCharchInformationBoardMutation = { __typename?: 'Mutation', editCharchInformationBoard: { __typename?: 'CoreOutput', ok: boolean, error?: string | null } };
+
 export type CreateAccountMutationVariables = Exact<{
   input: CreateAccountInput;
 }>;
@@ -257,5 +327,8 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Lo
 
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
 export const CreateCharchInformationBoardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createCharchInformationBoard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateCharchInformationBoardDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCharchInformationBoard"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CreateCharchInformationBoardMutation, CreateCharchInformationBoardMutationVariables>;
+export const DeleteCharchInformationBoardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteCharchInformationBoards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteCharchInformationBoardsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteCharchInformationBoards"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<DeleteCharchInformationBoardsMutation, DeleteCharchInformationBoardsMutationVariables>;
+export const FindCharchInformationBoardByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"findCharchInformationBoardById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findCharchInformationBoardById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"result"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"author"}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailUrl"}},{"kind":"Field","name":{"kind":"Name","value":"blocks"}}]}}]}}]}}]} as unknown as DocumentNode<FindCharchInformationBoardByIdQuery, FindCharchInformationBoardByIdQueryVariables>;
+export const EditCharchInformationBoardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"editCharchInformationBoard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EditCharchInformationBoardDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"editCharchInformationBoard"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<EditCharchInformationBoardMutation, EditCharchInformationBoardMutationVariables>;
 export const CreateAccountDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createAccount"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateAccountInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createAccount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CreateAccountMutation, CreateAccountMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
