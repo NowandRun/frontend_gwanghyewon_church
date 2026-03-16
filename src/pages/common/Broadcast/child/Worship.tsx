@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { IGetPlaylist, Video } from '../../../../types/types';
-import {
-  fetchFromSundayWorshipPlaylists,
-  fetchYouTubeChannelInfo,
-} from '../../../../types/youtube-api';
+import { Video } from '../../../../types/types';
+import { fetchFromSundayWorshipPlaylists } from '../../../../types/youtube-api';
 import { useNavigate } from 'react-router-dom';
 
 function Worship() {

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { BoardBlock } from '../../../types/types';
-import { CmsEditor } from '../../../components/CmsEditor/CmsEditor';
+import { BoardBlock } from '../../types/types';
+import { CmsEditor } from '../CmsEditor/CmsEditor';
 
 import {
   DndContext,
@@ -28,7 +28,7 @@ type Props = {
   onReorder: (activeId: string, overId: string) => void;
 };
 
-export default function BoadBlockEditor({
+export default function AdminBoardBlockEditor({
   blocks,
   onReplaceImage,
   onRemoveBlock,

@@ -24,7 +24,7 @@ export { default as Baptism } from '../pages/common/Group/child/Baptism';
 export { default as Service } from '../pages/common/Group/child/Service';
 
 export { default as News } from '../pages/common/News/News';
-export { default as Tidings } from '../pages/common/News/child/Knell';
+export { default as Tidings } from '../pages/common/News/child/News';
 export { default as Album } from '../pages/common/News/child/Album';
 export { default as Bulletin } from '../pages/common/News/child/Bulletin';
 

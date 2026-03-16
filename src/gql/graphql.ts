@@ -20,15 +20,42 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
-export type CharchInformationBoard = {
-  __typename?: 'CharchInformationBoard';
+export type ChurchAlbumBoard = {
+  __typename?: 'ChurchAlbumBoard';
   author: Scalars['String']['output'];
   blocks: Scalars['JSON']['output'];
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['Int']['output'];
-  thumbnailUrl?: Maybe<Scalars['String']['output']>;
+  thumbnailUrl: Scalars['String']['output'];
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
+  user?: Maybe<User>;
+};
+
+export type ChurchBulletinBoard = {
+  __typename?: 'ChurchBulletinBoard';
+  author: Scalars['String']['output'];
+  blocks: Scalars['JSON']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  fileUrls?: Maybe<Scalars['JSON']['output']>;
+  id: Scalars['Int']['output'];
+  thumbnailUrl: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user?: Maybe<User>;
+};
+
+export type ChurchInformationBoard = {
+  __typename?: 'ChurchInformationBoard';
+  author: Scalars['String']['output'];
+  blocks: Scalars['JSON']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  fileUrls?: Maybe<Scalars['JSON']['output']>;
+  id: Scalars['Int']['output'];
+  isPinned: Scalars['Boolean']['output'];
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user?: Maybe<User>;
 };
 
 export type CoreOutput = {
@@ -67,42 +94,122 @@ export type CreateAdminInput = {
   userName?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type CreateCharchInformationBoardDto = {
+export type CreateChurchAlbumBoardDto = {
   blocks: Scalars['JSON']['input'];
-  thumbnailUrl?: InputMaybe<Scalars['String']['input']>;
+  thumbnailUrl: Scalars['String']['input'];
   title: Scalars['String']['input'];
 };
 
-export type DeleteCharchInformationBoardsInput = {
+export type CreateChurchBulletinBoardDto = {
+  blocks: Scalars['JSON']['input'];
+  fileUrls?: InputMaybe<Scalars['JSON']['input']>;
+  thumbnailUrl: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type CreateChurchInformationBoardDto = {
+  blocks: Scalars['JSON']['input'];
+  fileUrls?: InputMaybe<Scalars['JSON']['input']>;
+  isPinned?: InputMaybe<Scalars['Boolean']['input']>;
+  title: Scalars['String']['input'];
+};
+
+export type DeleteChurchAlbumBoardInput = {
   ids: Array<Scalars['Int']['input']>;
 };
 
-export type EditCharchInformationBoardDto = {
+export type DeleteChurchBulletinBoardInput = {
+  ids: Array<Scalars['Int']['input']>;
+};
+
+export type DeleteChurchInformationBoardInput = {
+  ids: Array<Scalars['Int']['input']>;
+};
+
+export type EditChurchAlbumBoardDto = {
   blocks?: InputMaybe<Scalars['JSON']['input']>;
-  id: Scalars['Float']['input'];
+  id: Scalars['Int']['input'];
   thumbnailUrl?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type FindAllCharchInformationBoardsOutput = {
-  __typename?: 'FindAllCharchInformationBoardsOutput';
+export type EditChurchBulletinBoardDto = {
+  blocks?: InputMaybe<Scalars['JSON']['input']>;
+  fileUrls?: InputMaybe<Scalars['JSON']['input']>;
+  id: Scalars['Int']['input'];
+  thumbnailUrl?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type EditChurchInformationBoardDto = {
+  blocks?: InputMaybe<Scalars['JSON']['input']>;
+  fileUrls?: InputMaybe<Scalars['JSON']['input']>;
+  id: Scalars['Int']['input'];
+  isPinned?: InputMaybe<Scalars['Boolean']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type FindAllChurchAlbumBoardOutput = {
+  __typename?: 'FindAllChurchAlbumBoardOutput';
   error?: Maybe<Scalars['String']['output']>;
   ok: Scalars['Boolean']['output'];
-  results?: Maybe<Array<CharchInformationBoard>>;
+  results?: Maybe<Array<ChurchAlbumBoard>>;
   totalPages?: Maybe<Scalars['Int']['output']>;
   totalResults?: Maybe<Scalars['Int']['output']>;
 };
 
-export type FindAllCharchInformationBoardsPaginationInput = {
+export type FindAllChurchAlbumBoardPaginationInput = {
   page?: Scalars['Int']['input'];
   take?: Scalars['Int']['input'];
 };
 
-export type FindCharchInformationBoardOutput = {
-  __typename?: 'FindCharchInformationBoardOutput';
+export type FindAllChurchBulletinOutput = {
+  __typename?: 'FindAllChurchBulletinOutput';
   error?: Maybe<Scalars['String']['output']>;
   ok: Scalars['Boolean']['output'];
-  result?: Maybe<CharchInformationBoard>;
+  results?: Maybe<Array<ChurchBulletinBoard>>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  totalResults?: Maybe<Scalars['Int']['output']>;
+};
+
+export type FindAllChurchBulletinPaginationInput = {
+  page?: Scalars['Int']['input'];
+  take?: Scalars['Int']['input'];
+};
+
+export type FindAllChurchInformationBoardOutput = {
+  __typename?: 'FindAllChurchInformationBoardOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  results?: Maybe<Array<ChurchInformationBoard>>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  totalResults?: Maybe<Scalars['Int']['output']>;
+};
+
+export type FindAllChurchInformationBoardPaginationInput = {
+  page?: Scalars['Int']['input'];
+  take?: Scalars['Int']['input'];
+};
+
+export type FindChurchAlbumBoardOutput = {
+  __typename?: 'FindChurchAlbumBoardOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  result?: Maybe<ChurchAlbumBoard>;
+};
+
+export type FindChurchBulletinBoardOutput = {
+  __typename?: 'FindChurchBulletinBoardOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  result?: Maybe<ChurchBulletinBoard>;
+};
+
+export type FindChurchInformationBoardOutput = {
+  __typename?: 'FindChurchInformationBoardOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  result?: Maybe<ChurchInformationBoard>;
 };
 
 export type FindUserIdInput = {
@@ -138,9 +245,15 @@ export type Mutation = {
   __typename?: 'Mutation';
   createAccount: CreateAccountOutput;
   createAdmin: CreateAccountOutput;
-  createCharchInformationBoard: CoreOutput;
-  deleteCharchInformationBoards: CoreOutput;
-  editCharchInformationBoard: CoreOutput;
+  createChurchAlbumBoard: CoreOutput;
+  createChurchBulletinBoard: CoreOutput;
+  createChurchInformationBoard: CoreOutput;
+  deleteChurchAlbumBoard: CoreOutput;
+  deleteChurchBulletinBoard: CoreOutput;
+  deleteChurchInformationBoard: CoreOutput;
+  editChurchAlbumBoard: CoreOutput;
+  editChurchBulletinBoard: CoreOutput;
+  editChurchInformationBoard: CoreOutput;
   login: LoginOutput;
   logout: LogoutOutput;
   updateByUserPassword: UpdateUserPasswordOutput;
@@ -157,18 +270,48 @@ export type MutationCreateAdminArgs = {
 };
 
 
-export type MutationCreateCharchInformationBoardArgs = {
-  input: CreateCharchInformationBoardDto;
+export type MutationCreateChurchAlbumBoardArgs = {
+  input: CreateChurchAlbumBoardDto;
 };
 
 
-export type MutationDeleteCharchInformationBoardsArgs = {
-  input: DeleteCharchInformationBoardsInput;
+export type MutationCreateChurchBulletinBoardArgs = {
+  input: CreateChurchBulletinBoardDto;
 };
 
 
-export type MutationEditCharchInformationBoardArgs = {
-  input: EditCharchInformationBoardDto;
+export type MutationCreateChurchInformationBoardArgs = {
+  input: CreateChurchInformationBoardDto;
+};
+
+
+export type MutationDeleteChurchAlbumBoardArgs = {
+  input: DeleteChurchAlbumBoardInput;
+};
+
+
+export type MutationDeleteChurchBulletinBoardArgs = {
+  input: DeleteChurchBulletinBoardInput;
+};
+
+
+export type MutationDeleteChurchInformationBoardArgs = {
+  input: DeleteChurchInformationBoardInput;
+};
+
+
+export type MutationEditChurchAlbumBoardArgs = {
+  input: EditChurchAlbumBoardDto;
+};
+
+
+export type MutationEditChurchBulletinBoardArgs = {
+  input: EditChurchBulletinBoardDto;
+};
+
+
+export type MutationEditChurchInformationBoardArgs = {
+  input: EditChurchInformationBoardDto;
 };
 
 
@@ -199,16 +342,30 @@ export enum PasswordCheakRole {
 
 export type Query = {
   __typename?: 'Query';
-  findAllCharchInformationBoards: FindAllCharchInformationBoardsOutput;
+  findAllChurchAlbumBoard: FindAllChurchAlbumBoardOutput;
+  findAllChurchBulletinBoard: FindAllChurchBulletinOutput;
+  findAllChurchInformationBoard: FindAllChurchInformationBoardOutput;
   findByUserId: FindUserIdOutput;
-  findCharchInformationBoardById: FindCharchInformationBoardOutput;
+  findChurchAlbumBoardById: FindChurchAlbumBoardOutput;
+  findChurchBulletinBoardById: FindChurchBulletinBoardOutput;
+  findChurchInformationBoardById: FindChurchInformationBoardOutput;
   me: User;
   userProfile: UserProfileOutput;
 };
 
 
-export type QueryFindAllCharchInformationBoardsArgs = {
-  input: FindAllCharchInformationBoardsPaginationInput;
+export type QueryFindAllChurchAlbumBoardArgs = {
+  input: FindAllChurchAlbumBoardPaginationInput;
+};
+
+
+export type QueryFindAllChurchBulletinBoardArgs = {
+  input: FindAllChurchBulletinPaginationInput;
+};
+
+
+export type QueryFindAllChurchInformationBoardArgs = {
+  input: FindAllChurchInformationBoardPaginationInput;
 };
 
 
@@ -217,7 +374,17 @@ export type QueryFindByUserIdArgs = {
 };
 
 
-export type QueryFindCharchInformationBoardByIdArgs = {
+export type QueryFindChurchAlbumBoardByIdArgs = {
+  id: Scalars['Float']['input'];
+};
+
+
+export type QueryFindChurchBulletinBoardByIdArgs = {
+  id: Scalars['Float']['input'];
+};
+
+
+export type QueryFindChurchInformationBoardByIdArgs = {
   id: Scalars['Float']['input'];
 };
 
@@ -249,6 +416,9 @@ export type User = {
   __typename?: 'User';
   accessHistory: Scalars['DateTime']['output'];
   address?: Maybe<Scalars['String']['output']>;
+  churchAlbumBoard?: Maybe<Array<ChurchAlbumBoard>>;
+  churchBulletinBoard?: Maybe<Array<ChurchBulletinBoard>>;
+  churchInformationBoard?: Maybe<Array<ChurchInformationBoard>>;
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['Float']['output'];
   nickname: Scalars['String']['output'];
@@ -282,34 +452,6 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, userId: string, role: UserRole, nickname: string, userName?: string | null } };
 
-export type CreateCharchInformationBoardMutationVariables = Exact<{
-  input: CreateCharchInformationBoardDto;
-}>;
-
-
-export type CreateCharchInformationBoardMutation = { __typename?: 'Mutation', createCharchInformationBoard: { __typename?: 'CoreOutput', ok: boolean, error?: string | null } };
-
-export type DeleteCharchInformationBoardsMutationVariables = Exact<{
-  input: DeleteCharchInformationBoardsInput;
-}>;
-
-
-export type DeleteCharchInformationBoardsMutation = { __typename?: 'Mutation', deleteCharchInformationBoards: { __typename?: 'CoreOutput', ok: boolean, error?: string | null } };
-
-export type FindCharchInformationBoardByIdQueryVariables = Exact<{
-  id: Scalars['Float']['input'];
-}>;
-
-
-export type FindCharchInformationBoardByIdQuery = { __typename?: 'Query', findCharchInformationBoardById: { __typename?: 'FindCharchInformationBoardOutput', ok: boolean, error?: string | null, result?: { __typename?: 'CharchInformationBoard', id: number, title: string, author: string, thumbnailUrl?: string | null, blocks: any } | null } };
-
-export type EditCharchInformationBoardMutationVariables = Exact<{
-  input: EditCharchInformationBoardDto;
-}>;
-
-
-export type EditCharchInformationBoardMutation = { __typename?: 'Mutation', editCharchInformationBoard: { __typename?: 'CoreOutput', ok: boolean, error?: string | null } };
-
 export type CreateAccountMutationVariables = Exact<{
   input: CreateAccountInput;
 }>;
@@ -326,9 +468,5 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Lo
 
 
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
-export const CreateCharchInformationBoardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createCharchInformationBoard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateCharchInformationBoardDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCharchInformationBoard"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CreateCharchInformationBoardMutation, CreateCharchInformationBoardMutationVariables>;
-export const DeleteCharchInformationBoardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteCharchInformationBoards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteCharchInformationBoardsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteCharchInformationBoards"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<DeleteCharchInformationBoardsMutation, DeleteCharchInformationBoardsMutationVariables>;
-export const FindCharchInformationBoardByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"findCharchInformationBoardById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findCharchInformationBoardById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"result"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"author"}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailUrl"}},{"kind":"Field","name":{"kind":"Name","value":"blocks"}}]}}]}}]}}]} as unknown as DocumentNode<FindCharchInformationBoardByIdQuery, FindCharchInformationBoardByIdQueryVariables>;
-export const EditCharchInformationBoardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"editCharchInformationBoard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EditCharchInformationBoardDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"editCharchInformationBoard"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<EditCharchInformationBoardMutation, EditCharchInformationBoardMutationVariables>;
 export const CreateAccountDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createAccount"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateAccountInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createAccount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CreateAccountMutation, CreateAccountMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;

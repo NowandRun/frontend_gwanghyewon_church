@@ -13,8 +13,12 @@ import LoggedInRouter from './logged-in-router';
 import AdminRoot from '../AdminRoot';
 import PublicOnlyRouter from './public-only-router';
 import AdminIdleGuard from './AdminIdleGuard';
-import CreateCharchInformationBoard from '../pages/admin/Charch-Information/Charch-Information-Board-Create';
-import EditCharchInformationBoard from '../pages/admin/Charch-Information/EditCharchInformationBoard';
+import EditChurchInformationBoard from '../pages/admin/Church-Information/EditChurchInformationBoard';
+import CreateChurchInformationBoard from 'src/pages/admin/Church-Information/CreatChurchInformationBoard';
+import EditChurchAlbumBoard from 'src/pages/admin/Church-Album/EditChurchAlbumBoard';
+import CreateChurchAlbumBoard from 'src/pages/admin/Church-Album/CreateChurchAlbumBoard';
+import CreateChurchBulletinBoard from 'src/pages/admin/Church-Bulletin/CreateChurchBulletinBoard';
+import EditChurchBulletinBoard from 'src/pages/admin/Church-Bulletin/EditChurchBulletinBoard';
 
 const generatedRoutes = generateRoutes(menuItems);
 
@@ -66,23 +70,56 @@ const router = createHashRouter([
                 index: true,
                 element: (
                   <Navigate
-                    to="charch-info"
+                    to="church-info"
                     replace
                   />
                 ),
               },
-
+              {
+                index: true,
+                element: (
+                  <Navigate
+                    to="church-album"
+                    replace
+                  />
+                ),
+              },
+              {
+                index: true,
+                element: (
+                  <Navigate
+                    to="church-bulletin"
+                    replace
+                  />
+                ),
+              },
               // 📌 메뉴 기반 라우트
               ...adminGeneratedRoutes,
 
               // 📌 메뉴에 안 보이는 라우트 (중요)
               {
-                path: 'charch-info/create',
-                element: <CreateCharchInformationBoard />,
+                path: 'church-info/create',
+                element: <CreateChurchInformationBoard />,
               },
               {
-                path: 'charch-info/edit/:id', // 👈 수정 페이지 라우트 추가
-                element: <EditCharchInformationBoard />,
+                path: 'church-info/edit/:id', // 👈 수정 페이지 라우트 추가
+                element: <EditChurchInformationBoard />,
+              },
+              {
+                path: 'church-album/create',
+                element: <CreateChurchAlbumBoard />,
+              },
+              {
+                path: 'church-album/edit/:id', // 👈 수정 페이지 라우트 추가
+                element: <EditChurchAlbumBoard />,
+              },
+              {
+                path: 'church-bulletin/create',
+                element: <CreateChurchBulletinBoard />,
+              },
+              {
+                path: 'church-bulletin/edit/:id', // 👈 수정 페이지 라우트 추가
+                element: <EditChurchBulletinBoard />,
               },
             ],
           },

@@ -1,26 +1,26 @@
 // src/components/AdminNavigation.ts
 import { MenuItem } from '../types/types';
-import SystemLog from '../pages/admin/SystemLog';
-import UserManage from '../pages/admin/UserManage';
-import CharchInformationBoard from '../pages/admin/Charch-Information/Charch-Information-Board';
+import ChurchInformationBoard from '../pages/admin/Church-Information/FindAllChurchInformationBoard';
+import ChurchAlbumBoard from 'src/pages/admin/Church-Album/FindAllChurchAlbumBoard';
+import ChurchBulletinBoard from 'src/pages/admin/Church-Bulletin/FindAllChurchBulletinBoard';
 
 export const adminMenuItems: MenuItem[] = [
   {
-    label: 'Charch Information',
-    path: 'charch-info',
-    component: CharchInformationBoard,
+    label: 'Church Information',
+    path: 'church-info',
+    component: ChurchInformationBoard,
     isAdmin: true,
   },
   {
-    label: 'User Management',
-    path: 'users',
-    component: UserManage,
+    label: 'Church Album',
+    path: 'church-album',
+    component: ChurchAlbumBoard,
     isAdmin: true,
   },
   {
-    label: 'System Log',
-    path: 'logs',
-    component: SystemLog,
+    label: 'Church Bulletin',
+    path: 'church-bulletin',
+    component: ChurchBulletinBoard,
     isAdmin: true,
   },
 ];

@@ -1,99 +1,151 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { arrayMove } from '@dnd-kit/sortable';
-import BlockToolbar from '../../../components/AdminComponents/BlockToolbar';
-import { BoardBlock } from '../../../types/types';
-import { useMe } from '../../../hooks/useMe';
-import BoadBlockEditor from './Charch-Information-BlockEditor';
+import ChurchAlbumBlockToolbar from '../../../components/AdminComponents/ChurchInformationBlockToolbar';
+import { BoardBlock, BoardType } from '../../../types/types';
+import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
+import {
+  EDIT_CHURCH_ALBUM_BOARD,
+  FIND_CHURCH_ALBUM_BOARD_BY_ID_QUERY,
+} from 'src/types/grapql_call';
 
-// 1. 기존 게시글 조회를 위한 쿼리
-const GET_CHARCH_BOARD_DETAIL = gql`
-  query findCharchInformationBoardById($id: Float!) {
-    findCharchInformationBoardById(id: $id) {
-      ok
-      error
-      result {
-        id
-        title
-        author
-        thumbnailUrl
-        blocks
-      }
-    }
-  }
-`;
+import { useMe } from 'src/hooks/useMe';
 
-// 2. 게시글 수정을 위한 뮤테이션
-const EDIT_CHARCH_INFORMATION_BOARD = gql`
-  mutation editCharchInformationBoard($input: EditCharchInformationBoardDto!) {
-    editCharchInformationBoard(input: $input) {
-      ok
-      error
-    }
-  }
-`;
-
-export default function EditCharchInformationBoard() {
+export default function EditChurchAlbumBoard() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: meData } = useMe();
   const [author, setAuthor] = useState('');
   const titleRef = useRef<HTMLInputElement>(null);
+
+  // 1. 현재 로그인한 내 정보 가져오기
+  const { data: meData, loading: meLoading } = useMe();
 
   const [title, setTitle] = useState('');
   const [blocks, setBlocks] = useState<BoardBlock[]>([]);
   const [uploading, setUploading] = useState(false);
 
-  // 데이터 불러오기
-  const { data: boardData, loading: boardLoading } = useQuery(GET_CHARCH_BOARD_DETAIL, {
+  // 🚀 fileUrls 상태 삭제됨
+
+  const { data: boardData, loading: boardLoading } = useQuery(FIND_CHURCH_ALBUM_BOARD_BY_ID_QUERY, {
     variables: { id: Number(id) },
     skip: !id,
   });
 
-  const [editBoard, { loading: editLoading }] = useMutation(EDIT_CHARCH_INFORMATION_BOARD);
+  const [editBoard, { loading: editLoading }] = useMutation(EDIT_CHURCH_ALBUM_BOARD);
 
   // ✅ S3 업로드 함수 추가 (에러 해결 포인트)
-  const uploadImageToS3 = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('boardType', 'CHARCH_INFORMATION');
-    const response = await fetch('http://localhost:4000/uploads/image', {
-      method: 'POST',
-      body: formData,
-    });
-    if (!response.ok) throw new Error('이미지 업로드 실패');
-    const data = await response.json();
-    return data.url;
+  // 1. 가공 및 검증 함수 업데이트
+  const getSafeFileData = (
+    file: File,
+  ): { safeName: string; isValid: boolean; message?: string } => {
+    // 공백을 하이픈(-)으로 치환 (연속된 공백도 하나로 치환)
+    const safeName = file.name.replace(/\s+/g, '-');
+
+    // 치환된 이름에서 나머지 금지 특수문자 체크 (공백 제외됨)
+    const forbiddenChars = /[\\<>|^!*{}[\]"`~#()+=,;: @&]/;
+
+    if (forbiddenChars.test(safeName)) {
+      return {
+        safeName,
+        isValid: false,
+        message: `파일명에 허용되지 않는 특수문자가 있습니다.\n\n사용 불가: [ / \\ < > | ^ ! * { } [ ] " \` ~ # ( ) + = , ; : @ & ]`,
+      };
+    }
+
+    if (safeName.includes('..')) {
+      return {
+        safeName,
+        isValid: false,
+        message: '파일명에 마침표를 연속(..)으로 사용할 수 없습니다.',
+      };
+    }
+
+    return { safeName, isValid: true };
   };
 
+  // 2. S3 업로드 함수 수정 (이름 전달 방식 변경)
+  const uploadFileToS3 = async (file: File): Promise<string> => {
+    const { safeName, isValid, message } = getSafeFileData(file);
+
+    if (!isValid) {
+      throw new Error(message);
+    }
+
+    const formData = new FormData();
+    // 💡 포인트: 파일명을 굳이 encodeURIComponent 하지 않고
+    // 새 File 객체를 만들어 safeName만 적용하는 것이 안정적입니다.
+    const renamedFile = new File([file], safeName, { type: file.type });
+
+    formData.append('file', renamedFile);
+    formData.append('boardType', BoardType.CHURCH_ALBUM);
+
+    try {
+      const response = await fetch('http://localhost:4000/uploads/file', {
+        method: 'POST',
+        body: formData,
+        // 💡 중요: Content-Type 헤더를 수동으로 설정하지 마세요.
+        // 브라우저가 boundary를 포함해 자동으로 설정하게 두어야 합니다.
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '서버 업로드 실패');
+      }
+
+      const data = await response.json();
+      return data.url;
+    } catch (error: any) {
+      console.error('Upload Error:', error);
+      throw error;
+    }
+  };
   // 데이터 초기화 및 본인 확인
   useEffect(() => {
-    if (boardData?.findCharchInformationBoardById.ok) {
-      const board = boardData.findCharchInformationBoardById.result;
-      setTitle(board.title);
-      setAuthor(board.author);
+    // 1. 데이터 로딩 중이거나 응답이 없는 경우 바로 종료
+    if (meLoading || boardLoading) return;
+    if (!boardData?.findChurchAlbumBoardById?.ok) return;
 
-      if (meData?.me && board.author !== meData.me.nickname) {
-        alert('본인만 수정할 수 있습니다.');
-        navigate('/admin/charch-info');
+    const board = boardData.findChurchAlbumBoardById.result;
+    const me = meData?.me;
+
+    // 2. 권한 체크 (id 기반 비교)
+    if (me && board) {
+      const isAdmin = me.role === 'Admin' || me.role === 'SuperAdmin';
+      const isOwner = board.user?.id && Number(me.id) === Number(board.user.id);
+
+      if (!isAdmin && !isOwner) {
+        alert('게시글 수정 권한이 없습니다.');
+        navigate('/admin/church-album');
         return;
       }
 
-      const initialBlocks: BoardBlock[] = board.blocks.map((b: any) => ({
-        id: uuid(),
-        type: b.type.toLowerCase(),
-        content: b.content || '',
-        previewUrl: b.url || '',
-        isThumbnail: b.url === board.thumbnailUrl,
-        selected: false,
-      }));
-      setBlocks(initialBlocks);
+      // 3. 필드 데이터 세팅
+      setTitle(board.title || '');
+      setAuthor(board.author || '');
+
+      // 4. 블록 데이터 가공 (UI 블록용으로 변환)
+      if (board.blocks) {
+        const initialBlocks: BoardBlock[] = board.blocks.map((b: any) => {
+          const isImage = b.type === 'IMAGE';
+          return {
+            id: uuid(),
+            type: b.type.toLowerCase(), // 'TEXT' -> 'text'
+            content: b.content || '',
+            previewUrl: isImage ? b.url : '',
+            fileName: isImage ? b.url.split('/').pop() : '',
+            // 🚀 서버의 thumbnailUrl과 현재 블록의 url이 같으면 썸네일 활성화
+            isThumbnail: isImage && b.url === board.thumbnailUrl,
+            selected: false,
+          };
+        });
+        setBlocks(initialBlocks);
+      }
     }
-  }, [boardData, meData, navigate]);
+  }, [boardData, boardLoading, meData, meLoading, navigate]);
 
   /* =============================
       블록 핸들러 (Create 로직과 동일하게 유지)
@@ -172,18 +224,12 @@ export default function EditCharchInformationBoard() {
 
       const finalBlocks = await Promise.all(
         blocks.map(async (block) => {
-          if (block.type === 'text') {
-            // 서버가 기대하는 TEXT 타입 필드만 추출
-            return { type: 'TEXT', content: block.content };
-          } else {
-            const url = block.file ? await uploadImageToS3(block.file) : block.previewUrl;
-            // 서버가 기대하는 IMAGE 타입 필드만 추출 (id, previewUrl 등 제외)
-            return { type: 'IMAGE', url };
-          }
+          if (block.type === 'text') return { type: 'TEXT', content: block.content };
+          const url = block.file ? await uploadFileToS3(block.file) : block.previewUrl;
+          return { type: 'IMAGE', url };
         }),
       );
 
-      // 썸네일 결정
       let finalThumbnailUrl = '';
       const thumbIdx = blocks.findIndex((b) => b.type === 'image' && b.isThumbnail);
       if (thumbIdx !== -1) {
@@ -198,22 +244,22 @@ export default function EditCharchInformationBoard() {
           input: {
             id: Number(id),
             title: title.trim(),
-            // ⚠️ map을 통해 서버가 필요한 필드만 새 객체로 생성
-            blocks: finalBlocks.map((b) => ({
-              type: b.type,
-              content: b.content || '',
-              url: (b as any).url || '',
-            })),
-            thumbnailUrl: finalThumbnailUrl || null,
+            blocks: finalBlocks,
+            thumbnailUrl: finalThumbnailUrl,
+            // 🚀 fileUrls: fileUrls 삭제
           },
         },
       });
 
-      if (result.data?.editCharchInformationBoard.ok) {
+      if (result.data?.editChurchAlbumBoard.ok) {
         alert('수정되었습니다.');
-        navigate('/admin/charch-info');
+        navigate('/admin/church-album');
       } else {
-        alert(result.data?.editCharchInformationBoard.error || '수정 실패');
+        if (!finalThumbnailUrl) {
+          alert('썸네일 이미지를 생성 또는 선택해주세요.');
+        } else {
+          alert(result.data?.editChurchAlbumBoard.error || '수정 실패');
+        }
       }
     } catch (e) {
       console.error(e);
@@ -258,7 +304,8 @@ export default function EditCharchInformationBoard() {
               setBlocks((prev) => prev.filter((b) => !b.selected));
             }}
           />
-          <BlockToolbar
+
+          <ChurchAlbumBlockToolbar
             onAddText={addTextBlock}
             onAddImage={addImageBlock}
             $hasThumbnail={blocks.some((b) => b.type === 'image' && b.isThumbnail)}
@@ -309,7 +356,7 @@ const Container = styled.div`
 `;
 const TwoColumnLayout = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1.1fr 1fr;
   gap: 40px;
 `;
 const HeaderArea = styled.div`
@@ -332,10 +379,11 @@ const EditorSection = styled.div`
   flex-direction: column;
   gap: 10px;
 `;
+
 const PreviewSection = styled.div`
   background: #f9fafb;
   border-radius: 12px;
-  padding: 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -365,6 +413,34 @@ const ThumbnailButton = styled.button<{ $active?: boolean }>`
 const HtmlContent = styled.div`
   font-size: 14px;
   line-height: 1.6;
+
+  // 1. 컨테이너 밖으로 나가는 것 방지
+  width: 100%;
+  overflow-wrap: break-word;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    /* ✅ 핵심: 표의 너비를 고정하고 셀 너비를 균등하게 배분하거나 지정된 대로 유지함 */
+    table-layout: fixed;
+  }
+
+  th,
+  td {
+    border: 1px solid #e5e7eb;
+    padding: 10px;
+    white-space: pre-wrap;
+    /* ✅ 핵심: 긴 영문/숫자도 강제로 줄바꿈되도록 설정 */
+    word-break: break-all;
+    overflow: hidden;
+  }
+
+  p {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
 `;
 const SubmitButton = styled.button`
   margin-top: 40px;

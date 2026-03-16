@@ -1,4 +1,4 @@
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { isdarkAtom } from '../../types/atoms';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';

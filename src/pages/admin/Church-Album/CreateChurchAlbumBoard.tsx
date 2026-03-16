@@ -1,25 +1,17 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { arrayMove } from '@dnd-kit/sortable';
-import BlockToolbar from '../../../components/AdminComponents/BlockToolbar';
-import { BoardBlock } from '../../../types/types';
+import ChurchAlbumBlockToolbar from '../../../components/AdminComponents/ChurchInformationBlockToolbar';
+import { BoardBlock, BoardType } from '../../../types/types';
 import { useMe } from '../../../hooks/useMe';
-import BoadBlockEditor from './Charch-Information-BlockEditor';
+import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
+import { CREATE_CHURCH_ALBUM_BOARD_MUTATION } from 'src/types/grapql_call';
 
-const CREATE_CHARCH_INFORMATION_BOARD = gql`
-  mutation createCharchInformationBoard($input: CreateCharchInformationBoardDto!) {
-    createCharchInformationBoard(input: $input) {
-      ok
-      error
-    }
-  }
-`;
-
-export default function CreateCharchInformationBoard() {
+export default function CreateChurchAlbumBoard() {
   const navigate = useNavigate();
   const { data: meData, loading: meLoading } = useMe();
   const titleRef = useRef<HTMLInputElement>(null);
@@ -28,29 +20,67 @@ export default function CreateCharchInformationBoard() {
   const [blocks, setBlocks] = useState<BoardBlock[]>([]);
   const [uploading, setUploading] = useState(false);
 
-  /* =============================
-     S3 업로드
-  ============================== */
-  const uploadImageToS3 = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('boardType', 'CHARCH_INFORMATION');
+  // 1. 가공 및 검증 함수 업데이트
+  const getSafeFileData = (
+    file: File,
+  ): { safeName: string; isValid: boolean; message?: string } => {
+    // 공백을 하이픈(-)으로 치환 (연속된 공백도 하나로 치환)
+    const safeName = file.name.replace(/\s+/g, '-');
 
-    const response = await fetch('http://localhost:4000/uploads/image', {
+    // 치환된 이름에서 나머지 금지 특수문자 체크 (공백 제외됨)
+    const forbiddenChars = /[\\<>|^!*{}[\]"`~#()+=,;: @&]/;
+
+    if (forbiddenChars.test(safeName)) {
+      return {
+        safeName,
+        isValid: false,
+        message: `파일명에 허용되지 않는 특수문자가 있습니다.\n\n사용 불가: [ / \\ < > | ^ ! * { } [ ] " \` ~ # ( ) + = , ; : @ & ]`,
+      };
+    }
+
+    if (safeName.includes('..')) {
+      return {
+        safeName,
+        isValid: false,
+        message: '파일명에 마침표를 연속(..)으로 사용할 수 없습니다.',
+      };
+    }
+
+    return { safeName, isValid: true };
+  };
+
+  // 2. S3 업로드 함수 수정 (이름 전달 방식 변경)
+  const uploadFileToS3 = async (file: File): Promise<string> => {
+    const { safeName, isValid, message } = getSafeFileData(file);
+
+    if (!isValid) {
+      throw new Error(message);
+    }
+
+    const formData = new FormData();
+    const encodedName = encodeURIComponent(safeName);
+    formData.append('file', file, encodedName);
+    formData.append('boardType', BoardType.CHURCH_ALBUM);
+
+    const response = await fetch('http://localhost:4000/uploads/file', {
       method: 'POST',
       body: formData,
     });
 
-    if (!response.ok) throw new Error('이미지 업로드 실패');
+    // 🚀 [수정] 서버에서 보낸 구체적인 에러 메시지 처리
+    if (!response.ok) {
+      const errorData = await response.json();
+      // NestJS의 경우 보통 errorData.message에 에러 내용이 담깁니다.
+      throw new Error(errorData.message || '파일 업로드에 실패했습니다.');
+    }
 
     const data = await response.json();
     return data.url;
   };
-
   /* =============================
      GraphQL
   ============================== */
-  const [createBoard, { loading }] = useMutation(CREATE_CHARCH_INFORMATION_BOARD);
+  const [createBoard, { loading }] = useMutation(CREATE_CHURCH_ALBUM_BOARD_MUTATION);
 
   /* =============================
      블록 로직
@@ -155,13 +185,6 @@ export default function CreateCharchInformationBoard() {
     );
   };
 
-  /* =============================
-     제출
-  ============================== */
-
-  /* =============================
-      제출 로직 수정
-  ============================== */
   const onSubmit = async () => {
     if (meLoading) return;
 
@@ -178,63 +201,51 @@ export default function CreateCharchInformationBoard() {
 
     try {
       setUploading(true);
-
       const finalBlocks = [];
       let finalThumbnailUrl = '';
 
-      // 1. 블록 순회하며 업로드 및 데이터 정리
       for (const block of blocks) {
         if (block.type === 'text') {
-          if (!block.content || !block.content.trim()) continue;
+          if (!block.content?.trim()) continue;
           finalBlocks.push({ type: 'TEXT', content: block.content });
         }
-
         if (block.type === 'image') {
-          // 이미 업로드된 이미지(URL이 있는 경우) 처리
-          if (!block.file && block.previewUrl) {
-            finalBlocks.push({ type: 'IMAGE', url: block.previewUrl });
-            if (block.isThumbnail) finalThumbnailUrl = block.previewUrl;
-            continue;
-          }
-
-          if (!block.file) continue;
-
-          // 새 파일 S3 업로드 실행
-          const uploadedUrl = await uploadImageToS3(block.file);
-          finalBlocks.push({ type: 'IMAGE', url: uploadedUrl });
-
-          if (block.isThumbnail) {
-            finalThumbnailUrl = uploadedUrl;
-          }
+          const url = block.file ? await uploadFileToS3(block.file) : block.previewUrl;
+          finalBlocks.push({ type: 'IMAGE', url });
+          if (block.isThumbnail) finalThumbnailUrl = url;
         }
       }
 
-      // 2. 썸네일 보정
       if (!finalThumbnailUrl) {
         const firstImage = finalBlocks.find((b) => b.type === 'IMAGE');
         finalThumbnailUrl = (firstImage as any)?.url || '';
       }
 
-      // 3. Mutation 실행
       const result = await createBoard({
         variables: {
           input: {
-            title: trimmedTitle,
+            title: title.trim(),
             blocks: finalBlocks,
-            thumbnailUrl: finalThumbnailUrl || 'https://placehold.co/280x180?text=No+Image',
+            thumbnailUrl: finalThumbnailUrl,
+            // 🚀 fileUrls 필드 없음 확인
           },
         },
       });
 
       // ✅ 핵심 수정 부분: 서버 응답 결과에 따른 분기 처리
-      const { ok, error } = result.data?.createCharchInformationBoard || {};
+      const { ok, error } = result.data?.createChurchAlbumBoard || {};
 
       if (ok) {
         alert('게시글이 성공적으로 처리되었습니다.');
-        navigate('/admin/charch-info');
+        navigate('/admin/church-album');
       } else {
         // 서버에서 전달한 구체적인 에러 메시지(error)를 보여줍니다.
-        alert(`저장 실패: ${error || '알 수 없는 에러가 발생했습니다.'}`);
+        if (!finalThumbnailUrl) {
+          alert('썸네일 이미지를 생성 또는 선택해주세요.');
+          return;
+        } else {
+          alert(`저장 실패: ${error || '알 수 없는 에러가 발생했습니다.'}`);
+        }
       }
     } catch (error: any) {
       // 네트워크 에러나 런타임 에러 발생 시
@@ -280,7 +291,7 @@ export default function CreateCharchInformationBoard() {
             onReorder={reorderBlocks}
           />
 
-          <BlockToolbar
+          <ChurchAlbumBlockToolbar
             onAddText={addTextBlock}
             onAddImage={addImageBlock}
             $hasThumbnail={blocks.some((b) => b.type === 'image' && b.isThumbnail)}
@@ -350,7 +361,7 @@ const Container = styled.div`
 
 const TwoColumnLayout = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1.1fr 1fr;
   gap: 40px;
 
   @media (max-width: 1024px) {
@@ -367,7 +378,7 @@ const EditorSection = styled.div`
 const PreviewSection = styled.div`
   background: #f9fafb;
   border-radius: 12px;
-  padding: 24px;
+  padding: 20px;
   min-height: 500px;
 
   display: flex;
@@ -427,10 +438,16 @@ const HtmlContent = styled.div`
   font-size: 14px;
   line-height: 1.6;
 
+  // 1. 컨테이너 밖으로 나가는 것 방지
+  width: 100%;
+  overflow-wrap: break-word;
+
   table {
     width: 100%;
     border-collapse: collapse;
     margin: 12px 0;
+    /* ✅ 핵심: 표의 너비를 고정하고 셀 너비를 균등하게 배분하거나 지정된 대로 유지함 */
+    table-layout: fixed;
   }
 
   th,
@@ -438,11 +455,15 @@ const HtmlContent = styled.div`
     border: 1px solid #e5e7eb;
     padding: 10px;
     white-space: pre-wrap;
+    /* ✅ 핵심: 긴 영문/숫자도 강제로 줄바꿈되도록 설정 */
+    word-break: break-all;
+    overflow: hidden;
   }
 
   p {
     margin: 0;
     white-space: pre-wrap;
+    word-break: break-all;
   }
 `;
 

@@ -7,7 +7,7 @@ type Props = {
   $hasThumbnail?: boolean; // 선택적 추가
 };
 
-export default function BlockToolbar({ onAddText, onAddImage, $hasThumbnail }: Props) {
+export default function ChurchAlbumBlockToolbar({ onAddText, onAddImage, $hasThumbnail }: Props) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   return (

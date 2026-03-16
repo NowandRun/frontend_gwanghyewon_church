@@ -217,7 +217,7 @@ const AllContents = styled.header<{
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 100;
   background-color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
     isHovered || isSitemapOpen || isScrolled ? 'rgba(255, 255, 255, 1)' : 'transparent'};
 
@@ -232,6 +232,8 @@ const AllContents = styled.header<{
     background-color: ${({ theme }) => theme.cardBgColor};
     box-shadow: none;
     color: inherit;
+    /* 모달보다 앞에 나오지 않도록 태블릿에서도 z-index 확인 */
+    z-index: 100;
   }
 `;
 

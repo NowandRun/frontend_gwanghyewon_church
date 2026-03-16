@@ -1,10 +1,9 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './components/Header/Header';
-import { darkTheme } from './Style/theme';
 import { useRecoilValue } from 'recoil';
 import { isdarkAtom } from './types/atoms';
-import Footer from "./components/Footer/Footer";
+import Footer from './components/Footer/Footer';
 import styled from 'styled-components';
 
 const PageLayout = styled.div`
@@ -31,5 +30,3 @@ function Root() {
 }
 
 export default Root;
-
-

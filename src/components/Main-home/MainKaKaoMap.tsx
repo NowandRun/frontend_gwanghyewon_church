@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import KakaoMapView from '../KaKaoMap/KaKaoMapView';
 import { LOCATION_ADDRESS } from '../../types/constants';

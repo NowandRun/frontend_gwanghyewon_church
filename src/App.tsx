@@ -1,8 +1,5 @@
 import React from 'react';
-import { useReactiveVar } from '@apollo/client';
-import { isLoggedInAccessTokenVar } from './types/apollo';
 import { RouterProvider } from 'react-router-dom';
-import loggedInRouter from './routers/logged-in-router';
 import { useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import { darkTheme, lightTheme } from './Style/theme';

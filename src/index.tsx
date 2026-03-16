@@ -5,14 +5,12 @@ import { client } from './types/apollo';
 import { HelmetProvider } from 'react-helmet-async';
 import { RecoilRoot } from 'recoil';
 import App from './App';
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 // ✅ QueryClient 인스턴스 생성
 const queryClient = new QueryClient();
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <RecoilRoot>
@@ -25,5 +23,5 @@ root.render(
         </HelmetProvider>
       </ApolloProvider>
     </RecoilRoot>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
