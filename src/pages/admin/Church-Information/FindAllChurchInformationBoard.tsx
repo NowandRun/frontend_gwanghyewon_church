@@ -11,8 +11,9 @@ interface IChurchInformationBoard {
   id: number;
   title: string;
   author: string;
-  fileUrls: string[] | null; // 🚀 추가
+  fileUrls: string[] | null;
   createdAt: string;
+  isPinned?: boolean; // 🚀 공지글 여부 추가
 }
 
 interface IGetChurchInformationBoardData {
@@ -29,19 +30,27 @@ function ChurchInformationBoard() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const itemsPerPage = 9;
 
-  // 1. 쿼리 선언 (중복 제거됨)
+  // 1. 검색 관련 상태 추가
+  const [searchInput, setSearchInput] = useState(''); // 입력창 텍스트
+  const [searchKeyword, setSearchKeyword] = useState(''); // 실제 쿼리용 키워드
+
+  const itemsPerPage = 12;
+
+  // 2. 쿼리에 search 변수 추가
   const { data, loading, error, refetch } = useQuery<IGetChurchInformationBoardData>(
     FIND_ALL_CHURCH_INFORMATION_BOARD_QUERY,
     {
       variables: {
-        input: { page: currentPage, take: itemsPerPage },
+        input: {
+          page: currentPage,
+          take: itemsPerPage,
+          search: searchKeyword, // 🚀 검색어 연동
+        },
       },
       fetchPolicy: 'network-only',
     },
   );
-
   // 2. 삭제 뮤테이션 선언
   const [deleteChurchInformationBoardMutation, { loading: isDeleting }] = useMutation(
     DELETE_CHURCH_INFORMATION_BOARD_MUTATION,
@@ -73,6 +82,19 @@ function ChurchInformationBoard() {
     }
   };
 
+  // 4. 검색 핸들러
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchKeyword(searchInput);
+    setCurrentPage(1); // 검색 시 1페이지로 이동
+  };
+
+  const handleReset = () => {
+    setSearchInput('');
+    setSearchKeyword('');
+    setCurrentPage(1);
+  };
+
   // --- 로직 처리부 ---
   if (loading && !data) return <Container>데이터를 불러오는 중입니다...</Container>;
   if (error) return <Container>에러가 발생했습니다: {error.message}</Container>;
@@ -81,6 +103,7 @@ function ChurchInformationBoard() {
   const boards = response?.results || [];
   // ✅ 백엔드에서 계산해서 보내주는 totalPages 사용
   const totalPages = response?.totalPages || 1;
+  const totalResults = response?.totalResults || 0; // 역순 번호 계산을 위해 필요
 
   const toggleSelect = (id: number) => {
     setSelectedIds((prev) =>
@@ -103,6 +126,24 @@ function ChurchInformationBoard() {
           <h2>교회 소식 관리</h2>
           <p>선택된 항목: {selectedIds.length}개</p>
         </div>
+        {/* --- 검색 UI 추가 --- */}
+        <SearchWrapper onSubmit={handleSearch}>
+          <SearchInput
+            placeholder="소식 제목 또는 작성자 검색"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <SearchButton type="submit">검색</SearchButton>
+          {searchKeyword && (
+            <ResetButton
+              type="button"
+              onClick={handleReset}
+            >
+              초기화
+            </ResetButton>
+          )}
+        </SearchWrapper>
+
         <ButtonGroup>
           <DeleteButton
             disabled={selectedIds.length === 0 || isDeleting}
@@ -136,39 +177,68 @@ function ChurchInformationBoard() {
             </tr>
           </thead>
           <tbody>
-            {boards.map((board) => (
-              <tr
-                key={board.id}
-                className={selectedIds.includes(board.id) ? 'selected' : ''}
-              >
-                <td className="center">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(board.id)}
-                    onChange={() => toggleSelect(board.id)}
-                  />
-                </td>
-                <td className="center">{board.id}</td>
-                <td className="title-cell">{board.title}</td>
-                <td className="center">{board.author}</td>
-                <td className="center">{new Date(board.createdAt).toLocaleDateString()}</td>
-                <td className="center">
-                  <TitleGroup>
-                    {/* 🚀 첨부파일 유무를 O, X로 표시 */}
-                    <FileStatusBadge>
-                      {board.fileUrls && board.fileUrls.length > 0 ? '⭕' : '❌'}
-                    </FileStatusBadge>
-                  </TitleGroup>
-                </td>
-                <td className="center">
-                  <EditButton onClick={() => navigate(`/admin/church-info/edit/${board.id}`)}>
-                    수정
-                  </EditButton>
-                </td>
-              </tr>
-            ))}
+            {boards.map((board, index) => {
+              // 1. 공지 여부 확인
+              const isNotice = board.isPinned;
+
+              // 2. 역순 번호 계산
+              const displayNum =
+                totalResults > 0
+                  ? totalResults - ((currentPage - 1) * itemsPerPage + index)
+                  : boards.length - index;
+
+              return (
+                <tr
+                  key={board.id}
+                  className={`${selectedIds.includes(board.id) ? 'selected' : ''} ${
+                    isNotice ? 'notice-row' : ''
+                  }`}
+                >
+                  <td className="center">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(board.id)}
+                      onChange={() => toggleSelect(board.id)}
+                    />
+                  </td>
+
+                  {/* --- 번호 영역: 공지글일 경우 배지 표시 --- */}
+                  <td className="center">
+                    {isNotice ? <AdminNoticeBadge>공지</AdminNoticeBadge> : displayNum}
+                  </td>
+
+                  <td
+                    className="title-cell"
+                    style={{ fontWeight: isNotice ? 'bold' : 'normal' }}
+                  >
+                    {board.title}
+                  </td>
+                  <td className="center">{board.author}</td>
+                  <td className="center">{new Date(board.createdAt).toLocaleDateString()}</td>
+                  <td className="center">
+                    <TitleGroup>
+                      <FileStatusBadge>
+                        {board.fileUrls && board.fileUrls.length > 0 ? '⭕' : '❌'}
+                      </FileStatusBadge>
+                    </TitleGroup>
+                  </td>
+                  <td className="center">
+                    <EditButton onClick={() => navigate(`/admin/church-info/edit/${board.id}`)}>
+                      수정
+                    </EditButton>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </StyledTable>
+        {boards.length === 0 && !loading && (
+          <EmptyMsg>
+            {searchKeyword
+              ? `"${searchKeyword}"에 대한 검색 결과가 없습니다.`
+              : '등록된 데이터가 없습니다.'}
+          </EmptyMsg>
+        )}
       </TableContainer>
 
       {/* ✅ 추가: 페이지네이션 UI */}
@@ -199,13 +269,70 @@ function ChurchInformationBoard() {
           </PageBtn>
         </Pagination>
       )}
-
-      {boards.length === 0 && !loading && <EmptyMsg>등록된 데이터가 없습니다.</EmptyMsg>}
     </Container>
   );
 }
 
 export default ChurchInformationBoard;
+
+const AdminNoticeBadge = styled.span`
+  background-color: #fff1f0; /* 연한 빨간색 배경 */
+  color: #f5222d; /* 빨간색 텍스트 */
+  border: 1px solid #ffa39e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  display: inline-block;
+`;
+
+const SearchWrapper = styled.form`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  margin-bottom: 2px; /* Header 정렬용 */
+`;
+
+const SearchInput = styled.input`
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  width: 200px;
+  &::placeholder {
+    color: #adb5bd;
+  }
+`;
+
+const SearchButton = styled.button`
+  background: #495057;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  &:hover {
+    background: #343a40;
+  }
+`;
+
+const ResetButton = styled.button`
+  background: none;
+  border: none;
+  color: #868e96;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0 4px;
+  &:hover {
+    color: #212529;
+  }
+`;
 
 // (이하 스타일드 컴포넌트 정의는 기존과 동일하게 유지)
 const Container = styled.div`

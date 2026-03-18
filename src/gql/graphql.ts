@@ -160,6 +160,7 @@ export type FindAllChurchAlbumBoardOutput = {
 
 export type FindAllChurchAlbumBoardPaginationInput = {
   page?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
   take?: Scalars['Int']['input'];
 };
 
@@ -174,6 +175,7 @@ export type FindAllChurchBulletinOutput = {
 
 export type FindAllChurchBulletinPaginationInput = {
   page?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
   take?: Scalars['Int']['input'];
 };
 
@@ -188,6 +190,7 @@ export type FindAllChurchInformationBoardOutput = {
 
 export type FindAllChurchInformationBoardPaginationInput = {
   page?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
   take?: Scalars['Int']['input'];
 };
 

@@ -30,14 +30,19 @@ function ChurchBulletinBoard() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const itemsPerPage = 9;
+
+  // 1. 검색 관련 상태 추가
+  const [searchInput, setSearchInput] = useState(''); // 입력 필드용
+  const [searchKeyword, setSearchKeyword] = useState(''); // 실제 검색 실행용
+
+  const itemsPerPage = 12;
 
   // 1. 쿼리 선언 (중복 제거됨)
   const { data, loading, error, refetch } = useQuery<IGetChurchBulletinBoardData>(
     FIND_ALL_CHURCH_BULLETIN_BOARD_QUERY,
     {
       variables: {
-        input: { page: currentPage, take: itemsPerPage },
+        input: { page: currentPage, take: itemsPerPage, search: searchKeyword },
       },
       fetchPolicy: 'network-only',
     },
@@ -71,6 +76,19 @@ function ChurchBulletinBoard() {
     }
   };
 
+  // 3. 검색 핸들러
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchKeyword(searchInput);
+    setCurrentPage(1); // 검색 시 첫 페이지로 리셋
+  };
+
+  const handleReset = () => {
+    setSearchInput('');
+    setSearchKeyword('');
+    setCurrentPage(1);
+  };
+
   // --- 로직 처리부 ---
   if (loading && !data) return <Container>데이터를 불러오는 중입니다...</Container>;
   if (error) return <Container>에러가 발생했습니다: {error.message}</Container>;
@@ -79,6 +97,7 @@ function ChurchBulletinBoard() {
   const boards = response?.results || [];
   // ✅ 백엔드에서 계산해서 보내주는 totalPages 사용
   const totalPages = response?.totalPages || 1;
+  const totalResults = response?.totalResults || 0; // 🚀 역순 번호 계산을 위해 활용
 
   const toggleSelect = (id: number) => {
     setSelectedIds((prev) =>
@@ -101,6 +120,24 @@ function ChurchBulletinBoard() {
           <h2>교회주보 관리</h2>
           <p>선택된 항목: {selectedIds.length}개</p>
         </div>
+        {/* --- 검색 UI 추가 --- */}
+        <SearchWrapper onSubmit={handleSearch}>
+          <SearchInput
+            placeholder="주보 제목 검색"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <SearchButton type="submit">검색</SearchButton>
+          {searchKeyword && (
+            <ResetButton
+              type="button"
+              onClick={handleReset}
+            >
+              초기화
+            </ResetButton>
+          )}
+        </SearchWrapper>
+
         <ButtonGroup>
           <DeleteButton
             disabled={selectedIds.length === 0 || isDeleting}
@@ -134,47 +171,67 @@ function ChurchBulletinBoard() {
             </tr>
           </thead>
           <tbody>
-            {boards.map((board) => (
-              <tr
-                key={board.id}
-                className={selectedIds.includes(board.id) ? 'selected' : ''}
-              >
-                <td className="center">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(board.id)}
-                    onChange={() => toggleSelect(board.id)}
-                  />
-                </td>
-                <td className="center">{board.id}</td>
-                <td className="title-cell">
-                  {board.thumbnailUrl && (
-                    <SmallThumb
-                      src={board.thumbnailUrl}
-                      alt="thumb"
+            {boards.map((board, index) => {
+              // 🚀 역순 번호 매김 로직 적용
+              // 전체 개수에서 (이전 페이지들 개수 + 현재 인덱스)를 뺌
+              const displayNum =
+                totalResults > 0
+                  ? totalResults - ((currentPage - 1) * itemsPerPage + index)
+                  : boards.length - index;
+
+              return (
+                <tr
+                  key={board.id}
+                  className={selectedIds.includes(board.id) ? 'selected' : ''}
+                >
+                  <td className="center">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(board.id)}
+                      onChange={() => toggleSelect(board.id)}
                     />
-                  )}
-                  <span>{board.title}</span>
-                </td>
-                <td className="center">{board.author}</td>
-                <td className="center">{new Date(board.createdAt).toLocaleDateString()}</td>
-                <td className="center">
-                  <TitleGroup>
-                    {/* 🚀 첨부파일 유무를 O, X로 표시 */}
-                    <FileStatusBadge>
-                      {board.fileUrls && board.fileUrls.length > 0 ? '⭕' : '❌'}
-                    </FileStatusBadge>
-                  </TitleGroup>
-                </td>
-                <td className="center">
-                  <EditButton onClick={() => navigate(`/admin/church-bulletin/edit/${board.id}`)}>
-                    수정
-                  </EditButton>
-                </td>
-              </tr>
-            ))}
+                  </td>
+
+                  {/* 🚀 기존 board.id 대신 계산된 displayNum 출력 */}
+                  <td className="center">{displayNum}</td>
+
+                  <td className="title-cell">
+                    {board.thumbnailUrl && (
+                      <SmallThumb
+                        src={board.thumbnailUrl}
+                        alt="thumb"
+                      />
+                    )}
+                    <span>{board.title}</span>
+                  </td>
+                  <td className="center">{board.author}</td>
+                  <td className="center">{new Date(board.createdAt).toLocaleDateString()}</td>
+                  <td className="center">
+                    <TitleGroup>
+                      <FileStatusBadge>
+                        {board.fileUrls && board.fileUrls.length > 0 ? '⭕' : '❌'}
+                      </FileStatusBadge>
+                    </TitleGroup>
+                  </td>
+                  <td className="center">
+                    <EditButton onClick={() => navigate(`/admin/church-bulletin/edit/${board.id}`)}>
+                      수정
+                    </EditButton>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </StyledTable>
+
+        {/* 데이터가 없을 때의 메시지 */}
+        {boards.length === 0 && !loading && (
+          <EmptyMsg>
+            {searchKeyword
+              ? `"${searchKeyword}"에 대한 검색 결과가 없습니다.`
+              : '등록된 데이터가 없습니다.'}
+          </EmptyMsg>
+        )}
       </TableContainer>
 
       {boards.length > 0 && totalPages > 1 && (
@@ -204,13 +261,59 @@ function ChurchBulletinBoard() {
           </PageBtn>
         </Pagination>
       )}
-
-      {boards.length === 0 && !loading && <EmptyMsg>등록된 데이터가 없습니다.</EmptyMsg>}
     </Container>
   );
 }
 
 export default ChurchBulletinBoard;
+
+const SearchWrapper = styled.form`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  margin-bottom: 2px; /* Header 정렬용 */
+`;
+
+const SearchInput = styled.input`
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  width: 180px;
+  &::placeholder {
+    color: #adb5bd;
+  }
+`;
+
+const SearchButton = styled.button`
+  background: #495057;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  &:hover {
+    background: #343a40;
+  }
+`;
+
+const ResetButton = styled.button`
+  background: none;
+  border: none;
+  color: #868e96;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0 4px;
+  &:hover {
+    color: #212529;
+  }
+`;
 
 // (이하 스타일드 컴포넌트 정의는 기존과 동일하게 유지)
 const Container = styled.div`

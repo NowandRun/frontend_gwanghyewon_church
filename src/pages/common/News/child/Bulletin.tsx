@@ -13,9 +13,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 function Bulletin() {
   const [page, setPage] = useState(1);
   const takeAmount = 12;
+  const [sidebarPage, setSidebarPage] = useState(1);
+  const sidebarTake = 12;
   const [viewPdfUrl, setViewPdfUrl] = useState<string | null>(null);
-  const [pdfFileName, setPdfFileName] = useState<string>(''); // 다운로드용 파일명
-  const [displayTitle, setDisplayTitle] = useState<string>(''); // 툴바에 표시될 게시물 제목
+  const [pdfFileName, setPdfFileName] = useState<string>('');
+  const [displayTitle, setDisplayTitle] = useState<string>('');
   const [numPages, setNumPages] = useState<number>(0);
   const [currPdfPage, setCurrPdfPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.0);
@@ -28,12 +30,45 @@ function Bulletin() {
     Record<string, 'landscape' | 'portrait'>
   >({});
 
+  const [searchInput, setSearchInput] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+
   const { data: listData, loading: listLoading } = useQuery(FIND_ALL_CHURCH_BULLETIN_BOARD_QUERY, {
-    variables: { input: { page, take: takeAmount } },
+    variables: { input: { page, take: takeAmount, search: searchKeyword } },
     fetchPolicy: 'cache-and-network',
   });
 
-  // 모달이 열릴 때 배경 스크롤 방지
+  const { data: sidebarData } = useQuery(FIND_ALL_CHURCH_BULLETIN_BOARD_QUERY, {
+    variables: {
+      input: {
+        page: sidebarPage,
+        take: sidebarTake,
+        search: searchKeyword,
+      },
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const response = listData?.findAllChurchBulletinBoard;
+  const boards = response?.results || [];
+  const totalPages = response?.totalPages || 1; // 서버에서 받은 전체 페이지 수
+
+  const sidebarResponse = sidebarData?.findAllChurchBulletinBoard;
+  const sidebarBoards = sidebarResponse?.results || [];
+  const sidebarTotalPages = sidebarResponse?.totalPages || 1;
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchKeyword(searchInput);
+    setPage(1);
+  };
+
+  const resetSearch = () => {
+    setSearchInput('');
+    setSearchKeyword('');
+    setPage(1);
+  };
+
   useEffect(() => {
     if (viewPdfUrl) {
       document.body.style.overflow = 'hidden';
@@ -82,15 +117,13 @@ function Bulletin() {
     setImageOrientations((prev) => ({ ...prev, [id]: orientation }));
   };
 
-  const boards = listData?.findAllChurchBulletinBoard?.results || [];
-
   const handlePostClick = (post: any) => {
     const pdfUrl = post.fileUrls?.find((url: string) => url.toLowerCase().endsWith('.pdf'));
     if (pdfUrl) {
       setIsRendering(true);
       setViewPdfUrl(pdfUrl);
       setSelectedPostId(post.id);
-      setDisplayTitle(post.title); // 게시물 제목을 상단 바 제목으로 설정
+      setDisplayTitle(post.title);
       const decodedName = decodeURIComponent(pdfUrl.split('/').pop() || '주보 파일');
       setPdfFileName(decodedName);
       setCurrPdfPage(1);
@@ -152,38 +185,113 @@ function Bulletin() {
     <Container>
       <TidingsWrapper>
         <TidingsTitle onClick={() => setPage(1)}>교회주보</TidingsTitle>
+        <SearchForm onSubmit={handleSearch}>
+          <SearchInput
+            placeholder="주보 제목 검색"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <SearchButton type="submit">검색</SearchButton>
+          {searchKeyword && (
+            <ResetBtn
+              type="button"
+              onClick={resetSearch}
+            >
+              초기화
+            </ResetBtn>
+          )}
+        </SearchForm>
       </TidingsWrapper>
 
-      <PostGrid>
-        {boards.map((post: any) => {
-          const orientation = imageOrientations[post.id] || 'portrait';
-          return (
-            <PostCard
-              key={post.id}
-              onClick={() => handlePostClick(post)}
-              className={orientation}
-            >
-              <ThumbnailWrapper orientation={orientation}>
-                <Thumbnail
-                  src={post.thumbnailUrl || 'https://via.placeholder.com/300x420?text=No+Image'}
-                  alt="주보"
-                  onLoad={(e) => handleImageLoad(post.id, e)}
-                />
-              </ThumbnailWrapper>
-              <PostInfo>
-                <PostTitle>{post.title}</PostTitle>
-              </PostInfo>
-            </PostCard>
-          );
-        })}
-      </PostGrid>
+      {listLoading ? (
+        <Message>데이터를 불러오는 중입니다...</Message>
+      ) : (
+        <>
+          {boards.length === 0 ? (
+            <EmptyState>
+              <p>
+                {searchKeyword
+                  ? `"${searchKeyword}"에 대한 검색 결과가 없습니다.`
+                  : '등록된 게시물이 없습니다.'}
+              </p>
+            </EmptyState>
+          ) : (
+            <>
+              <PostGrid>
+                {boards.map((post: any) => {
+                  const orientation = imageOrientations[post.id] || 'portrait';
+                  return (
+                    <PostCard
+                      key={post.id}
+                      onClick={() => handlePostClick(post)}
+                      className={orientation}
+                    >
+                      <ThumbnailWrapper orientation={orientation}>
+                        <Thumbnail
+                          src={
+                            post.thumbnailUrl || 'https://via.placeholder.com/300x420?text=No+Image'
+                          }
+                          alt="주보"
+                          onLoad={(e) => handleImageLoad(post.id, e)}
+                        />
+                      </ThumbnailWrapper>
+                      <PostInfo>
+                        <PostTitle>{post.title}</PostTitle>
+                      </PostInfo>
+                    </PostCard>
+                  );
+                })}
+              </PostGrid>
+
+              {/* 페이지네이션 UI 위치 */}
+              {totalPages > 1 && (
+                <PaginationWrapper>
+                  <PageMoveBtn
+                    disabled={page === 1}
+                    onClick={() => {
+                      setPage((prev) => prev - 1);
+                      window.scrollTo(0, 0);
+                    }}
+                  >
+                    &lt; 이전
+                  </PageMoveBtn>
+
+                  <PageNumberGroup>
+                    {[...Array(totalPages)].map((_, i) => (
+                      <PageNumBtn
+                        key={i}
+                        $active={page === i + 1}
+                        onClick={() => {
+                          setPage(i + 1);
+                          window.scrollTo(0, 0);
+                        }}
+                      >
+                        {i + 1}
+                      </PageNumBtn>
+                    ))}
+                  </PageNumberGroup>
+
+                  <PageMoveBtn
+                    disabled={page === totalPages}
+                    onClick={() => {
+                      setPage((prev) => prev + 1);
+                      window.scrollTo(0, 0);
+                    }}
+                  >
+                    다음 &gt;
+                  </PageMoveBtn>
+                </PaginationWrapper>
+              )}
+            </>
+          )}
+        </>
+      )}
 
       {viewPdfUrl &&
         createPortal(
           <FullOverlay onClick={closeModal}>
             <ViewerWindow onClick={(e) => e.stopPropagation()}>
               <Toolbar>
-                {/* PDF 파일명이 아닌 게시물 제목(displayTitle)을 출력 */}
                 <FileName title={displayTitle}>{displayTitle}</FileName>
                 <ZoomControls>
                   <SmallButton onClick={() => changeScale(-0.2)}>-</SmallButton>
@@ -212,7 +320,7 @@ function Bulletin() {
                 >
                   <SidebarHeader>게시물 목록</SidebarHeader>
                   <SidebarList>
-                    {boards.map((post: any) => {
+                    {sidebarBoards.map((post: any) => {
                       const orientation = imageOrientations[post.id] || 'portrait';
                       return (
                         <SidebarItem
@@ -233,6 +341,27 @@ function Bulletin() {
                       );
                     })}
                   </SidebarList>
+                  {sidebarTotalPages > 1 && (
+                    <SidebarPagination>
+                      <SidebarPageBtn
+                        disabled={sidebarPage === 1}
+                        onClick={() => setSidebarPage((p) => p - 1)}
+                      >
+                        ‹
+                      </SidebarPageBtn>
+
+                      <SidebarPageInfo>
+                        {sidebarPage} / {sidebarTotalPages}
+                      </SidebarPageInfo>
+
+                      <SidebarPageBtn
+                        disabled={sidebarPage === sidebarTotalPages}
+                        onClick={() => setSidebarPage((p) => p + 1)}
+                      >
+                        ›
+                      </SidebarPageBtn>
+                    </SidebarPagination>
+                  )}
                 </PostSidebar>
 
                 <PdfViewContainer>
@@ -315,7 +444,8 @@ function Bulletin() {
 
 export default Bulletin;
 
-// --- Styled Components (기존 유지) ---
+// --- Styled Components ---
+
 const Container = styled.div`
   width: 100%;
   max-width: 1200px;
@@ -327,6 +457,65 @@ const TidingsWrapper = styled.div`
   border-bottom: 2px solid #333;
   margin-bottom: 40px;
   padding-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+`;
+
+const SearchForm = styled.form`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+const SearchInput = styled.input`
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 200px;
+  outline: none;
+  &:focus {
+    border-color: #333;
+  }
+`;
+
+const SearchButton = styled.button`
+  padding: 8px 16px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  &:hover {
+    background: #555;
+  }
+`;
+
+const ResetBtn = styled.button`
+  background: none;
+  border: none;
+  color: #666;
+  text-decoration: underline;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0 5px;
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  padding: 100px 0;
+  color: #888;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 `;
 
 const TidingsTitle = styled.h2`
@@ -348,6 +537,46 @@ const PostGrid = styled.div`
   }
   @media (max-width: 480px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+/* 페이지네이션 스타일 추가 */
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 60px;
+`;
+
+const PageNumberGroup = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const PageNumBtn = styled.button<{ $active: boolean }>`
+  width: 35px;
+  height: 35px;
+  border-radius: 4px;
+  border: 1px solid ${(props) => (props.$active ? '#333' : '#ddd')};
+  background: ${(props) => (props.$active ? '#333' : '#fff')};
+  color: ${(props) => (props.$active ? '#fff' : '#333')};
+  font-weight: bold;
+  cursor: pointer;
+  &:hover {
+    background: ${(props) => (props.$active ? '#333' : '#f5f5f5')};
+  }
+`;
+
+const PageMoveBtn = styled.button`
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  &:disabled {
+    color: #ccc;
+    cursor: not-allowed;
   }
 `;
 
@@ -384,10 +613,6 @@ const Thumbnail = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
-  ${PostCard}:hover & {
-    transform: scale(1.05);
-  }
 `;
 
 const PostInfo = styled.div`
@@ -436,7 +661,7 @@ const FileName = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #8ab4f8; /* 게시물 제목임을 강조하기 위해 약간의 색상 변경 */
+  color: #8ab4f8;
 `;
 
 const SidebarHint = styled.div`
@@ -457,29 +682,11 @@ const SidebarHint = styled.div`
   color: white;
   font-size: 10px;
   font-weight: bold;
-  transition: all 0.2s ease;
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-left: none;
-
   span {
     writing-mode: vertical-rl;
-    text-orientation: mixed;
-    margin-bottom: 5px;
     letter-spacing: 2px;
-  }
-
-  .arrow {
-    font-size: 8px;
-    transition: transform 0.2s ease;
-  }
-
-  &:hover {
-    background: rgba(138, 180, 248, 0.6);
-    width: 32px;
-    .arrow {
-      transform: translateX(3px);
-    }
   }
 `;
 
@@ -490,27 +697,23 @@ const HoverTrigger = styled.div`
   width: 32px;
   height: 100%;
   z-index: 99;
-  background: transparent;
 `;
 
 const PostSidebar = styled.div<{ $isOpen: boolean }>`
   width: 280px;
   background: #252526;
   border-right: 1px solid #444;
-  display: flex;
-  flex-direction: column;
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   z-index: 101;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s ease;
   transform: ${(props) => (props.$isOpen ? 'translateX(0)' : 'translateX(-100%)')};
-  box-shadow: ${(props) => (props.$isOpen ? '15px 0 30px rgba(0, 0, 0, 0.7)' : 'none')};
 
-  @media (max-width: 768px) {
-    width: 240px;
-  }
+  /* 추가: 내부 요소를 수직으로 배치 */
+  display: flex;
+  flex-direction: column;
 `;
 
 const SidebarHeader = styled.div`
@@ -521,6 +724,21 @@ const SidebarHeader = styled.div`
   border-bottom: 1px solid #333;
 `;
 
+const SidebarList = styled.div`
+  /* 수정: flex-grow를 1로 설정하여 남는 공간을 다 채우도록 함 */
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+  }
+`;
+
 const SidebarItem = styled.div<{ $active: boolean; $orientation?: string }>`
   display: flex;
   align-items: center;
@@ -528,22 +746,17 @@ const SidebarItem = styled.div<{ $active: boolean; $orientation?: string }>`
   padding: 10px;
   border-radius: 6px;
   cursor: pointer;
-  margin-bottom: 8px;
   background: ${(props) => (props.$active ? '#37373d' : 'transparent')};
   border: 1px solid ${(props) => (props.$active ? '#007acc' : 'transparent')};
-  transition: background 0.2s ease;
-
   &:hover {
     background: #2a2d2e;
   }
 `;
 
 const SidebarThumbWrapper = styled.div<{ $orientation: string }>`
-  flex-shrink: 0;
   width: ${(props) => (props.$orientation === 'landscape' ? '70px' : '50px')};
   aspect-ratio: ${(props) => (props.$orientation === 'landscape' ? '1.6 / 1' : '1 / 1.414')};
   overflow: hidden;
-  border-radius: 3px;
   background-color: #333;
 `;
 
@@ -561,22 +774,55 @@ const SidebarPostTitle = styled.div`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-height: 1.4;
+`;
+
+const SidebarPagination = styled.div`
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: #252526; /* 사이드바 배경색과 통일 */
+  border-top: 1px solid #333; /* 구분선 */
+
+  /* 중요: 항상 바닥에 붙어 있도록 함 */
+  margin-top: auto;
+`;
+
+const SidebarPageBtn = styled.button`
+  background: #444;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+`;
+
+const SidebarPageInfo = styled.div`
+  font-size: 0.8rem;
+  color: #aaa;
+`;
+
+const PdfViewContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #1a1a1b;
+  position: relative;
 `;
 
 const PdfScrollArea = styled.div`
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  background: #1a1a1b;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const MainContentArea = styled.div`
@@ -586,17 +832,6 @@ const MainContentArea = styled.div`
   position: relative;
 `;
 
-const SidebarList = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  padding: 10px;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
 const ViewerWindow = styled.div`
   width: 98%;
   height: 96%;
@@ -604,17 +839,6 @@ const ViewerWindow = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-`;
-
-const PdfViewContainer = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: #1a1a1b;
-  position: relative;
-  width: 100%;
   overflow: hidden;
 `;
 
@@ -626,14 +850,12 @@ const ZoomControls = styled.div`
   padding: 5px 10px;
   border-radius: 20px;
 `;
-
 const ZoomInfo = styled.span`
   color: white;
   font-size: 0.8rem;
   min-width: 40px;
   text-align: center;
 `;
-
 const SmallButton = styled.button`
   background: #555;
   color: white;
@@ -643,12 +865,10 @@ const SmallButton = styled.button`
   border-radius: 50%;
   cursor: pointer;
 `;
-
 const ActionButtons = styled.div`
   display: flex;
   gap: 15px;
 `;
-
 const IconButton = styled.button`
   background: #8ab4f8;
   border: none;
@@ -656,9 +876,7 @@ const IconButton = styled.button`
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 0.8rem;
 `;
-
 const CloseButton = styled.button`
   background: #f28b82;
   border: none;
@@ -666,7 +884,6 @@ const CloseButton = styled.button`
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 0.8rem;
 `;
 
 const LoadingOverlay = styled.div`
@@ -674,7 +891,6 @@ const LoadingOverlay = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -702,7 +918,6 @@ const Message = styled.div<{ color?: string }>`
   font-size: 0.9rem;
   color: ${(props) => props.color || '#333'};
 `;
-
 const BottomNavigation = styled.div`
   height: 60px;
   display: flex;
@@ -711,7 +926,6 @@ const BottomNavigation = styled.div`
   gap: 30px;
   border-top: 1px solid #444;
 `;
-
 const NavButton = styled.button`
   background: #444;
   color: white;
@@ -721,10 +935,8 @@ const NavButton = styled.button`
   cursor: pointer;
   &:disabled {
     opacity: 0.3;
-    cursor: not-allowed;
   }
 `;
-
 const PageIndicator = styled.div`
   color: white;
   font-weight: bold;

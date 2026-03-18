@@ -16,7 +16,7 @@ export const FIND_ALL_CHURCH_INFORMATION_BOARD_QUERY = gql`
       error
       results {
         id
-        isPinned # ✅ 프론트엔드에서 공지글 여부를 알기 위해 추가
+        isPinned
         title
         author
         fileUrls
@@ -28,6 +28,7 @@ export const FIND_ALL_CHURCH_INFORMATION_BOARD_QUERY = gql`
   }
 `;
 
+// 나머지는 수정할 필요가 없으나, 일관성을 위해 전체 코드를 유지합니다.
 export const FIND_CHURCH_INFORMATION_BOARD_BY_ID_QUERY = gql`
   query findChurchInformationBoardById($id: Float!) {
     findChurchInformationBoardById(id: $id) {
@@ -35,7 +36,7 @@ export const FIND_CHURCH_INFORMATION_BOARD_BY_ID_QUERY = gql`
       error
       result {
         id
-        isPinned # ✅ 상세 정보에서도 공지 여부 확인 가능
+        isPinned
         title
         author
         blocks
