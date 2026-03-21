@@ -13,8 +13,10 @@ import {
 } from 'src/types/grapql_call';
 import ChurchInformationBlockToolbar from 'src/components/AdminComponents/ChurchInformationBlockToolbar';
 import { useMe } from 'src/hooks/useMe';
+import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
 
 export default function EditChurchInformationBoard() {
+  useTabConcurrency(PAGE_IDS.CHURCH_INFO); // 훅 호출만으로 적용
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: meData, loading: meLoading } = useMe();
@@ -137,6 +139,13 @@ export default function EditChurchInformationBoard() {
 
   return (
     <Container>
+      {(uploading || editLoading) && (
+        <LoadingOverlay>
+          <Spinner />
+          <LoadingText>데이터를 안전하게 저장하고 있습니다...</LoadingText>
+          <span style={{ fontSize: '14px', opacity: 0.8 }}>잠시만 기다려 주세요.</span>
+        </LoadingOverlay>
+      )}
       <HeaderArea>
         <h2>게시글 수정</h2>
         <HeaderToolRow>
@@ -300,6 +309,45 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 32px 24px 64px;
 `;
+
+/* --- 로딩 오버레이 스타일 --- */
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); // 화면 블럭 처리 (반투명 검정)
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; // 최상단에 위치
+  color: white;
+  gap: 20px;
+`;
+
+const Spinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+`;
+
 const TwoColumnLayout = styled.div`
   display: grid;
   grid-template-columns: 1.1fr 1fr;

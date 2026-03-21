@@ -274,6 +274,8 @@ function News() {
   const [searchInput, setSearchInput] = useState(''); // 입력 필드용
   const [searchKeyword, setSearchKeyword] = useState(''); // 실제 검색 실행용
 
+  const isNewPost = (date: string | Date) => dayjs().diff(dayjs(date), 'day') < 3;
+
   const takeAmount = 12;
 
   // 1. 전체 리스트 쿼리
@@ -380,14 +382,17 @@ function News() {
           ) : (
             <DetailView>
               <DetailHeader>
-                <div className="title-area">
-                  {boardResult?.isPinned && (
-                    <NoticeBadge style={{ marginRight: '10px' }}>공지</NoticeBadge>
-                  )}
-                  <h1>{boardResult?.title}</h1>
-                </div>
-                <p>
-                  {dayjs(boardResult?.createdAt).format('YYYY년 MM월 DD일')} | {boardResult?.author}
+                {boardResult?.isPinned && <NoticeBadge>공지</NoticeBadge>}
+                {/* 1. 배지 영역 (제목보다 위에 명확히 배치) */}
+                {isNewPost(detailData?.findChurchInformationBoardById.result?.createdAt) && (
+                  <NewBadge>NEW</NewBadge>
+                )}
+                <h1>{detailData?.findChurchInformationBoardById.result?.title}</h1>
+
+                {/* 3. 정보 영역 */}
+                <p style={{ color: '#888', margin: 0, fontSize: '0.95rem' }}>
+                  {dayjs(boardResult?.createdAt).format('YYYY년 MM월 DD일')} |{' '}
+                  {boardResult?.author || '관리자'}
                 </p>
               </DetailHeader>
 
@@ -548,6 +553,7 @@ function News() {
                       </td>
                       <td className="title-cell">
                         <div className="title-content">
+                          {isNewPost(post.createdAt) && <NewBadge>NEW</NewBadge>}
                           <span className="title-text">{post.title}</span>
                           {isCurrent && <span className="reading-label">읽는 중</span>}
                           {post.fileUrls && post.fileUrls.length > 0 && (
@@ -867,17 +873,6 @@ const TidingsTitle = styled.h2`
   font-weight: bold;
 `;
 
-const NoticeBadge = styled.span`
-  background-color: #e6f7ff; /* 아주 연한 파란색 배경 */
-  color: #1890ff; /* 선명한 파란색 텍스트 */
-  border: 1px solid #91d5ff; /* 중간 톤의 파란색 테두리 */
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  display: inline-block;
-`;
-
 const TableRow = styled.tr<{ $isActive?: boolean; $isNotice?: boolean }>`
   cursor: pointer;
   background-color: ${(props) =>
@@ -980,6 +975,36 @@ const ListSection = styled.section`
   margin-top: 50px;
 `;
 
+const BadgeBase = `
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
+  height: 20px;         /* 높이 고정 */
+  min-width: 45px;      /* 최소 너비를 지정하여 사이즈 통일감을 줌 */
+  line-height: 1;
+  text-transform: uppercase;
+  vertical-align: middle;
+`;
+
+const NoticeBadge = styled.span`
+  ${BadgeBase}
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
+`;
+
+const NewBadge = styled.span`
+  ${BadgeBase}
+  background-color: #ff4d4f;
+  color: white;
+  border: 1px solid #ff4d4f; /* 테두리 두께를 맞추기 위해 추가 */
+  margin-left: 8px; /* 리스트에서 제목과의 간격 */
+`;
+
 const SectionTitle = styled.h3`
   font-size: 1.5rem;
   margin-bottom: 25px;
@@ -1030,9 +1055,7 @@ const PageNumber = styled.span<{ $active: boolean }>`
   color: ${(props) => (props.$active ? '#fff' : '#333')};
 `;
 
-const DetailView = styled.div`
-  padding: 0 10px;
-`;
+const DetailView = styled.div``;
 
 const BackButton = styled.button`
   background: none;
@@ -1042,19 +1065,7 @@ const BackButton = styled.button`
   margin-bottom: 20px;
 `;
 
-const DetailHeader = styled.div`
-  border-bottom: 2px solid #333;
-  padding-bottom: 20px;
-  margin-bottom: 30px;
-  .title-area {
-    display: flex;
-    align-items: center;
-  }
-  h1 {
-    font-size: 2rem;
-    margin: 0;
-  }
-`;
+const DetailHeader = styled.div``;
 const FileDropdownWrapper = styled.div`
   margin-bottom: 30px;
   border: 1px solid #ddd;

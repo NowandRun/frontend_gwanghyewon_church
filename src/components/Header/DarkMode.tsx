@@ -5,17 +5,28 @@ import React from 'react';
 import styled from 'styled-components';
 import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 
-function Mode() {
+interface ModeProps {
+  isMobile?: boolean; // isMobile 프롭 추가
+}
+
+function Mode({ isMobile }: ModeProps) {
   const [darkAtom, setDarkAtom] = useRecoilState(isdarkAtom);
   const toggleDarkAtom = () => setDarkAtom((prev) => !prev);
+
   return (
     <>
       {!darkAtom ? (
-        <Icon onClick={toggleDarkAtom}>
+        <Icon
+          onClick={toggleDarkAtom}
+          isMobile={isMobile}
+        >
           <FontAwesomeIcon icon={faSun} />
         </Icon>
       ) : (
-        <Icon onClick={toggleDarkAtom}>
+        <Icon
+          onClick={toggleDarkAtom}
+          isMobile={isMobile}
+        >
           <FontAwesomeIcon icon={faMoon} />
         </Icon>
       )}
@@ -25,7 +36,7 @@ function Mode() {
 
 export default Mode;
 
-const Icon = styled.div`
+const Icon = styled.div<{ isMobile?: boolean }>`
   cursor: pointer;
   border-radius: 50%;
   height: 2vw;
@@ -34,14 +45,23 @@ const Icon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* ✅ isMobile일 때 색상을 흰색으로 고정 */
+  color: ${({ isMobile }) => (isMobile ? '#FFFFFF' : 'inherit')};
+
   @media (min-width: 1300px) {
     &:hover {
-      background-color: rgba(0, 0, 0, 0.3 /* 50% 투명도 */);
+      background-color: rgba(0, 0, 0, 0.3);
     }
   }
+
   ${({ theme }) => theme.media.tablet} {
     height: 30px;
     width: 30px;
     font-size: 18px;
+    /* 태블릿/모바일에서는 호버 효과 제거 (터치 기기 고려) */
+    &:hover {
+      background-color: transparent;
+    }
   }
 `;

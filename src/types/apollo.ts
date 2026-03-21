@@ -45,22 +45,36 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+// apollo.ts 파일 수정
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
       const message = err.message;
+      // 에러 코드 확인 (extensions.code)
+      const code = err.extensions?.code;
 
-      // jwt 만료 감지
-      if (message === 'jwt expired') {
-        // 1️⃣ 토큰 제거
+      // jwt 만료뿐만 아니라, 인증되지 않은 모든 접근에 대해 처리
+      if (
+        message === 'jwt expired' ||
+        code === 'UNAUTHENTICATED' ||
+        message.includes('Context creation failed') // 서버 설정에 따라 다를 수 있음
+      ) {
+        // 1. 상태 초기화
         localStorage.removeItem(LOCALSTORAGE_TOKEN);
         authTokenVar('');
         isLoggedInAccessTokenVar(false);
 
-        // 2️⃣ 로그인 페이지에서 알림을 보여주기 위한 flag 저장
+        // 2. 강제 리프레시 또는 이동 (흰 화면 탈출)
+        // Reactive Variable만 바꿔서 화면이 안 바뀐다면 강제로 홈으로 보냅니다.
+        window.location.href = '/';
+
         sessionStorage.setItem('authError', 'token-expired');
       }
     }
+  }
+
+  if (networkError) {
+    console.log(`[Network error]: ${networkError}`);
   }
 });
 

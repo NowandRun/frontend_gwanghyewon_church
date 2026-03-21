@@ -24,7 +24,8 @@ function Header() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isSitemapOpen, setIsSitemapOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1300); // ✅ 모바일 여부 감지
+  const [isTablet, setIsTablet] = useState(false); // 1300px 미만 (데스크탑 기능 유지)
+  const [isMobile, setIsMobile] = useState(false); // 768px 미만 (흰색 로고 고정)
 
   useEffect(() => {
     let ticking = false;
@@ -44,14 +45,37 @@ function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ✅ 화면 크기 감지
+  // ✅ 화면 크기 감지 보강
+  // ✅ 화면 크기 감지 로직 수정
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 1300);
+      const width = window.innerWidth;
+      setIsTablet(width < 1300); // 전체적인 레이아웃 변경 기준
+      setIsMobile(width < 768); // 로고 흰색 고정 기준 (원하시는 해상도로 조절 가능)
     };
+
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // ✅ 로고 이미지 경로 로직 수정
+  const getLogoSrc = () => {
+    const path = process.env.PUBLIC_URL + '/images/logo/';
+
+    // 1순위: '진짜' 모바일(768px 미만)일 때는 무조건 흰색 로고
+    if (isMobile) {
+      return `${path}new4.png`;
+    }
+
+    // 2순위: 태블릿(1300px 미만) 및 데스크탑에서 이벤트 발생 시 검은색 로고
+    if (isHovered || isScrolled) {
+      return `${path}new3.png`;
+    }
+
+    // 3순위: 기본 상태
+    return `${path}new1.png`;
+  };
 
   // 페이지 경로 변경 시 현재 위치에 해당하는 메뉴 인덱스 설정
   useEffect(() => {
@@ -96,16 +120,13 @@ function Header() {
               <Logo
                 isSitemapOpen={isSitemapOpen}
                 isHovered={isHovered}
-                isScrolled={isScrolled} // ✅ 추가
+                isScrolled={isScrolled}
               >
                 <Logoimage
-                  src={
-                    isMobile
-                      ? process.env.PUBLIC_URL + '/images/logo/new4.png' // ✅ 모바일에서는 항상 new1.png
-                      : isHovered || isScrolled
-                        ? process.env.PUBLIC_URL + '/images/logo/new3.png'
-                        : process.env.PUBLIC_URL + '/images/logo/new1.png'
-                  }
+                  // key에 isMobile을 추가하여 모바일 진입 시 강제 렌더링
+                  key={isMobile ? 'mobile-fixed' : isHovered || isScrolled ? 'active' : 'default'}
+                  src={getLogoSrc()}
+                  isMobile={isMobile}
                   alt="header로고"
                 />
               </Logo>
@@ -188,7 +209,7 @@ function Header() {
               <span>로그인</span> */}
               <TopButton />
               <ModeWrapper>
-                <Mode />
+                <Mode isMobile={isMobile} />
               </ModeWrapper>
             </UserFeat>
           </RightWrapper>
@@ -261,15 +282,13 @@ const LeftWrapper = styled.div`
   align-items: center;
 `;
 
-const Logoimage = styled.img`
+const Logoimage = styled.img<{ isMobile: boolean }>`
   width: 16vw; /* 원하면 2px 대신 원하는 값 */
+  ${({ isMobile }) => isMobile && 'width: 240px !important;'}
   height: auto;
   display: block;
   ${({ theme }) => theme.media.tablet} {
     width: 240px;
-  }
-  ${({ theme }) => theme.media.mobile} {
-    width: 180px;
   }
 `;
 

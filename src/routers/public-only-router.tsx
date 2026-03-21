@@ -1,14 +1,18 @@
 import React from 'react';
 import { useReactiveVar } from '@apollo/client';
 import { isLoggedInAccessTokenVar } from '../types/apollo';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
 const PublicOnlyRouter = () => {
   const isLoggedIn = useReactiveVar(isLoggedInAccessTokenVar);
 
-  // ❌ 로그아웃 상태 → 퍼블릭 접근 허용
-  if (!isLoggedIn) {
-    return <Outlet />;
+  if (isLoggedIn) {
+    return (
+      <Navigate
+        to="/admin"
+        replace
+      />
+    );
   }
 
   return <Outlet />;

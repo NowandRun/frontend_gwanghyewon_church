@@ -10,6 +10,7 @@ import EditorInput from '../../../components/AdminComponents/EditorInput';
 import { CREATE_CHURCH_BULLETIN_BOARD_MUTATION } from 'src/types/grapql_call';
 import ChurchBulletinBlockToolbar from 'src/components/AdminComponents/ChurchBulletinBlockToolbar';
 import * as pdfjsLib from 'pdfjs-dist';
+import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
 
 // (중요) legacy 빌드 혹은 표준 빌드에 따라 경로가 다를 수 있습니다.
 // 대부분의 환경에서 아래 경로로 해결됩니다.
@@ -19,6 +20,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 export default function CreateChurchBulletinBoard() {
+  useTabConcurrency(PAGE_IDS.CHURCH_BULLETIN); // 훅 호출만으로 적용
   const navigate = useNavigate();
   const { data: meData, loading: meLoading } = useMe();
   const titleRef = useRef<HTMLInputElement>(null);
@@ -279,6 +281,13 @@ export default function CreateChurchBulletinBoard() {
 
   return (
     <Container>
+      {(uploading || loading) && (
+        <LoadingOverlay>
+          <Spinner />
+          <LoadingText>데이터를 안전하게 저장하고 있습니다...</LoadingText>
+          <span style={{ fontSize: '14px', opacity: 0.8 }}>잠시만 기다려 주세요.</span>
+        </LoadingOverlay>
+      )}
       <h2>게시글 작성</h2>
       <TwoColumnLayout>
         {/* 작성 영역 */}
@@ -373,7 +382,7 @@ export default function CreateChurchBulletinBoard() {
         onClick={onSubmit}
         disabled={loading || uploading}
       >
-        {uploading ? 'S3 업로드 및 저장 중...' : '등록'}
+        {uploading ? '파일 업로드 및 저장 중..' : '등록'}
       </SubmitButton>
     </Container>
   );
@@ -391,6 +400,44 @@ const Container = styled.div`
     font-weight: 700;
     margin-bottom: 32px;
   }
+`;
+
+/* --- 로딩 오버레이 스타일 --- */
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); // 화면 블럭 처리 (반투명 검정)
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; // 최상단에 위치
+  color: white;
+  gap: 20px;
+`;
+
+const Spinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
 `;
 
 const TwoColumnLayout = styled.div`

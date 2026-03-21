@@ -273,6 +273,8 @@ function Album() {
   const [searchInput, setSearchInput] = useState(''); // 입력 필드용
   const [searchKeyword, setSearchKeyword] = useState(''); // 실제 검색 실행용
 
+  const isNewPost = (date: string | Date) => dayjs().diff(dayjs(date), 'day') < 3;
+
   // 1. 전체 리스트 쿼리 (항상 실행)
   const { data: listData, loading: listLoading } = useQuery(FIND_ALL_CHURCH_ALBUM_BOARD_QUERY, {
     variables: { input: { page, take: takeAmount, search: searchKeyword } },
@@ -347,8 +349,10 @@ function Album() {
             <Message>상세 내용을 불러오는 중...</Message>
           ) : (
             <DetailView>
-              <BackButton onClick={() => setSelectedId(null)}>✕ 상세 닫기</BackButton>
               <DetailHeader>
+                {isNewPost(detailData?.findChurchAlbumBoardById.result?.createdAt) && (
+                  <NewBadge>NEW</NewBadge>
+                )}
                 <h1>{detailData?.findChurchAlbumBoardById.result?.title}</h1>
                 <p>
                   {dayjs(detailData?.findChurchAlbumBoardById.result?.createdAt).format(
@@ -357,7 +361,6 @@ function Album() {
                   | {detailData?.findChurchAlbumBoardById.result?.author}
                 </p>
               </DetailHeader>
-
               <ContentRender>
                 {(() => {
                   const rawBlocks = detailData?.findChurchAlbumBoardById.result?.blocks;
@@ -399,6 +402,7 @@ function Album() {
                   });
                 })()}
               </ContentRender>
+              <BackButton onClick={() => setSelectedId(null)}>✕ 목록으로 돌아가기</BackButton>
             </DetailView>
           )}
           <Divider /> {/* 상세와 목록 사이의 구분선 */}
@@ -439,23 +443,29 @@ function Album() {
           </Message>
         ) : (
           <PostGrid>
-            {boards.map((post: any) => (
-              <PostCard
-                key={post.id}
-                $isActive={selectedId === post.id}
-                onClick={() => setSelectedId(post.id)}
-              >
-                <Thumbnail
-                  src={post.thumbnailUrl || '/default-thumb.png'}
-                  alt="thumb"
-                />
-                <PostInfo>
-                  <PostTitle>{post.title}</PostTitle>
-                  <PostDate>{dayjs(post.createdAt).format('YYYY.MM.DD')}</PostDate>
-                </PostInfo>
-                {selectedId === post.id && <ActiveBadge>읽는 중</ActiveBadge>}
-              </PostCard>
-            ))}
+            {boards.map((post: any) => {
+              return (
+                <PostCard
+                  key={post.id}
+                  $isActive={selectedId === post.id}
+                  onClick={() => setSelectedId(post.id)}
+                >
+                  <Thumbnail
+                    src={post.thumbnailUrl || '/default-thumb.png'}
+                    alt="thumb"
+                  />
+                  <PostInfo>
+                    <PostTitle>
+                      {/* 2. 신규일 경우 배지 노출 */}
+                      {isNewPost(post.createdAt) && <NewBadge>NEW</NewBadge>}
+                      {post.title}
+                    </PostTitle>
+                    <PostDate>{dayjs(post.createdAt).format('YYYY.MM.DD')}</PostDate>
+                  </PostInfo>
+                  {selectedId === post.id && <ActiveBadge>읽는 중</ActiveBadge>}
+                </PostCard>
+              );
+            })}
           </PostGrid>
         )}
 
@@ -854,11 +864,32 @@ const PostInfo = styled.div`
 const PostTitle = styled.h3`
   font-size: 1.1rem;
   margin-bottom: 10px;
+  display: flex; /* 추가: 배지와 텍스트 정렬 */
+  align-items: center; /* 추가: 세로 중앙 정렬 */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+const NewBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
+  height: 20px;
+  min-width: 45px;
+  line-height: 1;
+  text-transform: uppercase;
+  vertical-align: middle;
+  background-color: #ff4d4f;
+  color: white;
+  border: 1px solid #ff4d4f;
 
+  /* 수정 포인트: 왼쪽 여백을 지우고 오른쪽 여백을 줍니다 */
+  margin-right: 8px;
+`;
 const PostDate = styled.span`
   color: #888;
   font-size: 0.9rem;

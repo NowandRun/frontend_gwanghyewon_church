@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { FIND_ALL_CHURCH_BULLETIN_BOARD_QUERY } from 'src/types/grapql_call';
 import styled from 'styled-components';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -7,6 +7,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import dayjs from 'dayjs';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -25,6 +26,54 @@ function Bulletin() {
   const [isRendering, setIsRendering] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const isNewPost = (date: string | Date) => dayjs().diff(dayjs(date), 'day') < 3;
+
+  // 드래그 시작 (마우스 왼쪽 버튼 클릭 시)
+  const onDragStart = (e: React.MouseEvent) => {
+    // 확대되지 않았거나 왼쪽 버튼(button 0)이 아니면 무시
+    if (scale <= 1.0 || e.button !== 0) return;
+
+    setIsDragging(true);
+    const container = scrollAreaRef.current;
+    if (container) {
+      setStartX(e.pageX - container.offsetLeft);
+      setStartY(e.pageY - container.offsetTop);
+      setScrollLeft(container.scrollLeft);
+      setScrollTop(container.scrollTop);
+    }
+  };
+
+  // 드래그 중 (마우스 이동)
+  const onDragMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault(); // 텍스트 드래그 방지
+
+    const container = scrollAreaRef.current;
+    if (container) {
+      const x = e.pageX - container.offsetLeft;
+      const y = e.pageY - container.offsetTop;
+
+      // 이동 속도 조절 (1.0 = 마우스 움직임과 1:1 일치)
+      const walkX = x - startX;
+      const walkY = y - startY;
+
+      container.scrollLeft = scrollLeft - walkX;
+      container.scrollTop = scrollTop - walkY;
+    }
+  };
+
+  // 드래그 종료
+  const onDragEnd = () => {
+    setIsDragging(false);
+  };
 
   const [imageOrientations, setImageOrientations] = useState<
     Record<string, 'landscape' | 'portrait'>
@@ -143,21 +192,24 @@ function Bulletin() {
 
   const pageVariants = {
     enter: (direction: number) => ({
-      rotateY: direction > 0 ? 90 : -90,
-      x: direction > 0 ? '50%' : '-50%',
+      x: direction > 0 ? 300 : -300, // 다음(>0)이면 오른쪽(300)에서, 이전(<0)이면 왼쪽(-300)에서 등장
       opacity: 0,
+      filter: 'brightness(1.2)',
     }),
     center: {
-      rotateY: 0,
       x: 0,
       opacity: 1,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+      filter: 'brightness(1)',
+      transition: {
+        x: { type: 'spring', stiffness: 300, damping: 30 },
+        opacity: { duration: 0.2 },
+      },
     },
     exit: (direction: number) => ({
-      rotateY: direction < 0 ? 90 : -90,
-      x: direction < 0 ? '50%' : '-50%',
+      x: direction > 0 ? -300 : 300, // 다음(>0)이면 왼쪽(-300)으로 퇴장, 이전(<0)이면 오른쪽(300)으로 퇴장
       opacity: 0,
-      transition: { duration: 0.6 },
+      filter: 'brightness(0.8)',
+      transition: { duration: 0.3 },
     }),
   };
 
@@ -214,6 +266,7 @@ function Bulletin() {
                   ? `"${searchKeyword}"에 대한 검색 결과가 없습니다.`
                   : '등록된 게시물이 없습니다.'}
               </p>
+              <ResetBtn onClick={resetSearch}>전체 목록으로 돌아가기</ResetBtn>
             </EmptyState>
           ) : (
             <>
@@ -227,6 +280,9 @@ function Bulletin() {
                       className={orientation}
                     >
                       <ThumbnailWrapper orientation={orientation}>
+                        {/* 배지를 Wrapper 안쪽, 이미지 위에 배치 */}
+                        {isNewPost(post.createdAt) && <NewBadge>NEW</NewBadge>}
+
                         <Thumbnail
                           src={
                             post.thumbnailUrl || 'https://via.placeholder.com/300x420?text=No+Image'
@@ -292,12 +348,22 @@ function Bulletin() {
           <FullOverlay onClick={closeModal}>
             <ViewerWindow onClick={(e) => e.stopPropagation()}>
               <Toolbar>
-                <FileName title={displayTitle}>{displayTitle}</FileName>
+                {/* 제목과 New 배지를 감싸는 그룹 추가 */}
+                <TitleGroup>
+                  {/* 현재 선택된 게시물이 New인지 확인 */}
+                  {boards.find((b: any) => b.id === selectedPostId) &&
+                    isNewPost(boards.find((b: any) => b.id === selectedPostId).createdAt) && (
+                      <NewBadgeInToolbar>NEW</NewBadgeInToolbar>
+                    )}
+                  <FileName title={displayTitle}>{displayTitle}</FileName>
+                </TitleGroup>
+
                 <ZoomControls>
                   <SmallButton onClick={() => changeScale(-0.2)}>-</SmallButton>
                   <ZoomInfo>{Math.round(scale * 100)}%</ZoomInfo>
                   <SmallButton onClick={() => changeScale(0.2)}>+</SmallButton>
                 </ZoomControls>
+
                 <ActionButtons>
                   <IconButton onClick={handleDownload}>💾 다운로드</IconButton>
                   <CloseButton onClick={closeModal}>✕ 닫기</CloseButton>
@@ -336,6 +402,10 @@ function Bulletin() {
                               onLoad={(e) => handleImageLoad(post.id, e)}
                             />
                           </SidebarThumbWrapper>
+                          {boards.find((b: any) => b.id === selectedPostId) &&
+                            isNewPost(
+                              boards.find((b: any) => b.id === selectedPostId).createdAt,
+                            ) && <NewBadgeInToolbar>NEW</NewBadgeInToolbar>}
                           <SidebarPostTitle>{post.title}</SidebarPostTitle>
                         </SidebarItem>
                       );
@@ -365,49 +435,56 @@ function Bulletin() {
                 </PostSidebar>
 
                 <PdfViewContainer>
-                  <PdfScrollArea>
-                    {(isRendering || listLoading) && (
-                      <LoadingOverlay>
-                        <div className="spinner"></div>
-                        <Message color="white">PDF 문서를 준비 중입니다...</Message>
-                      </LoadingOverlay>
-                    )}
+                  <PdfScrollArea
+                    ref={scrollAreaRef}
+                    onMouseDown={onDragStart}
+                    onMouseMove={onDragMove}
+                    onMouseUp={onDragEnd}
+                    onMouseLeave={onDragEnd}
+                    $isZoomed={scale > 1.0}
+                    $isDragging={isDragging}
+                  >
                     <div
                       style={{
-                        perspective: '1200px',
-                        width: '100%',
-                        height: '100%',
+                        // margin: 'auto'는 Flex 부모 안에서 자식이 부모보다 클 때
+                        // 시작점(0,0)을 보존하며 중앙 정렬을 시도하므로 좌우 잘림이 없습니다.
+                        margin: 'auto',
+                        minWidth: '100%',
+                        minHeight: '100%',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        position: 'relative',
                       }}
                     >
                       <AnimatePresence
-                        initial={false}
-                        custom={direction}
                         mode="wait"
+                        custom={direction}
                       >
                         <motion.div
-                          key={viewPdfUrl + currPdfPage}
-                          custom={direction}
+                          // key에 viewPdfUrl을 포함하면 파일 변경 시에도 애니메이션 작동
+                          key={`${viewPdfUrl}-${currPdfPage}`}
+                          custom={direction} // variants에 direction 전달
                           variants={pageVariants}
                           initial="enter"
                           animate="center"
                           exit="exit"
-                          style={{ position: 'absolute' }}
+                          style={{
+                            display: 'inline-block',
+                            position: 'relative',
+                            userSelect: 'none',
+                            transformOrigin: 'center center',
+                          }}
                         >
                           <Document
                             file={viewPdfUrl}
                             onLoadSuccess={onDocumentLoadSuccess}
-                            loading={null}
+                            loading={<div style={{ color: 'white' }}>PDF 로딩 중...</div>}
                           >
                             <Page
                               pageNumber={currPdfPage}
                               scale={scale}
                               renderTextLayer={false}
                               renderAnnotationLayer={false}
-                              onRenderSuccess={() => setIsRendering(false)}
                             />
                           </Document>
                         </motion.div>
@@ -540,6 +617,27 @@ const PostGrid = styled.div`
   }
 `;
 
+const NewBadge = styled.span`
+  position: absolute;
+  top: 10px; /* 상단에서 10px 띄움 */
+  left: 10px; /* 좌측에서 10px 띄움 (우측을 원하시면 right: 10px로 변경) */
+  z-index: 10; /* 이미지보다 위에 보이도록 설정 */
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+  text-transform: uppercase;
+  background-color: #ff4d4f;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 배지가 더 잘 보이도록 그림자 추가 */
+  pointer-events: none; /* 배지 클릭 시에도 카드 클릭 이벤트가 발생하도록 설정 */
+`;
+
 /* 페이지네이션 스타일 추가 */
 const PaginationWrapper = styled.div`
   display: flex;
@@ -607,6 +705,8 @@ const ThumbnailWrapper = styled.div<{ orientation: string }>`
   aspect-ratio: ${(props) => (props.orientation === 'landscape' ? '1.6 / 1' : '1 / 1.414')};
   overflow: hidden;
   background-color: #f5f5f5;
+  /* 추가: 자식 요소(NewBadge)의 기준점이 됨 */
+  position: relative;
 `;
 
 const Thumbnail = styled.img`
@@ -654,8 +754,29 @@ const Toolbar = styled.div`
   border-bottom: 1px solid #444;
 `;
 
-const FileName = styled.div`
+// 툴바 내 제목과 배지를 묶어주는 컨테이너
+const TitleGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex: 1;
+  overflow: hidden; /* 제목이 길어질 경우 대비 */
+`;
+
+// 모달 툴바 전용 New 배지 스타일
+const NewBadgeInToolbar = styled.span`
+  background-color: #ff4d4f;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px;
+  flex-shrink: 0; /* 배지 크기가 줄어들지 않도록 고정 */
+  line-height: 1.2;
+`;
+
+// 기존 FileName 수정 (flex: 1 제거하여 배지와 밀착되게 함)
+const FileName = styled.div`
   font-size: 1rem;
   font-weight: 600;
   white-space: nowrap;
@@ -815,14 +936,22 @@ const PdfViewContainer = styled.div`
   background: #1a1a1b;
   position: relative;
 `;
-
-const PdfScrollArea = styled.div`
+const PdfScrollArea = styled.div<{ $isZoomed: boolean; $isDragging: boolean }>`
   flex: 1;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow: auto; /* 확대 시 스크롤 발생 */
   position: relative;
+  background: #1a1a1b;
+  cursor: ${(props) => (!props.$isZoomed ? 'default' : props.$isDragging ? 'grabbing' : 'grab')};
+
+  /* 스크롤바 디자인 (필요 시 유지) */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  /* 핵심: 자식이 부모보다 작을 때는 중앙, 클 때는 스크롤 가능하게 함 */
+  display: flex;
 `;
 
 const MainContentArea = styled.div`
