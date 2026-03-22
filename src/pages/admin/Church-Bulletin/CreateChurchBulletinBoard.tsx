@@ -128,32 +128,45 @@ export default function CreateChurchBulletinBoard() {
     if (!e.target.files) return;
     const filesArray = Array.from(e.target.files);
 
+    // 1. PDF가 아닌 파일이 있는지 검사
+    const hasNonPdf = filesArray.some((file) => file.type !== 'application/pdf');
+    if (hasNonPdf) {
+      alert('PDF 파일만 업로드 가능합니다.');
+      e.target.value = ''; // input 초기화
+      return;
+    }
+
+    const validPdfs: File[] = [];
+
     for (const file of filesArray) {
       const { isValid, message } = getSafeFileData(file);
       if (!isValid) {
         alert(message);
-        return;
+        continue; // 유효하지 않은 파일명은 건너뜀
       }
 
-      if (file.type === 'application/pdf') {
-        try {
-          const thumbFile = await generatePdfThumbnail(file);
-          const newBlock: BoardBlock = {
-            id: `pdf-${Date.now()}`,
-            type: 'image',
-            file: thumbFile,
-            previewUrl: URL.createObjectURL(thumbFile),
-            fileName: `${file.name}_thumb.jpg`,
-            isThumbnail: true,
-            selected: false,
-          };
-          setBlocks((prev) => [...prev, newBlock]);
-        } catch (err) {
-          console.error(err);
-        }
+      // PDF 썸네일 생성 및 블록 추가
+      try {
+        const thumbFile = await generatePdfThumbnail(file);
+        const newBlock: BoardBlock = {
+          id: `pdf-${Date.now()}-${Math.random()}`, // ID 중복 방지용 랜덤값 추가
+          type: 'image',
+          file: thumbFile,
+          previewUrl: URL.createObjectURL(thumbFile),
+          fileName: `${file.name}_thumb.jpg`,
+          isThumbnail: blocks.length === 0, // 첫 번째 파일이면 썸네일로 자동 지정
+          selected: false,
+        };
+        setBlocks((prev) => [...prev, newBlock]);
+        validPdfs.push(file); // 검증 완료된 원본 PDF만 배열에 추가
+      } catch (err) {
+        console.error(err);
+        alert(`${file.name}의 썸네일을 생성하지 못했습니다.`);
       }
     }
-    setPendingFiles((prev) => [...prev, ...filesArray]);
+
+    // 검증된 PDF 파일들만 상태에 추가
+    setPendingFiles((prev) => [...prev, ...validPdfs]);
     e.target.value = '';
   };
 
@@ -322,6 +335,7 @@ export default function CreateChurchBulletinBoard() {
               id="file-upload"
               type="file"
               multiple
+              accept="application/pdf"
               onChange={onAddFiles}
               style={{ display: 'none' }}
             />

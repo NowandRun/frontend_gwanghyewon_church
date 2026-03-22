@@ -9,19 +9,15 @@ const specialPraiseId = process.env.REACT_APP_YOUTUBE_SPECIAL_PRAISE_ID;
 const wednesdayPraiseId = process.env.REACT_APP_YOUTUBE_WEDNESDAY_PRAISE_ID;
 const sundayPraiseId = process.env.REACT_APP_YOUTUBE_SUNDAY_PRAISE_ID;
 const youthWorshipId = process.env.REACT_APP_YOUTUBE_YOUTH_WORSHIP_ID;
-
 export async function fetchYouTubeChannelInfo(): Promise<IGetPlaylist[]> {
-  // 1️⃣ 채널 재생목록 가져오기
   const res = await fetch(
     `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&channelId=${channelId}&maxResults=50&key=${apiKey}`,
   );
   const data = await res.json();
   let playlistsWithVideos: IGetPlaylist[] = data.items || [];
 
-  // 마지막 요소 제거
   playlistsWithVideos = playlistsWithVideos.slice(0, -2);
 
-  // 2️⃣ 각 재생목록에 있는 영상 모두 가져오기
   for (let playlist of playlistsWithVideos) {
     let videos: Video[] = [];
     let nextPageToken = '';
@@ -31,19 +27,20 @@ export async function fetchYouTubeChannelInfo(): Promise<IGetPlaylist[]> {
       );
       const videoData = await videoRes.json();
 
-      // ❌ title이 "Private video"인 영상 제외
-      const filteredVideos = videoData.items.filter(
-        (video: Video) => video.snippet.title !== 'Private video',
+      // ✅ "Private video"와 "Deleted video" 모두 제외
+      const filteredVideos = (videoData.items || []).filter(
+        (video: Video) =>
+          video.snippet.title !== 'Private video' && video.snippet.title !== 'Deleted video',
       );
 
       videos = [...videos, ...filteredVideos];
       nextPageToken = videoData.nextPageToken || '';
     } while (nextPageToken);
 
-    playlist.videos = videos; // playlist에 videos 속성 추가
+    playlist.videos = videos;
   }
 
-  return playlistsWithVideos; // ✅ useState 없이 순수 반환
+  return playlistsWithVideos;
 }
 
 /** 특정 playlistId 안의 모든 영상 조회 */
@@ -57,8 +54,12 @@ async function fetchPlaylistVideos(playlistId: string): Promise<Video[]> {
     );
     const data = await res.json();
 
+    // ✅ 필터링 강화: 삭제된 영상(Deleted video) 추가 제외
     const filtered = (data.items || [])
-      .filter((video: Video) => video.snippet.title !== 'Private video')
+      .filter((video: Video) => {
+        const title = video.snippet.title;
+        return title !== 'Private video' && title !== 'Deleted video';
+      })
       .map((video: Video) => ({
         ...video,
         videoId: video.snippet.resourceId?.videoId ?? `${video.id}`,
@@ -70,7 +71,6 @@ async function fetchPlaylistVideos(playlistId: string): Promise<Video[]> {
 
   return videos;
 }
-
 async function getSortedVideos(playlistId: string): Promise<Video[]> {
   const videos = await fetchPlaylistVideos(playlistId);
   return videos

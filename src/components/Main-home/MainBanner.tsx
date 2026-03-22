@@ -11,10 +11,16 @@ function Mainbanner() {
         playing
         loop
         muted
+        playsinline // 1. 최상위 props로 추가 (ReactPlayer 버전에 따라 필요)
         width="100%"
         height="100%"
         config={{
-          file: { attributes: { style: { objectFit: 'cover' } } },
+          file: {
+            attributes: {
+              style: { objectFit: 'cover' },
+              playsInline: true, // 2. HTML5 video 태그에 직접 playsinline 부여
+            },
+          },
         }}
       />
       <OverlayText>
@@ -43,6 +49,7 @@ const VideoWrapper = styled.div`
   iframe,
   video {
     position: absolute;
+    object-fit: cover;
     top: 0;
     left: 0;
     width: 100%;
