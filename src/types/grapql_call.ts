@@ -198,3 +198,72 @@ export const DELETE_CHURCH_BULLETIN_BOARD = gql`
     }
   }
 `;
+
+/* ==== MAIN POPUO BOARD ======= */
+export const CREATE_MAIN_POPUP_BOARD_MUTATION = gql`
+  mutation createMainPopupBoard($input: CreateMainPopupBoardDto!) {
+    createMainPopupBoard(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
+// 전체 조회 Query
+export const FIND_ALL_MAIN_POPUP_BOARD_QUERY = gql`
+  query findAllMainPopupBoard($input: FindAllMainPopupBoardPaginationInput!) {
+    findAllMainPopupBoard(input: $input) {
+      ok
+      error
+      totalResults
+      totalPages
+      results {
+        id
+        title
+        author
+        blocks # ✅ JSON 타입이므로 내부 필드를 쓰지 않습니다.
+        createdAt
+      }
+    }
+  }
+`;
+
+// 상세 조회 Query
+export const FIND_MAIN_POPUP_BOARD_BY_ID_QUERY = gql`
+  query findMainPopupBoardById($id: Float!) {
+    findMainPopupBoardById(id: $id) {
+      ok
+      error
+      result {
+        id
+        title
+        author
+        blocks # ✅ JSON 타입이므로 내부 필드를 쓰지 않습니다.
+        createdAt
+        user {
+          id
+        }
+      }
+    }
+  }
+`;
+
+// 수정 Mutation
+export const EDIT_MAIN_POPUP_BOARD = gql`
+  mutation editMainPopupBoard($input: EditMainPopupBoardDto!) {
+    editMainPopupBoard(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
+// 삭제 Mutation
+export const DELETE_MAIN_POPUP_BOARD = gql`
+  mutation deleteMainPopupBoard($input: DeleteMainPopupBoardInput!) {
+    deleteMainPopupBoard(input: $input) {
+      ok
+      error
+    }
+  }
+`;

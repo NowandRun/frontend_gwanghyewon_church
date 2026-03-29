@@ -17,6 +17,7 @@ const AdminHeader: React.FC = () => {
           <NavItem to="/admin/church-info">교회소식</NavItem>
           <NavItem to="/admin/church-album">교우동정</NavItem>
           <NavItem to="/admin/church-bulletin">교회주보</NavItem>
+          <NavItem to="/admin/main-popup">메인팝업</NavItem>
           {(data.me.role === 'Admin' || data.me.role === 'Client') && (
             <NavItem to="/admin/users">사용자 관리</NavItem>
           )}

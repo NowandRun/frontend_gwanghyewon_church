@@ -18,24 +18,24 @@ import { CSS } from '@dnd-kit/utilities';
 
 type Props = {
   blocks: BoardBlock[];
-  onReplaceImage: (id: string, files: FileList | File[]) => void;
   onRemoveBlock: (id: string) => void;
-  onChangeText: (id: string, value: string) => void;
-
-  onToggleSelect: (id: string) => void;
-  onRemoveSelected: () => void;
-
-  onReorder: (activeId: string, overId: string) => void;
+  // 아래 항목들을 옵셔널(?)로 변경
+  onReplaceImage?: (id: string, files: FileList | File[]) => void;
+  onChangeText?: (id: string, value: string) => void;
+  onToggleSelect?: (id: string) => void;
+  onRemoveSelected?: () => void;
+  onReorder?: (activeId: string, overId: string) => void;
 };
 
 export default function AdminBoardBlockEditor({
   blocks,
-  onReplaceImage,
   onRemoveBlock,
-  onChangeText,
-  onToggleSelect,
-  onRemoveSelected,
-  onReorder,
+  // 기본값을 빈 함수로 설정하여 내부 로직 충돌 방지
+  onReplaceImage = () => {},
+  onChangeText = () => {},
+  onToggleSelect = () => {},
+  onRemoveSelected = () => {},
+  onReorder = () => {},
 }: Props) {
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 

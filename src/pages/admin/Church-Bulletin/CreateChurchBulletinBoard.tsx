@@ -549,7 +549,7 @@ const ThumbnailButton = styled.button<{ $active?: boolean }>`
   right: 8px;
   background: ${({ $active }) => ($active ? '#2f80ed' : '#9ca3af')};
   color: white;
-  font-size: 12px;
+  font-size: 16px;
   padding: 4px 8px;
   border-radius: 6px;
   border: none;

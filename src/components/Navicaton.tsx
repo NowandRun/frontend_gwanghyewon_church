@@ -133,8 +133,6 @@ export const menuItems = [
   },
 ];
 
-export const mainVidoeTopText = `환영합니다!\n광혜원순복음교회입니다.`;
-
 export const ministryItems = [
   {
     title: '교회소개',

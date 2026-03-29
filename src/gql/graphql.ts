@@ -114,6 +114,12 @@ export type CreateChurchInformationBoardDto = {
   title: Scalars['String']['input'];
 };
 
+export type CreateMainPopupBoardDto = {
+  /** { landscape: { url: string }, portrait: { url: string } } 구조로 보내주세요. */
+  blocks: Scalars['JSON']['input'];
+  title: Scalars['String']['input'];
+};
+
 export type DeleteChurchAlbumBoardInput = {
   ids: Array<Scalars['Int']['input']>;
 };
@@ -123,6 +129,10 @@ export type DeleteChurchBulletinBoardInput = {
 };
 
 export type DeleteChurchInformationBoardInput = {
+  ids: Array<Scalars['Int']['input']>;
+};
+
+export type DeleteMainPopupBoardInput = {
   ids: Array<Scalars['Int']['input']>;
 };
 
@@ -146,6 +156,13 @@ export type EditChurchInformationBoardDto = {
   fileUrls?: InputMaybe<Scalars['JSON']['input']>;
   id: Scalars['Int']['input'];
   isPinned?: InputMaybe<Scalars['Boolean']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type EditMainPopupBoardDto = {
+  /** { landscape: { url: string }, portrait: { url: string } } 구조로 보내주세요. */
+  blocks?: InputMaybe<Scalars['JSON']['input']>;
+  id: Scalars['Int']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -194,6 +211,21 @@ export type FindAllChurchInformationBoardPaginationInput = {
   take?: Scalars['Int']['input'];
 };
 
+export type FindAllMainPopupBoardOutput = {
+  __typename?: 'FindAllMainPopupBoardOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  results?: Maybe<Array<MainPopupBoard>>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  totalResults?: Maybe<Scalars['Int']['output']>;
+};
+
+export type FindAllMainPopupBoardPaginationInput = {
+  page?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  take?: Scalars['Int']['input'];
+};
+
 export type FindChurchAlbumBoardOutput = {
   __typename?: 'FindChurchAlbumBoardOutput';
   error?: Maybe<Scalars['String']['output']>;
@@ -213,6 +245,13 @@ export type FindChurchInformationBoardOutput = {
   error?: Maybe<Scalars['String']['output']>;
   ok: Scalars['Boolean']['output'];
   result?: Maybe<ChurchInformationBoard>;
+};
+
+export type FindMainPopupBoardOutput = {
+  __typename?: 'FindMainPopupBoardOutput';
+  error?: Maybe<Scalars['String']['output']>;
+  ok: Scalars['Boolean']['output'];
+  result?: Maybe<MainPopupBoard>;
 };
 
 export type FindUserIdInput = {
@@ -244,6 +283,17 @@ export type LogoutOutput = {
   ok: Scalars['Boolean']['output'];
 };
 
+export type MainPopupBoard = {
+  __typename?: 'MainPopupBoard';
+  author: Scalars['String']['output'];
+  blocks: Scalars['JSON']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user?: Maybe<User>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createAccount: CreateAccountOutput;
@@ -251,12 +301,15 @@ export type Mutation = {
   createChurchAlbumBoard: CoreOutput;
   createChurchBulletinBoard: CoreOutput;
   createChurchInformationBoard: CoreOutput;
+  createMainPopupBoard: CoreOutput;
   deleteChurchAlbumBoard: CoreOutput;
   deleteChurchBulletinBoard: CoreOutput;
   deleteChurchInformationBoard: CoreOutput;
+  deleteMainPopupBoard: CoreOutput;
   editChurchAlbumBoard: CoreOutput;
   editChurchBulletinBoard: CoreOutput;
   editChurchInformationBoard: CoreOutput;
+  editMainPopupBoard: CoreOutput;
   login: LoginOutput;
   logout: LogoutOutput;
   updateByUserPassword: UpdateUserPasswordOutput;
@@ -288,6 +341,11 @@ export type MutationCreateChurchInformationBoardArgs = {
 };
 
 
+export type MutationCreateMainPopupBoardArgs = {
+  input: CreateMainPopupBoardDto;
+};
+
+
 export type MutationDeleteChurchAlbumBoardArgs = {
   input: DeleteChurchAlbumBoardInput;
 };
@@ -303,6 +361,11 @@ export type MutationDeleteChurchInformationBoardArgs = {
 };
 
 
+export type MutationDeleteMainPopupBoardArgs = {
+  input: DeleteMainPopupBoardInput;
+};
+
+
 export type MutationEditChurchAlbumBoardArgs = {
   input: EditChurchAlbumBoardDto;
 };
@@ -315,6 +378,11 @@ export type MutationEditChurchBulletinBoardArgs = {
 
 export type MutationEditChurchInformationBoardArgs = {
   input: EditChurchInformationBoardDto;
+};
+
+
+export type MutationEditMainPopupBoardArgs = {
+  input: EditMainPopupBoardDto;
 };
 
 
@@ -348,10 +416,12 @@ export type Query = {
   findAllChurchAlbumBoard: FindAllChurchAlbumBoardOutput;
   findAllChurchBulletinBoard: FindAllChurchBulletinOutput;
   findAllChurchInformationBoard: FindAllChurchInformationBoardOutput;
+  findAllMainPopupBoard: FindAllMainPopupBoardOutput;
   findByUserId: FindUserIdOutput;
   findChurchAlbumBoardById: FindChurchAlbumBoardOutput;
   findChurchBulletinBoardById: FindChurchBulletinBoardOutput;
   findChurchInformationBoardById: FindChurchInformationBoardOutput;
+  findMainPopupBoardById: FindMainPopupBoardOutput;
   me: User;
   userProfile: UserProfileOutput;
 };
@@ -372,6 +442,11 @@ export type QueryFindAllChurchInformationBoardArgs = {
 };
 
 
+export type QueryFindAllMainPopupBoardArgs = {
+  input: FindAllMainPopupBoardPaginationInput;
+};
+
+
 export type QueryFindByUserIdArgs = {
   input: FindUserIdInput;
 };
@@ -388,6 +463,11 @@ export type QueryFindChurchBulletinBoardByIdArgs = {
 
 
 export type QueryFindChurchInformationBoardByIdArgs = {
+  id: Scalars['Float']['input'];
+};
+
+
+export type QueryFindMainPopupBoardByIdArgs = {
   id: Scalars['Float']['input'];
 };
 
@@ -424,6 +504,7 @@ export type User = {
   churchInformationBoard?: Maybe<Array<ChurchInformationBoard>>;
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['Float']['output'];
+  mainPopupBoard?: Maybe<Array<MainPopupBoard>>;
   nickname: Scalars['String']['output'];
   numberOfLoginAttempts?: Maybe<Scalars['Int']['output']>;
   parish?: Maybe<Scalars['String']['output']>;

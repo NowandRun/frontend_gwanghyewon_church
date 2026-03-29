@@ -525,6 +525,7 @@ const ThumbnailButton = styled.button<{ $active?: boolean }>`
   border: none;
   padding: 4px 8px;
   border-radius: 6px;
+  font-size: 16px;
   cursor: pointer;
 `;
 const HtmlContent = styled.div`

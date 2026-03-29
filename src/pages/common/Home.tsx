@@ -8,11 +8,14 @@ import MainScondNavigation from '../../components/Main-home/MainScondNavigation'
 import MainOfferingInformation from '../../components/Main-home/MainOfferingInformation';
 import MainKaKaoMap from '../../components/Main-home/MainKaKaoMap';
 import MainVisionStateMent from '../../components/Main-home/MainVisionStatement';
+import MainPopup from 'src/components/Main-home/MainPopup';
 
 function Home() {
   return (
     <>
       <HomeWrapper>
+        {/* 2. 여러 개의 팝업이 있을 수 있으므로 map으로 렌더링 */}
+        <MainPopup />
         <Mainbanner />
         <Mainministry />
         <MainScondNavigation />

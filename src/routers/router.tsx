@@ -19,12 +19,13 @@ import EditChurchAlbumBoard from 'src/pages/admin/Church-Album/EditChurchAlbumBo
 import CreateChurchAlbumBoard from 'src/pages/admin/Church-Album/CreateChurchAlbumBoard';
 import CreateChurchBulletinBoard from 'src/pages/admin/Church-Bulletin/CreateChurchBulletinBoard';
 import EditChurchBulletinBoard from 'src/pages/admin/Church-Bulletin/EditChurchBulletinBoard';
+import CreateMainPopupBoard from 'src/pages/admin/Main-Popup/CreateMainPopupBoard';
+import EditMainPopupBoard from 'src/pages/admin/Main-Popup/EditMainPopupBoard';
 
 const generatedRoutes = generateRoutes(menuItems);
 
 // 백오피스용 라우트
 const adminGeneratedRoutes = generateRoutes(adminMenuItems, '', true);
-
 const router = createHashRouter([
   {
     path: '/',
@@ -39,9 +40,9 @@ const router = createHashRouter([
     errorElement: <NotFound />,
   },
 
-  // ✅ 로그인 전용 영역
+  // ✅ 로그인/회원가입 영역 (로그인한 사람은 접근 불가)
   {
-    element: <PublicOnlyRouter />, // ⭐ 추가
+    element: <PublicOnlyRouter />,
     children: [
       {
         path: '/admin/login',
@@ -55,7 +56,6 @@ const router = createHashRouter([
   },
 
   // 🔐 관리자 영역 (로그인 필수)
-  // 🔐 관리자 영역
   {
     path: '/admin',
     element: <LoggedInRouter />,
@@ -66,6 +66,8 @@ const router = createHashRouter([
           {
             element: <AdminRoot />,
             children: [
+              // ⭐ 중요: index는 하나만 설정합니다.
+              // /admin으로 들어오면 기본적으로 'church-info'로 보냅니다.
               {
                 index: true,
                 element: (
@@ -75,51 +77,38 @@ const router = createHashRouter([
                   />
                 ),
               },
-              {
-                index: true,
-                element: (
-                  <Navigate
-                    to="church-album"
-                    replace
-                  />
-                ),
-              },
-              {
-                index: true,
-                element: (
-                  <Navigate
-                    to="church-bulletin"
-                    replace
-                  />
-                ),
-              },
-              // 📌 메뉴 기반 라우트
+
+              // 📌 메뉴 기반 자동 생성 라우트
               ...adminGeneratedRoutes,
 
-              // 📌 메뉴에 안 보이는 라우트 (중요)
+              // 📌 상세 편집/생성 페이지 (중복 제거 및 정리)
               {
-                path: 'church-info/create',
-                element: <CreateChurchInformationBoard />,
+                path: 'church-info',
+                children: [
+                  { path: 'create', element: <CreateChurchInformationBoard /> },
+                  { path: 'edit/:id', element: <EditChurchInformationBoard /> },
+                ],
               },
               {
-                path: 'church-info/edit/:id', // 👈 수정 페이지 라우트 추가
-                element: <EditChurchInformationBoard />,
+                path: 'church-album',
+                children: [
+                  { path: 'create', element: <CreateChurchAlbumBoard /> },
+                  { path: 'edit/:id', element: <EditChurchAlbumBoard /> },
+                ],
               },
               {
-                path: 'church-album/create',
-                element: <CreateChurchAlbumBoard />,
+                path: 'church-bulletin',
+                children: [
+                  { path: 'create', element: <CreateChurchBulletinBoard /> },
+                  { path: 'edit/:id', element: <EditChurchBulletinBoard /> },
+                ],
               },
               {
-                path: 'church-album/edit/:id', // 👈 수정 페이지 라우트 추가
-                element: <EditChurchAlbumBoard />,
-              },
-              {
-                path: 'church-bulletin/create',
-                element: <CreateChurchBulletinBoard />,
-              },
-              {
-                path: 'church-bulletin/edit/:id', // 👈 수정 페이지 라우트 추가
-                element: <EditChurchBulletinBoard />,
+                path: 'main-popup',
+                children: [
+                  { path: 'create', element: <CreateMainPopupBoard /> },
+                  { path: 'edit/:id', element: <EditMainPopupBoard /> },
+                ],
               },
             ],
           },
@@ -128,6 +117,7 @@ const router = createHashRouter([
     ],
   },
 
+  // 404 페이지
   { path: '*', element: <NotFound /> },
 ]);
 

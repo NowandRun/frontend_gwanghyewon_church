@@ -6,6 +6,7 @@ export const PAGE_IDS = {
   CHURCH_INFO: '교회소식_편집',
   CHURCH_BULLETIN: '교회주보_편집',
   CHURCH_ALBUM: '교회주보_편집',
+  CHURCH_MAIN_POPUP: '교회메인_팝업_편집',
 };
 
 export const useTabConcurrency = (pageName: string) => {

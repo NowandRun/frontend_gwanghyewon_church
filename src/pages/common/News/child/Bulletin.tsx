@@ -266,7 +266,6 @@ function Bulletin() {
                   ? `"${searchKeyword}"에 대한 검색 결과가 없습니다.`
                   : '등록된 게시물이 없습니다.'}
               </p>
-              <ResetBtn onClick={resetSearch}>전체 목록으로 돌아가기</ResetBtn>
             </EmptyState>
           ) : (
             <>
@@ -1013,33 +1012,6 @@ const CloseButton = styled.button`
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
-`;
-
-const LoadingOverlay = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top: 3px solid #8ab4f8;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
 `;
 
 const Message = styled.div<{ color?: string }>`

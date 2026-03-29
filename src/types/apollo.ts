@@ -46,35 +46,29 @@ const authLink = setContext((_, { headers }) => {
 });
 
 // apollo.ts 파일 수정
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
-      const message = err.message;
-      // 에러 코드 확인 (extensions.code)
-      const code = err.extensions?.code;
+      const { message, extensions } = err;
 
-      // jwt 만료뿐만 아니라, 인증되지 않은 모든 접근에 대해 처리
-      if (
-        message === 'jwt expired' ||
-        code === 'UNAUTHENTICATED' ||
-        message.includes('Context creation failed') // 서버 설정에 따라 다를 수 있음
-      ) {
-        // 1. 상태 초기화
+      // 1. 세션 만료 에러만 리다이렉트
+      if (message === 'jwt expired' || extensions?.code === 'UNAUTHENTICATED') {
         localStorage.removeItem(LOCALSTORAGE_TOKEN);
         authTokenVar('');
         isLoggedInAccessTokenVar(false);
-
-        // 2. 강제 리프레시 또는 이동 (흰 화면 탈출)
-        // Reactive Variable만 바꿔서 화면이 안 바뀐다면 강제로 홈으로 보냅니다.
-        window.location.href = '/';
-
         sessionStorage.setItem('authError', 'token-expired');
+
+        // 새로고침 없이 hash만 바꿔서 즉시 로그인 페이지로 보냄
+        window.location.hash = '/admin/login';
+        return;
+      }
+
+      // 2. Context creation failed는 서버 에러로 간주 (로그아웃 시키지 않음)
+      if (message.includes('Context creation failed')) {
+        console.error('서버 컨텍스트 생성 실패: 서버 점검이 필요할 수 있습니다.');
+        return;
       }
     }
-  }
-
-  if (networkError) {
-    console.log(`[Network error]: ${networkError}`);
   }
 });
 
