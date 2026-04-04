@@ -54,7 +54,6 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
     <>
       <Button
         onClick={openModal}
-        layoutId="Sitemap"
       >
         <FontAwesomeIcon icon={faMapLocationDot} />
         <div>
@@ -70,7 +69,7 @@ const Sitemap: React.FC<SitemapProps> = ({ onOpenChange }) => {
             animate={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
             onClick={closeModal}
           >
-            <ModalBox layoutId="Sitemap">
+            <ModalBox >
               <ModalBoxWrapper>
                 <HeaderTitle>
                   <span>사이트 맵</span>

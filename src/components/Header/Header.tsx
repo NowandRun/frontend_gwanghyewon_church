@@ -296,7 +296,7 @@ const CenterWrapper = styled.div`
   flex: 6;
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 100%; /* HeaderWrapper의 높이를 그대로 상속 */
 `;
 
 const RightWrapper = styled.div`
@@ -376,6 +376,17 @@ const SubPageItem = styled.div<{
   isHovered: boolean;
   isScrolled: boolean;
 }>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* 부모 HeaderWrapper의 높이를 꽉 채움 */
+  position: relative; /* Positionbar의 기준점 */
+  
+  /* ✅ 핵심: 이 영역 밖에서(y축 아래에서) 올라오는 모든 모션을 차단 */
+  overflow: hidden; 
+  padding: 0 1vw; /* 좌우 여백 */
+
   color: ${({ isHovered, isSitemapOpen, isScrolled }) =>
     isSitemapOpen || isScrolled
       ? 'black'
@@ -385,9 +396,15 @@ const SubPageItem = styled.div<{
 `;
 
 const Positionbar = styled(motion.div)<PositionbarProps>`
-  height: 2px;
+  position: absolute;
+  bottom: 0; /* ✅ 메뉴 아이템의 최하단에 붙임 */
+  left: 0;
+  width: 100%;
+  height: 3px; /* 바 두께 (원하시는 대로 조절) */
   background-color: ${(props) => props.theme.cardBgColor};
-  margin-top: 4px;
+  
+  /* 만약 페이지 이동 시에도 살짝의 떨림이 있다면 아래 transition 추가 */
+  /* transition: { layout: { duration: 0.3 } } */
 `;
 
 const UserFeat = styled.div<{
@@ -441,8 +458,9 @@ const SitemapWrapper = styled.div`
 `;
 
 const SubHeaderPage = styled.span`
-  font-size: 1.2vw;
+  font-size: 1vw;
   font-weight: 550;
+  margin-bottom : 10px;
 `;
 
 const SubheadingWrapper = styled.div`

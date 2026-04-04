@@ -48,7 +48,6 @@ export const MainPopupModule = ({ id, index, title, blocks }: PopupProps) => {
 
 const PopupContainer = styled.div`
   background: white;
-  border-radius: 28px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -70,12 +69,16 @@ const PopupContainer = styled.div`
 
 const ContentArea = styled.div`
   flex: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; -> 꽉 채울 때는 스크롤이 필요 없으므로 제거 추천 */
+  overflow: hidden; 
   background: #000;
+  display: flex; /* 이미지를 중앙에 배치하기 위해 추가 */
+  
   img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    /* 핵심 수정: contain -> cover */
+    object-fit: cover; 
     display: block;
   }
 `;

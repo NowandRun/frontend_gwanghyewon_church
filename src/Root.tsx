@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { isdarkAtom } from './types/atoms';
 import Footer from './components/Footer/Footer';
 import styled from 'styled-components';
+import ScrollToTop from './hooks/ScollToTop';
 
 const PageLayout = styled.div`
   min-height: 100vh;
@@ -20,6 +21,7 @@ function Root() {
   const isDark = useRecoilValue(isdarkAtom);
   return (
     <PageLayout>
+      <ScrollToTop /> 
       <Header />
       <MainContent>
         <Outlet context={{ isDark }} />

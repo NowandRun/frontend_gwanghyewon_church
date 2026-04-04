@@ -111,8 +111,8 @@ const MainTitle = styled.h1`
   line-height: 1.1;
   letter-spacing: -0.1vw;
 
-  @media (max-width: 768px) {
-    font-size: 8vw; /* 모바일에서는 조금 더 크게 */
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 6vw; /* 모바일에서는 조금 더 크게 */
   }
 `;
 
@@ -122,8 +122,8 @@ const SubTitle = styled.h2`
   margin: 0;
   opacity: 0.9;
 
-  @media (max-width: 768px) {
-    font-size: 5vw;
+  ${({ theme }) => theme.media.mobile} {
+    font-size: 3vw;
   }
 `;
 
@@ -136,13 +136,12 @@ const Underline = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 1.2vw;
+  font-size: 2vw;
   font-weight: 400;
   margin: 0;
   opacity: 0.8;
 
-  @media (max-width: 768px) {
-    font-size: 3vw; /* 모바일 가독성을 위해 크기 조정 */
+  ${({ theme }) => theme.media.mobile} {
     margin-bottom: 2vw;
   }
 `;
@@ -165,17 +164,17 @@ const PlayButton = styled.a`
     font-size: 3vw; /* 아이콘 크기도 반응형 */
     margin-right: 1vw;
 
-    @media (max-width: 768px) {
-      font-size: 6vw;
+  ${({ theme }) => theme.media.mobile} {
+      font-size: 5vw;
     }
   }
 
   span {
-    font-size: 1.2vw; /* 글자 크기 반응형 */
+    font-size: 1.4vw; /* 글자 크기 반응형 */
     font-weight: 500;
 
-    @media (max-width: 768px) {
-      font-size: 3.5vw;
+  ${({ theme }) => theme.media.mobile} {
+      font-size: 3vw;
     }
   }
 `;
