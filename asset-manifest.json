@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/frontend_gwanghyewon_church/static/css/main.5c96e051.css",
-    "main.js": "/frontend_gwanghyewon_church/static/js/main.83ad32f8.js",
+    "main.js": "/frontend_gwanghyewon_church/static/js/main.e8dc7163.js",
     "reactPlayerYouTube.js": "/frontend_gwanghyewon_church/static/js/reactPlayerYouTube.1f831a2e.chunk.js",
     "reactPlayerSoundCloud.js": "/frontend_gwanghyewon_church/static/js/reactPlayerSoundCloud.5a1e8ed2.chunk.js",
     "reactPlayerVimeo.js": "/frontend_gwanghyewon_church/static/js/reactPlayerVimeo.18585c94.chunk.js",
@@ -21,6 +21,6 @@
   },
   "entrypoints": [
     "static/css/main.5c96e051.css",
-    "static/js/main.83ad32f8.js"
+    "static/js/main.e8dc7163.js"
   ]
 }
