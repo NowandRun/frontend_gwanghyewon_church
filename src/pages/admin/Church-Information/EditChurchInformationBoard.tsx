@@ -7,13 +7,11 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { BoardBlock, BoardType } from '../../../types/types';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
-import {
-  EDIT_CHURCH_INFORMATION_BOARD_MUTATION,
-  FIND_CHURCH_INFORMATION_BOARD_BY_ID_QUERY,
-} from 'src/types/grapql_call';
-import ChurchInformationBlockToolbar from 'src/components/AdminComponents/ChurchInformationBlockToolbar';
-import { useMe } from 'src/hooks/useMe';
-import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
+import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
+import { useMe } from '../../../hooks/useMe';
+import { EDIT_CHURCH_INFORMATION_BOARD_MUTATION, FIND_CHURCH_INFORMATION_BOARD_BY_ID_QUERY } from '../../../types/grapql_call';
+import ChurchInformationBlockToolbar from '../../../components/AdminComponents/ChurchInformationBlockToolbar';
+
 
 export default function EditChurchInformationBoard() {
   useTabConcurrency(PAGE_IDS.CHURCH_INFO); // 훅 호출만으로 적용
@@ -34,6 +32,26 @@ export default function EditChurchInformationBoard() {
   );
 
   const [editBoard, { loading: editLoading }] = useMutation(EDIT_CHURCH_INFORMATION_BOARD_MUTATION);
+
+  useEffect(() => {
+    // 1. 두 데이터가 모두 로드되었을 때만 로직 실행
+    if (!meLoading && !boardLoading && meData?.me && boardData?.findChurchInformationBoardById?.result) {
+      const board = boardData.findChurchInformationBoardById.result;
+      
+      // 🚀 포인트 1: ID 비교 시 타입을 일치시킵니다 (String으로 변환하여 비교)
+      const isAuthor = String(board.authorId) === String(meData.me.id);
+      
+      // 🚀 포인트 2: role 체크 시 대소문자 및 타입 단언 처리
+      const isAdmin = String(meData.me.role).toUpperCase() === 'ADMIN';
+
+      console.log("권한 체크:", { isAuthor, isAdmin, boardAuthorId: board.authorId, myId: meData.me.id });
+
+      if (!isAuthor && !isAdmin) {
+        alert("수정 권한이 없습니다.");
+        navigate('/admin/church-info'); // -1 보다 명확한 경로 이동 추천
+      }
+    }
+  }, [meData, boardData, meLoading, boardLoading, navigate]);
 
   useEffect(() => {
     if (meLoading || boardLoading || !boardData?.findChurchInformationBoardById?.ok) return;

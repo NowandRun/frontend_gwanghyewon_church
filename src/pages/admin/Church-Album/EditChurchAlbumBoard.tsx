@@ -8,13 +8,10 @@ import ChurchAlbumBlockToolbar from '../../../components/AdminComponents/ChurchI
 import { BoardBlock, BoardType } from '../../../types/types';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
-import {
-  EDIT_CHURCH_ALBUM_BOARD,
-  FIND_CHURCH_ALBUM_BOARD_BY_ID_QUERY,
-} from 'src/types/grapql_call';
+import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
+import { useMe } from '../../../hooks/useMe';
+import { EDIT_CHURCH_ALBUM_BOARD, FIND_CHURCH_ALBUM_BOARD_BY_ID_QUERY } from '../../../types/grapql_call';
 
-import { useMe } from 'src/hooks/useMe';
-import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
 
 export default function EditChurchAlbumBoard() {
   useTabConcurrency(PAGE_IDS.CHURCH_ALBUM);

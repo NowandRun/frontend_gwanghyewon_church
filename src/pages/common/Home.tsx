@@ -8,7 +8,7 @@ import MainScondNavigation from '../../components/Main-home/MainScondNavigation'
 import MainOfferingInformation from '../../components/Main-home/MainOfferingInformation';
 import MainKaKaoMap from '../../components/Main-home/MainKaKaoMap';
 import MainVisionStateMent from '../../components/Main-home/MainVisionStatement';
-import MainPopup from 'src/components/Main-home/MainPopup';
+import MainPopup from '../../components/Main-home/MainPopup';
 
 function Home() {
   return (

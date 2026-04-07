@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "es2015"],
-    "jsx": "react",
+    /* 1. target을 ES2015(ES6) 이상으로 변경 (ESNext 권장) */
+    "target": "ESNext", 
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx", // 최신 React라면 react-jsx 권장
     "module": "esnext",
-    "moduleResolution": "node",
+    
+    /* 2. moduleResolution을 최신 표준인 'bundler' 또는 'node' 대신 'node16'으로 변경 */
+    /* Vite나 Webpack 등을 사용 중이라면 'bundler'가 가장 적합합니다. */
+    "moduleResolution": "bundler", 
+    
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "dayjs": ["node_modules/dayjs"]
-    },
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["src/types", "node_modules/@types"]
   },
-  "include": ["src", "codegen.ts", "codegen.ts"]
+  "include": ["src", "codegen.ts"]
 }

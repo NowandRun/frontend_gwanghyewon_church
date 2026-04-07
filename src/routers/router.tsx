@@ -14,13 +14,13 @@ import AdminRoot from '../AdminRoot';
 import PublicOnlyRouter from './public-only-router';
 import AdminIdleGuard from './AdminIdleGuard';
 import EditChurchInformationBoard from '../pages/admin/Church-Information/EditChurchInformationBoard';
-import CreateChurchInformationBoard from 'src/pages/admin/Church-Information/CreatChurchInformationBoard';
-import EditChurchAlbumBoard from 'src/pages/admin/Church-Album/EditChurchAlbumBoard';
-import CreateChurchAlbumBoard from 'src/pages/admin/Church-Album/CreateChurchAlbumBoard';
-import CreateChurchBulletinBoard from 'src/pages/admin/Church-Bulletin/CreateChurchBulletinBoard';
-import EditChurchBulletinBoard from 'src/pages/admin/Church-Bulletin/EditChurchBulletinBoard';
-import CreateMainPopupBoard from 'src/pages/admin/Main-Popup/CreateMainPopupBoard';
-import EditMainPopupBoard from 'src/pages/admin/Main-Popup/EditMainPopupBoard';
+import CreateChurchInformationBoard from '../pages/admin/Church-Information/CreatChurchInformationBoard';
+import CreateChurchAlbumBoard from '../pages/admin/Church-Album/CreateChurchAlbumBoard';
+import EditChurchAlbumBoard from '../pages/admin/Church-Album/EditChurchAlbumBoard';
+import CreateChurchBulletinBoard from '../pages/admin/Church-Bulletin/CreateChurchBulletinBoard';
+import EditChurchBulletinBoard from '../pages/admin/Church-Bulletin/EditChurchBulletinBoard';
+import CreateMainPopupBoard from '../pages/admin/Main-Popup/CreateMainPopupBoard';
+import EditMainPopupBoard from '../pages/admin/Main-Popup/EditMainPopupBoard';
 
 const generatedRoutes = generateRoutes(menuItems);
 

@@ -1,9 +1,9 @@
 // src/components/AdminNavigation.ts
 import { MenuItem } from '../types/types';
 import ChurchInformationBoard from '../pages/admin/Church-Information/FindAllChurchInformationBoard';
-import ChurchAlbumBoard from 'src/pages/admin/Church-Album/FindAllChurchAlbumBoard';
-import ChurchBulletinBoard from 'src/pages/admin/Church-Bulletin/FindAllChurchBulletinBoard';
-import MainPopupBoard from 'src/pages/admin/Main-Popup/FindAllMainPopupBoard';
+import ChurchAlbumBoard from '../pages/admin/Church-Album/FindAllChurchAlbumBoard';
+import ChurchBulletinBoard from '../pages/admin/Church-Bulletin/FindAllChurchBulletinBoard';
+import MainPopupBoard from '../pages/admin/Main-Popup/FindAllMainPopupBoard';
 
 export const adminMenuItems: MenuItem[] = [
   {

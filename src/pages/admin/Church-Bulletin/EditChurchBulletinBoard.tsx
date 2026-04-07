@@ -8,13 +8,11 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { BoardBlock, BoardType } from '../../../types/types';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
-import {
-  EDIT_CHURCH_BULLETIN_BOARD,
-  FIND_CHURCH_BULLETIN_BOARD_BY_ID_QUERY,
-} from 'src/types/grapql_call';
-import ChurchBulletinBlockToolbar from 'src/components/AdminComponents/ChurchBulletinBlockToolbar';
-import { useMe } from 'src/hooks/useMe';
-import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
+import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
+import { EDIT_CHURCH_BULLETIN_BOARD, FIND_CHURCH_BULLETIN_BOARD_BY_ID_QUERY } from '../../../types/grapql_call';
+import { useMe } from '../../../hooks/useMe';
+import ChurchBulletinBlockToolbar from '../../../components/AdminComponents/ChurchBulletinBlockToolbar';
+
 // PDF Worker 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',

@@ -7,10 +7,10 @@ import { BoardBlock, BoardType } from '../../../types/types';
 import { useMe } from '../../../hooks/useMe';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
-import { CREATE_CHURCH_BULLETIN_BOARD_MUTATION } from 'src/types/grapql_call';
-import ChurchBulletinBlockToolbar from 'src/components/AdminComponents/ChurchBulletinBlockToolbar';
 import * as pdfjsLib from 'pdfjs-dist';
-import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
+import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
+import { CREATE_CHURCH_BULLETIN_BOARD_MUTATION } from '../../../types/grapql_call';
+import ChurchBulletinBlockToolbar from '../../../components/AdminComponents/ChurchBulletinBlockToolbar';
 
 // (중요) legacy 빌드 혹은 표준 빌드에 따라 경로가 다를 수 있습니다.
 // 대부분의 환경에서 아래 경로로 해결됩니다.

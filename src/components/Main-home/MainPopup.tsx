@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery } from '@apollo/client';
-import { FIND_ALL_MAIN_POPUP_BOARD_QUERY } from 'src/types/grapql_call';
 import { MainPopupModule } from '../MainPopup/MainPopupModule';
 import styled from 'styled-components';
+import { FIND_ALL_MAIN_POPUP_BOARD_QUERY } from '../../types/grapql_call';
 
 function MainPopup() {
   const { data, loading } = useQuery(FIND_ALL_MAIN_POPUP_BOARD_QUERY, {

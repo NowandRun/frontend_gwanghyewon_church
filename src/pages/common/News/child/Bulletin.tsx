@@ -1,13 +1,11 @@
 import { useQuery } from '@apollo/client';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { FIND_ALL_CHURCH_BULLETIN_BOARD_QUERY } from 'src/types/grapql_call';
 import styled from 'styled-components';
 import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import dayjs from 'dayjs';
+import { FIND_ALL_CHURCH_BULLETIN_BOARD_QUERY } from '../../../../types/grapql_call';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 

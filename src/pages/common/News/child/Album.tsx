@@ -2,11 +2,9 @@ import { useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import {
-  FIND_ALL_CHURCH_ALBUM_BOARD_QUERY,
-  FIND_CHURCH_ALBUM_BOARD_BY_ID_QUERY,
-} from 'src/types/grapql_call';
+
 import styled from 'styled-components';
+import { FIND_ALL_CHURCH_ALBUM_BOARD_QUERY, FIND_CHURCH_ALBUM_BOARD_BY_ID_QUERY } from '../../../../types/grapql_call';
 
 function ImageModal({
   images,

@@ -3,10 +3,8 @@ import { useQuery } from '@apollo/client';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
-import {
-  FIND_ALL_CHURCH_INFORMATION_BOARD_QUERY,
-  FIND_CHURCH_INFORMATION_BOARD_BY_ID_QUERY,
-} from 'src/types/grapql_call';
+import { FIND_ALL_CHURCH_INFORMATION_BOARD_QUERY, FIND_CHURCH_INFORMATION_BOARD_BY_ID_QUERY } from '../../../../types/grapql_call';
+
 
 /* -------------------------------------------------------------------------- */
 /* ImageModal                                 */

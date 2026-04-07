@@ -5,9 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { BoardBlock, BoardType } from '../../../types/types';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
-import { EDIT_MAIN_POPUP_BOARD, FIND_MAIN_POPUP_BOARD_BY_ID_QUERY } from 'src/types/grapql_call';
-import { useMe } from 'src/hooks/useMe';
-import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
+import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
+import { EDIT_MAIN_POPUP_BOARD, FIND_MAIN_POPUP_BOARD_BY_ID_QUERY } from '../../../types/grapql_call';
+import { useMe } from '../../../hooks/useMe';
 
 export default function EditMainPopupBoard() {
   useTabConcurrency(PAGE_IDS.CHURCH_MAIN_POPUP);
@@ -38,6 +38,21 @@ export default function EditMainPopupBoard() {
   /* =============================
       데이터 초기화
   ============================== */
+  useEffect(() => {
+    if (meData?.me && boardData?.findMainPopupBoardById?.result) {
+      const board = boardData.findMainPopupBoardById.result;
+      
+      // meData.me.role을 string으로 단언하여 'ADMIN' 문자열과 비교 가능하게 함
+      const isAuthor = board.authorId === meData.me.id;
+      const isAdmin = (meData.me.role as string) === 'ADMIN';
+
+      if (!isAuthor && !isAdmin) {
+        alert("수정 권한이 없습니다.");
+        navigate(-1);
+      }
+    }
+  }, [meData, boardData, navigate]);
+  
   useEffect(() => {
     if (boardLoading || !boardData?.findMainPopupBoardById?.ok) return;
 
@@ -124,6 +139,27 @@ export default function EditMainPopupBoard() {
     });
   };
 
+  const handleReplaceImage = (id: string, files: FileList | File[]) => {
+  const file = files instanceof FileList ? files[0] : files[0];
+  if (!file) return;
+
+  const previewUrl = URL.createObjectURL(file);
+  const orientation = id as 'landscape' | 'portrait';
+
+  setBlocks((prev) =>
+    prev.map((block) =>
+      block.id === id
+        ? {
+            ...block,
+            file,
+            previewUrl,
+            fileName: `[${orientation === 'landscape' ? '가로' : '세로'}] ${file.name}`,
+          }
+        : block
+    )
+  );
+};
+
   const onSubmit = async () => {
     if (!id) return;
     const landscape = blocks.find((b) => b.id === 'landscape');
@@ -201,6 +237,8 @@ export default function EditMainPopupBoard() {
           <BoadBlockEditor
             blocks={blocks}
             onRemoveBlock={(id) => setBlocks((prev) => prev.filter((b) => b.id !== id))}
+            // ✅ 아래 항목을 추가하여 전달합니다.
+            onReplaceImage={handleReplaceImage} 
           />
 
           <UploadControls>

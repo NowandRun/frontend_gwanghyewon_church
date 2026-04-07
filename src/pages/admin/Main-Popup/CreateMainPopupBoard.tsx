@@ -6,8 +6,8 @@ import { BoardBlock, BoardType } from '../../../types/types';
 import { useMe } from '../../../hooks/useMe';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
-import { CREATE_MAIN_POPUP_BOARD_MUTATION } from 'src/types/grapql_call';
-import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
+import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
+import { CREATE_MAIN_POPUP_BOARD_MUTATION } from '../../../types/grapql_call';
 
 export default function CreateMainPopupBoard() {
   useTabConcurrency(PAGE_IDS.CHURCH_MAIN_POPUP);

@@ -4,13 +4,14 @@ import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { arrayMove } from '@dnd-kit/sortable';
-import ChurchInformationBlockToolbar from 'src/components/AdminComponents/ChurchInformationBlockToolbar';
 import { BoardBlock, BoardType } from '../../../types/types';
 import { useMe } from '../../../hooks/useMe';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
-import { CREATE_CHURCH_INFORMATION_BOARD_MUTATION } from 'src/types/grapql_call';
-import { PAGE_IDS, useTabConcurrency } from 'src/hooks/useTabConcurrency';
+import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
+import { CREATE_CHURCH_INFORMATION_BOARD_MUTATION } from '../../../types/grapql_call';
+import ChurchInformationBlockToolbar from '../../../components/AdminComponents/ChurchInformationBlockToolbar';
+
 
 export default function CreateChurchInformationBoard() {
   useTabConcurrency(PAGE_IDS.CHURCH_INFO); // 훅 호출만으로 적용
