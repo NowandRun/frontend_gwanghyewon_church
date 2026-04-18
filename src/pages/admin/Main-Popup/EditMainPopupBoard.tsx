@@ -39,19 +39,26 @@ export default function EditMainPopupBoard() {
       데이터 초기화
   ============================== */
   useEffect(() => {
-    if (meData?.me && boardData?.findMainPopupBoardById?.result) {
-      const board = boardData.findMainPopupBoardById.result;
-      
-      // meData.me.role을 string으로 단언하여 'ADMIN' 문자열과 비교 가능하게 함
-      const isAuthor = board.authorId === meData.me.id;
-      const isAdmin = (meData.me.role as string) === 'ADMIN';
+  // meData와 boardData가 모두 로드되었을 때만 실행
+  if (meData?.me && boardData?.findMainPopupBoardById?.result) {
+    const board = boardData.findMainPopupBoardById.result;
+    const me = meData.me;
 
-      if (!isAuthor && !isAdmin) {
-        alert("수정 권한이 없습니다.");
-        navigate(-1);
-      }
+    // 1. 작성자 본인인지 확인 (ID 값을 모두 숫자로 변환하여 비교)
+    // board.authorId가 없을 경우를 대비해 board.user?.id 등도 체크하는 것이 안전합니다.
+    const boardAuthorId = board.authorId || board.user?.id;
+    const isAuthor = Number(boardAuthorId) === Number(me.id);
+
+    // 2. 관리자 권한 확인 (대소문자 무관하게 비교)
+    const userRole = (me.role as string)?.toUpperCase();
+    const isAdmin = userRole === 'ADMIN' || userRole === 'SUPERADMIN';
+
+    if (!isAuthor && !isAdmin) {
+      alert("수정 권한이 없습니다.");
+      navigate(-1);
     }
-  }, [meData, boardData, navigate]);
+  }
+}, [meData, boardData, navigate]);
   
   useEffect(() => {
     if (boardLoading || !boardData?.findMainPopupBoardById?.ok) return;
@@ -67,7 +74,7 @@ export default function EditMainPopupBoard() {
           id: 'landscape',
           type: 'image',
           previewUrl: board.blocks.landscape.url,
-          fileName: '가로형 이미지 (기존)',
+          fileName: board.blocks.landscape.fileName,
           selected: false,
         } as BoardBlock);
       }
@@ -76,7 +83,7 @@ export default function EditMainPopupBoard() {
           id: 'portrait',
           type: 'image',
           previewUrl: board.blocks.portrait.url,
-          fileName: '세로형 이미지 (기존)',
+          fileName: board.blocks.portrait.fileName,
           selected: false,
         } as BoardBlock);
       }
@@ -87,14 +94,49 @@ export default function EditMainPopupBoard() {
   /* =============================
       파일 업로드 및 핸들러
   ============================== */
-  const getSafeFileData = (file: File) => {
+  const getSafeFileData = (
+    file: File,
+  ): { safeName: string; isValid: boolean; message?: string } => {
+    // 공백을 하이픈(-)으로 치환 (연속된 공백도 하나로 치환)
     const safeName = file.name.replace(/\s+/g, '-');
+
+    // 금지 특수문자 체크
     const forbiddenChars = /[\\<>|^!*{}[\]"`~#()+=,;: @&]/;
+
     if (forbiddenChars.test(safeName)) {
-      return { safeName, isValid: false, message: `파일명에 금지 특수문자가 있습니다.` };
+      return {
+        safeName,
+        isValid: false,
+        message: `파일명에 허용되지 않는 특수문자가 있습니다.\n\n사용 불가: [ / \\ < > | ^ ! * { } [ ] " \` ~ # ( ) + = , ; : @ & ]`,
+      };
     }
+
+    if (safeName.includes('..')) {
+      return {
+        safeName,
+        isValid: false,
+        message: '파일명에 마침표를 연속(..)으로 사용할 수 없습니다.',
+      };
+    }
+
     return { safeName, isValid: true };
   };
+
+    // 2. 서버에 파일 중복 여부 확인
+    const checkFileExists = async (fileName: string): Promise<boolean> => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/uploads/check-exists?fileName=${encodeURIComponent(
+            fileName,
+          )}&boardType=${BoardType.CHURCH_MAIN_POPUP}`,
+        );
+        const data = await response.json();
+        return data.exists; // true면 중복
+      } catch (e) {
+        return false;
+      }
+    };
+
 
   const uploadFileToS3 = async (
     file: File,
@@ -104,8 +146,13 @@ export default function EditMainPopupBoard() {
     if (!isValid) throw new Error(message);
 
     const formData = new FormData();
-    const finalFileName = `${Date.now()}_${safeName}`;
-    formData.append('file', file, finalFileName);
+    // 🚀 [수정 포인트 1] File 객체를 강제로 재포장하지 않고 원본 파일 객체를 그대로 넘깁니다.
+    // 🚀 [수정 포인트 2] 한글 깨짐 방지를 위해 파일명을 encodeURIComponent로 안전하게 변환하여 3번째 인자로 전달합니다.
+    formData.append('file', file, encodeURIComponent(safeName));
+    
+    // (선택) 백엔드에서 req.file 접근 외에도 쉽게 원본명을 조회할 수 있도록 텍스트 필드로도 하나 넘겨줍니다.
+    formData.append('originalFileName', encodeURIComponent(file.name));
+
     formData.append('boardType', BoardType.CHURCH_MAIN_POPUP);
     formData.append('subPath', orientation);
 
@@ -129,7 +176,7 @@ export default function EditMainPopupBoard() {
       type: 'image',
       file,
       previewUrl,
-      fileName: `[${orientation === 'landscape' ? '가로' : '세로'}] ${file.name}`,
+      fileName: `[${orientation === 'landscape' ? 'NEW 가로' : 'NEW 세로'}] ${file.name}`,
       selected: false,
     };
 
@@ -140,27 +187,29 @@ export default function EditMainPopupBoard() {
   };
 
   const handleReplaceImage = (id: string, files: FileList | File[]) => {
-  const file = files instanceof FileList ? files[0] : files[0];
-  if (!file) return;
+    const file = files instanceof FileList ? files[0] : files[0];
+    if (!file) return;
 
-  const previewUrl = URL.createObjectURL(file);
-  const orientation = id as 'landscape' | 'portrait';
+    const previewUrl = URL.createObjectURL(file);
+    const orientation = id as 'landscape' | 'portrait';
 
-  setBlocks((prev) =>
-    prev.map((block) =>
-      block.id === id
-        ? {
-            ...block,
-            file,
-            previewUrl,
-            fileName: `[${orientation === 'landscape' ? '가로' : '세로'}] ${file.name}`,
-          }
-        : block
-    )
-  );
-};
+    setBlocks((prev) =>
+      prev.map((block) =>
+        block.id === id
+          ? {
+              ...block,
+              file,
+              previewUrl,
+              // ✅ 교체 시에도 파일명을 명확하게 업데이트합니다.
+              fileName: `[${orientation === 'landscape' ? 'EDIT 가로' : 'EDIT 세로'}] ${file.name}`,
+            }
+          : block
+      )
+    );
+  };
 
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!id) return;
     const landscape = blocks.find((b) => b.id === 'landscape');
     const portrait = blocks.find((b) => b.id === 'portrait');
@@ -171,17 +220,38 @@ export default function EditMainPopupBoard() {
     try {
       setUploading(true);
 
-      let landscapeUrl = isImageBlock(landscape)
-        ? landscape.file
-          ? await uploadFileToS3(landscape.file, 'landscape')
-          : landscape.previewUrl
-        : '';
+      // 🚀 [파일명 중복 체크 단계]
+      const targetImages = [
+        { block: landscape, type: 'landscape' as const },
+        { block: portrait, type: 'portrait' as const },
+      ];
 
-      let portraitUrl = isImageBlock(portrait)
-        ? portrait.file
-          ? await uploadFileToS3(portrait.file, 'portrait')
-          : portrait.previewUrl
-        : '';
+      for (const item of targetImages) {
+        if (isImageBlock(item.block) && item.block.file) {
+          const { safeName } = getSafeFileData(item.block.file);
+          const isDuplicate = await checkFileExists(safeName);
+          if (isDuplicate) {
+            if (
+              !window.confirm(`'${safeName}' 파일이 이미 존재합니다. 덮어쓰시겠습니까?`)
+            ) {
+              setUploading(false);
+              return; 
+            }
+          }
+        }
+      }
+
+      // 🚀 [S3 업로드 단계]
+      let landscapeUrl = '';
+      let portraitUrl = '';
+
+      if (isImageBlock(landscape) && landscape.file) {
+        landscapeUrl = await uploadFileToS3(landscape.file, 'landscape');
+      }
+      if (isImageBlock(portrait) && portrait.file) {
+        portraitUrl = await uploadFileToS3(portrait.file, 'portrait');
+      }
+
 
       const result = await editBoard({
         variables: {
@@ -189,8 +259,8 @@ export default function EditMainPopupBoard() {
             id: Number(id),
             title: title.trim(),
             blocks: {
-              landscape: { type: 'IMAGE', url: landscapeUrl },
-              portrait: { type: 'IMAGE', url: portraitUrl },
+              landscape: { type: 'IMAGE', url: landscapeUrl, fileName: isImageBlock(landscape) && landscape.file ? landscape.file.name : ''  },
+              portrait: { type: 'IMAGE', url: portraitUrl, fileName: isImageBlock(portrait) && portrait.file ? portrait.file.name : '' },
             },
           },
         },
@@ -300,6 +370,7 @@ export default function EditMainPopupBoard() {
       </TwoColumnLayout>
 
       <SubmitButton
+        type="button"
         onClick={onSubmit}
         disabled={editLoading || uploading}
       >

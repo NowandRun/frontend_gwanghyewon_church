@@ -111,4 +111,3 @@ export const client = new ApolloClient({
     },
   },
 });
-console.log(client);

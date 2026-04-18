@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { arrayMove } from '@dnd-kit/sortable';
-import { BoardBlock, BoardType } from '../../../types/types';
+import { BoardBlock, BoardType, NoVideoBoardBlock } from '../../../types/types';
 import { useMe } from '../../../hooks/useMe';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
@@ -25,7 +25,7 @@ export default function CreateChurchBulletinBoard() {
   const { data: meData, loading: meLoading } = useMe();
   const titleRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState('');
-  const [blocks, setBlocks] = useState<BoardBlock[]>([]);
+  const [blocks, setBlocks] = useState<NoVideoBoardBlock[]>([]);
   const [uploading, setUploading] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
 
@@ -101,10 +101,25 @@ export default function CreateChurchBulletinBoard() {
       S3 & PDF 로직
   ============================== */
   const getSafeFileData = (file: File) => {
-    const safeName = file.name.replace(/\s+/g, '-');
-    const forbiddenChars = /[\\<>|^!*{}[\]"`~#()+=,;: @&]/;
-    if (forbiddenChars.test(safeName))
-      return { safeName, isValid: false, message: '파일명 특수문자 제한' };
+  // 공백을 하이픈으로 치환
+  const safeName = file.name.replace(/\s+/g, '-');
+
+  /**
+   * S3 및 URL에서 문제를 일으키는 특수문자들:
+   * \ / : * ? " < > |  (OS 파일 시스템 제한 문자)
+   * # % [ ] { }        (URL 예약 및 특수 기호)
+   * ! ` ' @ =          (S3에서 권장하지 않는 특수 문자)
+   */
+  const forbiddenChars = /[\\/:*?"<>|#%[\]{}!@'=`]/;
+
+  if (forbiddenChars.test(safeName)) {
+      return { 
+        safeName, 
+        isValid: false, 
+        message: `파일명에 허용되지 않는 특수문자(\\ / : * ? " < > | # % [ ] { } ! @ ' = \`)가 포함되어 있습니다.` 
+      };
+    }
+
     return { safeName, isValid: true };
   };
 
@@ -217,7 +232,8 @@ export default function CreateChurchBulletinBoard() {
 
   const [createBoard, { loading }] = useMutation(CREATE_CHURCH_BULLETIN_BOARD_MUTATION);
 
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     // 1. 유효성 검사 강화
     if (meLoading) return;
     if (!title.trim()) {
@@ -393,6 +409,7 @@ export default function CreateChurchBulletinBoard() {
       </TwoColumnLayout>{' '}
       {/* 🚀 닫는 태그 추가됨 */}
       <SubmitButton
+        type='button'
         onClick={onSubmit}
         disabled={loading || uploading}
       >

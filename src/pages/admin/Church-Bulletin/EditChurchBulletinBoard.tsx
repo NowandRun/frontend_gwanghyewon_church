@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { arrayMove } from '@dnd-kit/sortable';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoardBlock, BoardType } from '../../../types/types';
+import { BoardBlock, BoardType, NoVideoBoardBlock } from '../../../types/types';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
 import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
@@ -19,6 +19,23 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
+// UUID(8-4-4-4-12) 패턴 뒤의 실제 파일명을 추출하는 함수
+const extractFileName = (path: string) => {
+  const fullFileName = path.split('/').pop() || '';
+  // UUID는 보통 36자이므로, 'UUID_' 또는 'UUID-' 형식을 제외한 나머지 부분을 가져옵니다.
+  // 서버에서 UUID와 파일명을 어떻게 연결했느냐에 따라 아래 정규식을 조정하세요.
+  
+  // 방법 A: 첫 번째 '_' 이후의 문자열을 모두 가져옴 (가장 흔한 방식)
+  if (fullFileName.includes('_')) {
+    return fullFileName.substring(fullFileName.indexOf('_') + 1);
+  }
+  
+  // 방법 B: UUID 표준 형식(8-4-4-4-12)인 36자 + 구분자 1자 = 37자 이후를 자름
+  // return fullFileName.length > 37 ? fullFileName.substring(37) : fullFileName;
+  
+  return fullFileName;
+};
+
 export default function EditChurchBulletinBoard() {
   useTabConcurrency(PAGE_IDS.CHURCH_BULLETIN); // 훅 호출만으로 적용
 
@@ -29,7 +46,7 @@ export default function EditChurchBulletinBoard() {
   const { data: meData, loading: meLoading } = useMe();
   const [author, setAuthor] = useState('');
   const [title, setTitle] = useState('');
-  const [blocks, setBlocks] = useState<BoardBlock[]>([]);
+  const [blocks, setBlocks] = useState<NoVideoBoardBlock[]>([]);
   const [uploading, setUploading] = useState(false);
 
   // 기존 파일 URL (이미 서버에 있는 것)
@@ -47,13 +64,28 @@ export default function EditChurchBulletinBoard() {
   /* =============================
       헬퍼 함수 (S3 & PDF)
   ============================== */
-  const getSafeFileData = (file: File) => {
-    const safeName = file.name.replace(/\s+/g, '-');
-    const forbiddenChars = /[\\<>|^!*{}[\]"`~#()+=,;: @&]/;
-    if (forbiddenChars.test(safeName))
-      return { safeName, isValid: false, message: '파일명에 특수문자가 포함되어 있습니다.' };
-    return { safeName, isValid: true };
-  };
+const getSafeFileData = (file: File) => {
+  // 공백을 하이픈으로 치환
+  const safeName = file.name.replace(/\s+/g, '-');
+
+  /**
+   * S3 및 URL에서 문제를 일으키는 특수문자들:
+   * \ / : * ? " < > |  (OS 파일 시스템 제한 문자)
+   * # % [ ] { }        (URL 예약 및 특수 기호)
+   * ! ` ' @ =          (S3에서 권장하지 않는 특수 문자)
+   */
+  const forbiddenChars = /[\\/:*?"<>|#%[\]{}!@'=`]/;
+
+  if (forbiddenChars.test(safeName)) {
+    return { 
+      safeName, 
+      isValid: false, 
+      message: `파일명에 허용되지 않는 특수문자(\\ / : * ? " < > | # % [ ] { } ! @ ' = \`)가 포함되어 있습니다.` 
+    };
+  }
+
+  return { safeName, isValid: true };
+};
 
   const uploadFileToS3 = async (file: File): Promise<string> => {
     const { safeName } = getSafeFileData(file);
@@ -164,7 +196,11 @@ export default function EditChurchBulletinBoard() {
           };
           setBlocks((prev) => [...prev, newBlock]);
         } catch (err) {
+          // 1. 개발자용 로그 유지
           console.error('PDF 변환 에러:', err);
+
+          // 2. 사용자에게 알림 제공
+          alert(`파일(${file.name})의 미리보기를 생성할 수 없습니다. 일반 PDF 파일로만 첨부됩니다.`);
         }
       }
       setPendingFiles((prev) => [...prev, file]);
@@ -172,7 +208,9 @@ export default function EditChurchBulletinBoard() {
     e.target.value = '';
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (!id) return;
     if (!title.trim()) return alert('제목을 입력해주세요.');
     if (blocks.length === 0) return alert('내용을 추가해주세요.');
 
@@ -297,7 +335,7 @@ export default function EditChurchBulletinBoard() {
               {/* 기존 파일 리스트 */}
               {existingFileUrls.map((url, i) => (
                 <FileItem key={`old-${i}`}>
-                  <FileNameText>{url.split('/').pop()}</FileNameText>
+                  <FileNameText>{extractFileName(url)}</FileNameText>
                   <button
                     onClick={() =>
                       setExistingFileUrls((prev) => prev.filter((_, idx) => idx !== i))
@@ -370,6 +408,7 @@ export default function EditChurchBulletinBoard() {
       </TwoColumnLayout>
 
       <SubmitButton
+        type='button'
         onClick={onSubmit}
         disabled={editLoading || uploading}
       >

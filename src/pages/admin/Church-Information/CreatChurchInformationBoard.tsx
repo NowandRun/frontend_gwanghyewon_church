@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { arrayMove } from '@dnd-kit/sortable';
-import { BoardBlock, BoardType } from '../../../types/types';
+import { BoardBlock, BoardType} from '../../../types/types';
 import { useMe } from '../../../hooks/useMe';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
@@ -25,6 +25,14 @@ export default function CreateChurchInformationBoard() {
   const [uploading, setUploading] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
 
+  // 🚀 유튜브 ID 추출 유틸 (Shorts 포함 모든 주소 대응)
+  const getYoutubeId = (url: string) => {
+    // shorts/ 경로를 인식할 수 있도록 정규식 업데이트
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
   // 🚀 누락되었던 이미지 교체 함수 정의
   const replaceImageBlock = (blockId: string, newFile: File) => {
     setBlocks((prev) =>
@@ -41,14 +49,28 @@ export default function CreateChurchInformationBoard() {
     );
   };
 
-  const getSafeFileData = (file: File) => {
-    const safeName = file.name.replace(/\s+/g, '-');
-    const forbiddenChars = /[\\<>|^!*{}[\]"`~#()+=,;: @&]/;
-    if (forbiddenChars.test(safeName)) {
-      return { safeName, isValid: false, message: `파일명에 금지 특수문자가 있습니다.` };
-    }
-    return { safeName, isValid: true };
-  };
+const getSafeFileData = (file: File) => {
+  // 공백을 하이픈으로 치환
+  const safeName = file.name.replace(/\s+/g, '-');
+
+  /**
+   * S3 및 URL에서 문제를 일으키는 특수문자들:
+   * \ / : * ? " < > |  (OS 파일 시스템 제한 문자)
+   * # % [ ] { }        (URL 예약 및 특수 기호)
+   * ! ` ' @ =          (S3에서 권장하지 않는 특수 문자)
+   */
+  const forbiddenChars = /[\\/:*?"<>|#%[\]{}!@'=`]/;
+
+  if (forbiddenChars.test(safeName)) {
+    return { 
+      safeName, 
+      isValid: false, 
+      message: `파일명에 허용되지 않는 특수문자(\\ / : * ? " < > | # % [ ] { } ! @ ' = \`)가 포함되어 있습니다.` 
+    };
+  }
+
+  return { safeName, isValid: true };
+};
 
   // 🚀 파일명 중복 체크 함수 (API를 통해 S3에 해당 경로/파일명이 있는지 확인)
   const checkFileExists = async (fileName: string): Promise<boolean> => {
@@ -108,8 +130,41 @@ export default function CreateChurchInformationBoard() {
     setPendingFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // 🚀 영상 블록 추가 로직
+  const addVideoBlock = () => {
+    const url = window.prompt('유튜브 영상 주소를 입력해주세요.');
+    if (!url) return;
+
+    const videoId = getYoutubeId(url);
+    if (!videoId) return alert('올바른 유튜브 주소가 아닙니다.');
+
+    setBlocks((prev) => [
+      ...prev,
+      { id: uuid(), type: 'video', url: `https://www.youtube.com/embed/${videoId}`, selected: false }
+    ]);
+  };
+
+  const updateVideoUrl = (blockId: string, url: string) => {
+    setBlocks((prev) =>
+      prev.map((block) => {
+        if (block.id === blockId && block.type === 'video') {
+          // 1. 입력된 주소에서 유튜브 ID를 추출합니다.
+          const videoId = getYoutubeId(url);
+          
+          // 2. ID가 정상적으로 추출되면 embed 주소로 변환하고, 
+          // 아직 타이핑 중이거나 잘못된 주소라면 입력한 url 그대로 둡니다.
+          const nextUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+          
+          return { ...block, url: nextUrl };
+        }
+        return block;
+      })
+    );
+  };
+
   /* --- 제출 로직 --- */
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!title.trim() || (!blocks.length && !pendingFiles.length)) {
       return alert('제목과 내용을 입력해주세요.');
     }
@@ -130,12 +185,16 @@ export default function CreateChurchInformationBoard() {
 
       // 2. 에디터 내 이미지 블록들 업로드
       const finalBlocks = [];
+
       for (const block of blocks) {
         if (block.type === 'text') {
           finalBlocks.push({ type: 'TEXT', content: block.content });
         } else if (block.type === 'image' && block.file) {
           const url = await uploadFileToS3(block.file);
           finalBlocks.push({ type: 'IMAGE', url });
+        } else if (block.type === 'video') {
+          // 🚀 영상 블록 추가
+          finalBlocks.push({ type: 'VIDEO', url: block.url });
         }
       }
 
@@ -228,6 +287,7 @@ export default function CreateChurchInformationBoard() {
               )
             }
             onRemoveSelected={() => setBlocks((prev) => prev.filter((b) => !b.selected))}
+            onChangeVideoUrl={updateVideoUrl}
           />
 
           <AttachmentSection>
@@ -254,31 +314,40 @@ export default function CreateChurchInformationBoard() {
               setBlocks([...blocks, { id: uuid(), type: 'text', content: '', selected: false }])
             }
             onAddImage={addImageBlock}
+            onAddVideo={addVideoBlock} // 🚀 추가
           />
         </EditorSection>
 
         <PreviewSection>
           {isPinned && <NoticeBadge>공지사항</NoticeBadge>}
           <PreviewTitle>{title || '제목 없음'}</PreviewTitle>
-          {blocks.map((block) =>
-            block.type === 'image' ? (
+          {blocks.map((block) =>{
+            if (block.type === 'image') return (
               <PreviewImageCard key={block.id}>
-                <img
-                  src={block.previewUrl}
-                  alt=""
-                />
+                <img src={block.previewUrl} alt="preview" />
               </PreviewImageCard>
-            ) : (
-              <HtmlContent
-                key={block.id}
-                dangerouslySetInnerHTML={{ __html: block.content || '' }}
-              />
-            ),
-          )}
+            );
+            if (block.type === 'text') return (
+              <HtmlContent key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} />
+            );
+            // 🚀 영상 미리보기 추가
+            if (block.type === 'video') return (
+              <VideoPreviewWrapper key={block.id}>
+                <iframe
+                  src={block.url}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </VideoPreviewWrapper>
+            );
+            return null;
+            })}
         </PreviewSection>
       </TwoColumnLayout>
 
       <SubmitButton
+        type='button'
         onClick={onSubmit}
         disabled={loading || uploading}
       >
@@ -481,5 +550,19 @@ const SubmitButton = styled.button`
   cursor: pointer;
   &:disabled {
     background: #cbd5e1;
+  }
+`;
+
+// 🚀 영상 미리보기 스타일
+const VideoPreviewWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; // 16:9 비율
+  height: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
   }
 `;

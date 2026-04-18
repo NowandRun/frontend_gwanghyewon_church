@@ -144,7 +144,6 @@ export async function fetchFromSpecialPlaylists(
   page: number = 1,
   itemsPerPage: number = 16,
 ): Promise<{ videos: Video[]; totalPages: number }> {
-  console.log('이거 왜없어?', specialPraiseId, wednesdayPraiseId, sundayPraiseId, youthWorshipId);
   if (!specialPraiseId || !wednesdayPraiseId || !sundayPraiseId || !youthWorshipId) {
     throw new Error('Special ID is not defined');
   }

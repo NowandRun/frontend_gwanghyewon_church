@@ -4,13 +4,13 @@ import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { arrayMove } from '@dnd-kit/sortable';
-import ChurchAlbumBlockToolbar from '../../../components/AdminComponents/ChurchInformationBlockToolbar';
 import { BoardBlock, BoardType } from '../../../types/types';
 import { useMe } from '../../../hooks/useMe';
 import BoadBlockEditor from '../../../components/AdminComponents/AdminBoaderBlockEditor';
 import EditorInput from '../../../components/AdminComponents/EditorInput';
 import { PAGE_IDS, useTabConcurrency } from '../../../hooks/useTabConcurrency';
 import { CREATE_CHURCH_ALBUM_BOARD_MUTATION } from '../../../types/grapql_call';
+import ChurchAlbumBlockToolbar from '../../../components/AdminComponents/ChurchAlbumBlockToolbar';
 
 
 export default function CreateChurchAlbumBoard() {
@@ -22,6 +22,14 @@ export default function CreateChurchAlbumBoard() {
 
   const [blocks, setBlocks] = useState<BoardBlock[]>([]);
   const [uploading, setUploading] = useState(false);
+
+// 🚀 유튜브 ID 추출 유틸 (Shorts 포함 모든 주소 대응)
+  const getYoutubeId = (url: string) => {
+    // shorts/ 경로를 인식할 수 있도록 정규식 업데이트
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
   // 1. 가공 및 검증 함수 업데이트
   const getSafeFileData = (
@@ -119,6 +127,38 @@ export default function CreateChurchAlbumBoard() {
     setBlocks((prev) => [...prev, ...newBlocks]);
   };
 
+  // 🚀 영상 블록 추가 로직
+  const addVideoBlock = () => {
+    const url = window.prompt('유튜브 영상 주소를 입력해주세요.');
+    if (!url) return;
+
+    const videoId = getYoutubeId(url);
+    if (!videoId) return alert('올바른 유튜브 주소가 아닙니다.');
+
+    setBlocks((prev) => [
+      ...prev,
+      { id: uuid(), type: 'video', url: `https://www.youtube.com/embed/${videoId}`, selected: false }
+    ]);
+  };
+
+  const updateVideoUrl = (blockId: string, url: string) => {
+    setBlocks((prev) =>
+      prev.map((block) => {
+        if (block.id === blockId && block.type === 'video') {
+          // 1. 입력된 주소에서 유튜브 ID를 추출합니다.
+          const videoId = getYoutubeId(url);
+          
+          // 2. ID가 정상적으로 추출되면 embed 주소로 변환하고, 
+          // 아직 타이핑 중이거나 잘못된 주소라면 입력한 url 그대로 둡니다.
+          const nextUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+          
+          return { ...block, url: nextUrl };
+        }
+        return block;
+      })
+    );
+  };
+
   const setThumbnail = (id: string) => {
     setBlocks((prev) =>
       prev.map((block) =>
@@ -188,7 +228,8 @@ export default function CreateChurchAlbumBoard() {
     );
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (meLoading) return;
 
     const trimmedTitle = title.trim();
@@ -209,13 +250,14 @@ export default function CreateChurchAlbumBoard() {
 
       for (const block of blocks) {
         if (block.type === 'text') {
-          if (!block.content?.trim()) continue;
           finalBlocks.push({ type: 'TEXT', content: block.content });
-        }
-        if (block.type === 'image') {
+        } else if (block.type === 'image') {
           const url = block.file ? await uploadFileToS3(block.file) : block.previewUrl;
           finalBlocks.push({ type: 'IMAGE', url });
           if (block.isThumbnail) finalThumbnailUrl = url;
+        } else if (block.type === 'video') {
+          // 🚀 영상 블록 추가
+          finalBlocks.push({ type: 'VIDEO', url: block.url });
         }
       }
 
@@ -251,8 +293,7 @@ export default function CreateChurchAlbumBoard() {
         }
       }
     } catch (error: any) {
-      // 네트워크 에러나 런타임 에러 발생 시
-      console.error('상세 에러 로그:', error);
+      console.error(error)
       alert(`시스템 오류: ${error.message || '서버와 통신 중 문제가 발생했습니다.'}`);
     } finally {
       setUploading(false);
@@ -299,11 +340,13 @@ export default function CreateChurchAlbumBoard() {
             onToggleSelect={toggleSelectBlock}
             onRemoveSelected={removeSelectedBlocks}
             onReorder={reorderBlocks}
+            onChangeVideoUrl={updateVideoUrl}
           />
 
           <ChurchAlbumBlockToolbar
             onAddText={addTextBlock}
             onAddImage={addImageBlock}
+            onAddVideo={addVideoBlock} // 🚀 추가
             $hasThumbnail={blocks.some((b) => b.type === 'image' && b.isThumbnail)}
           />
         </EditorSection>
@@ -322,13 +365,10 @@ export default function CreateChurchAlbumBoard() {
           {title && <PreviewTitle>{title}</PreviewTitle>}
 
           {/* 본문 미리보기 */}
-          {blocks.map((block) =>
-            block.type === 'image' ? (
+          {blocks.map((block) => {
+            if (block.type === 'image') return (
               <PreviewImageCard key={block.id}>
-                <img
-                  src={block.previewUrl}
-                  alt={block.fileName}
-                />
+                <img src={block.previewUrl} alt="preview" />
                 <ThumbnailButton
                   $active={block.isThumbnail}
                   onClick={() => setThumbnail(block.id)}
@@ -336,17 +376,28 @@ export default function CreateChurchAlbumBoard() {
                   썸네일
                 </ThumbnailButton>
               </PreviewImageCard>
-            ) : (
-              <HtmlContent
-                key={block.id}
-                dangerouslySetInnerHTML={{ __html: block.content }}
-              />
-            ),
-          )}
+            );
+            if (block.type === 'text') return (
+              <HtmlContent key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} />
+            );
+            // 🚀 영상 미리보기 추가
+            if (block.type === 'video') return (
+              <VideoPreviewWrapper key={block.id}>
+                <iframe
+                  src={block.url}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </VideoPreviewWrapper>
+            );
+            return null;
+          })}
         </PreviewSection>
       </TwoColumnLayout>
 
       <SubmitButton
+        type="button"
         onClick={onSubmit}
         disabled={loading || uploading}
       >
@@ -528,5 +579,19 @@ const SubmitButton = styled.button`
   &:disabled {
     background: #cbd5e1;
     cursor: not-allowed;
+  }
+`;
+
+// 🚀 영상 미리보기 스타일
+const VideoPreviewWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; // 16:9 비율
+  height: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
   }
 `;

@@ -83,22 +83,29 @@ export const SubPageBannerImages = {
 // 타입은 객체의 key를 그대로 활용
 export type SubPageBannerImageKey = keyof typeof SubPageBannerImages;
 
-export type BoardBlock =
-  | {
-      id: string;
-      type: 'text';
-      content: string;
-      selected?: boolean;
-    }
-  | {
-      id: string;
-      type: 'image';
-      file: File;
-      previewUrl: string;
-      fileName: string;
-      isThumbnail?: boolean;
-      selected?: boolean;
+// 공통 타입은 그대로 둡니다.
+export type BoardBlock = 
+  | { id: string; type: 'text'; content: string; selected?: boolean }
+  | { id: string; type: 'image'; file: File; previewUrl: string; fileName: string; isThumbnail?: boolean; selected?: boolean }
+  | { 
+      id: string; 
+      type: 'video'; 
+      url: string; 
+      isVideoShorts?: boolean; // 🚀 여기에 추가!
+      selected?: boolean 
     };
+
+// 🚀 영상이 필요 없는 모듈에서 사용 (type이 'video'인 것만 제외)
+export type NoVideoBoardBlock = Exclude<BoardBlock, { type: 'video' }>;
+
+    // 2. 확장 블록 타입 정의
+export type VideoBlock = {
+  id: string;
+  type: 'video';
+  url: string;
+  selected?: boolean;
+};
+
 
 export enum BoardType {
   CHURCH_INFORMATION = 'CHURCH_INFORMATION',

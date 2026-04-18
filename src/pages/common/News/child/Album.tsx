@@ -396,6 +396,16 @@ function Album() {
                         </ImageBlock>
                       );
                     }
+                    if (block.type === 'VIDEO') return (
+                        <VideoWrapper key={block.id}>
+                          <iframe
+                            src={block.url}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </VideoWrapper>
+                      );
                     return null;
                   });
                 })()}
@@ -1014,4 +1024,17 @@ const ActiveBadge = styled.div`
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: bold;
+`;
+
+const VideoWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; // 16:9 비율
+  height: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+  }
 `;

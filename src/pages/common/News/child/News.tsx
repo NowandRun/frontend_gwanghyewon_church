@@ -412,9 +412,12 @@ function News() {
                   {isFileOpen && (
                     <DropdownList>
                       {boardResult.fileUrls.map((url: string, index: number) => {
-                        const fileName = decodeURIComponent(
-                          url.split('/').pop() || `첨부파일_${index + 1}`,
-                        );
+                        // 1. URL에서 파일명만 추출 및 디코딩
+                        const rawFileName = decodeURIComponent(url.split('/').pop() || `첨부파일_${index + 1}`);
+                        
+                        // 2. 정규표현식을 사용하여 앞부분의 UUID/타임스탬프 패턴 제거
+                        // 패턴: 숫자 또는 문자열 뒤에 언더바(_)가 오는 구조를 제거 (예: 1713123456789_파일명.pdf -> 파일명.pdf)
+                        const fileName = rawFileName.replace(/^[a-f0-9-]{36}_|^[0-9]{10,15}_/, '');
                         return (
                           <FileDownloadLink
                             key={index}
@@ -463,6 +466,16 @@ function News() {
                       </ImageBlock>
                     );
                   }
+                   if (block.type === 'VIDEO') return (
+                      <VideoWrapper key={block.id}>
+                        <iframe
+                          src={block.url}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </VideoWrapper>
+                    );
                   return null;
                 })}
               </ContentRender>
@@ -1217,3 +1230,16 @@ const Message = styled.div`
 `;
 
 export default News;
+
+const VideoWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; // 16:9 비율
+  height: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+  }
+`;

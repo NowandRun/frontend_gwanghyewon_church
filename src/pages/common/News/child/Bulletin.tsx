@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import dayjs from 'dayjs';
 import { FIND_ALL_CHURCH_BULLETIN_BOARD_QUERY } from '../../../../types/grapql_call';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 function Bulletin() {
   const [page, setPage] = useState(1);
@@ -31,6 +32,8 @@ function Bulletin() {
   const [startY, setStartY] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
+
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const isNewPost = (date: string | Date) => dayjs().diff(dayjs(date), 'day') < 3;
 
@@ -171,8 +174,15 @@ function Bulletin() {
       setViewPdfUrl(pdfUrl);
       setSelectedPostId(post.id);
       setDisplayTitle(post.title);
-      const decodedName = decodeURIComponent(pdfUrl.split('/').pop() || '주보 파일');
-      setPdfFileName(decodedName);
+
+      // 1. URL에서 파일명만 추출
+      const fullName = decodeURIComponent(pdfUrl.split('/').pop() || '주보 파일');
+      
+      // 2. UUID 패턴 제거 (일반적인 UUID v4 + 구분자 패턴 제거)
+      // 예: "550e8400-e29b-41d4-a716-446655440000_파일명.pdf" -> "파일명.pdf"
+      // 서버 저장 방식에 따라 구분자('_' 또는 '-')를 확인하여 정규식을 조정하세요.
+      const fileNameWithoutUUID = fullName.includes('_') ? fullName.substring(fullName.indexOf('_') + 1) : fullName;
+      setPdfFileName(fileNameWithoutUUID);
       setCurrPdfPage(1);
     } else {
       alert('연결된 PDF 파일이 없습니다.');
@@ -211,10 +221,16 @@ function Bulletin() {
     }),
   };
 
+  // 2. handleDownload 함수 수정
   const handleDownload = async () => {
-    if (!viewPdfUrl) return;
+    if (!viewPdfUrl || isDownloading) return; // 중복 클릭 방지
+    
     try {
+      setIsDownloading(true); // 로딩 시작 및 화면 블록
+      
       const response = await fetch(viewPdfUrl);
+      if (!response.ok) throw new Error('Download failed');
+      
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -225,7 +241,10 @@ function Bulletin() {
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
+      console.error(error);
       window.open(viewPdfUrl, '_blank');
+    } finally {
+      setIsDownloading(false); // 로딩 종료
     }
   };
 
@@ -233,6 +252,15 @@ function Bulletin() {
 
   return (
     <Container>
+      {/* 다운로드 로딩 오버레이 (Portal 사용) */}
+      {isDownloading &&
+        createPortal(
+          <LoadingOverlay>
+            <Spinner />
+            <LoadingText>파일을 다운로드 중입니다...<br/>잠시만 기다려 주세요.</LoadingText>
+          </LoadingOverlay>,
+          document.body
+        )}
       <TidingsWrapper>
         <TidingsTitle onClick={() => setPage(1)}>교회주보</TidingsTitle>
         <SearchForm onSubmit={handleSearch}>
@@ -362,7 +390,9 @@ function Bulletin() {
                 </ZoomControls>
 
                 <ActionButtons>
-                  <IconButton onClick={handleDownload}>💾 다운로드</IconButton>
+                  <IconButton onClick={handleDownload} disabled={isDownloading}>
+                    {isDownloading ? '⏳ 준비중...' : '💾 다운로드'}
+                  </IconButton>
                   <CloseButton onClick={closeModal}>✕ 닫기</CloseButton>
                 </ActionButtons>
               </Toolbar>
@@ -482,6 +512,14 @@ function Bulletin() {
                               scale={scale}
                               renderTextLayer={false}
                               renderAnnotationLayer={false}
+                              // 기본적으로 window.devicePixelRatio가 적용되는데, 
+                              // 고용량 파일에서는 1로 고정하여 메모리 점유율을 낮추면 렌더링이 성공할 확률이 높습니다.
+                              devicePixelRatio={1}
+                              loading={<div style={{ color: 'white' }}>페이지 로딩 중...</div>}
+                              
+                              // 만약 캔버스 모드를 꼭 써야 한다면 아래 주석을 참고하세요.
+                              // renderMode="canvas"
+                              // devicePixelRatio={Math.min(2, window.devicePixelRatio)} 
                             />
                           </Document>
                         </motion.div>
@@ -512,6 +550,7 @@ function Bulletin() {
           </FullOverlay>,
           document.body,
         )}
+      
     </Container>
   );
 }
@@ -1039,4 +1078,41 @@ const NavButton = styled.button`
 const PageIndicator = styled.div`
   color: white;
   font-weight: bold;
+`;
+
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100000000; /* 모달보다 높게 설정 */
+  backdrop-filter: blur(4px);
+`;
+
+const LoadingText = styled.p`
+  color: white;
+  margin-top: 20px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.5;
+`;
+
+const Spinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid #8ab4f8;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 `;

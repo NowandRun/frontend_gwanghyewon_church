@@ -29,7 +29,6 @@ function Friday() {
     loadVideos();
   }, [currentPage]);
 
-  //console.log('videos❤️❤️❤️👀👀', videos);
 
   // 현재 페이지 그룹에 따라 보여줄 페이지 계산
   const startPage = pageGroup * maxVisible + 1;

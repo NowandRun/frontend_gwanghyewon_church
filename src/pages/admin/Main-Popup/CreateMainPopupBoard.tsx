@@ -29,13 +29,32 @@ export default function CreateMainPopupBoard() {
       S3 업로드 및 중복 체크 로직
   ============================== */
 
-  // 1. 파일명 안전 검사 (공백 제거 및 금지 문자 확인)
-  const getSafeFileData = (file: File) => {
+  // 1. 파일명 안전 검사 및 정리
+  const getSafeFileData = (
+    file: File,
+  ): { safeName: string; isValid: boolean; message?: string } => {
+    // 공백을 하이픈(-)으로 치환 (연속된 공백도 하나로 치환)
     const safeName = file.name.replace(/\s+/g, '-');
+
+    // 금지 특수문자 체크
     const forbiddenChars = /[\\<>|^!*{}[\]"`~#()+=,;: @&]/;
+
     if (forbiddenChars.test(safeName)) {
-      return { safeName, isValid: false, message: `파일명에 금지 특수문자가 있습니다.` };
+      return {
+        safeName,
+        isValid: false,
+        message: `파일명에 허용되지 않는 특수문자가 있습니다.\n\n사용 불가: [ / \\ < > | ^ ! * { } [ ] " \` ~ # ( ) + = , ; : @ & ]`,
+      };
     }
+
+    if (safeName.includes('..')) {
+      return {
+        safeName,
+        isValid: false,
+        message: '파일명에 마침표를 연속(..)으로 사용할 수 없습니다.',
+      };
+    }
+
     return { safeName, isValid: true };
   };
 
@@ -54,17 +73,26 @@ export default function CreateMainPopupBoard() {
     }
   };
 
-  // 3. 실제 S3 업로드 실행
+  // ✅ 수정된 uploadFileToS3 함수
   const uploadFileToS3 = async (
     file: File,
     orientation: 'landscape' | 'portrait',
   ): Promise<string> => {
     const { safeName, isValid, message } = getSafeFileData(file);
-    if (!isValid) throw new Error(message);
+
+    if (!isValid) {
+      throw new Error(message);
+    }
 
     const formData = new FormData();
-    // 첫 번째 참고 코드의 방식대로 직접 인코딩하여 전송
+
+    // 🚀 [수정 포인트 1] File 객체를 강제로 재포장하지 않고 원본 파일 객체를 그대로 넘깁니다.
+    // 🚀 [수정 포인트 2] 한글 깨짐 방지를 위해 파일명을 encodeURIComponent로 안전하게 변환하여 3번째 인자로 전달합니다.
     formData.append('file', file, encodeURIComponent(safeName));
+    
+    // (선택) 백엔드에서 req.file 접근 외에도 쉽게 원본명을 조회할 수 있도록 텍스트 필드로도 하나 넘겨줍니다.
+    formData.append('originalFileName', encodeURIComponent(file.name));
+
     formData.append('boardType', BoardType.CHURCH_MAIN_POPUP);
     formData.append('subPath', orientation);
 
@@ -73,13 +101,16 @@ export default function CreateMainPopupBoard() {
       body: formData,
     });
 
-    if (!response.ok) throw new Error(`${file.name} 업로드 실패`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `${file.name} 업로드 실패`);
+    }
+
     const data = await response.json();
     return data.url;
   };
 
   const [createBoard, { loading }] = useMutation(CREATE_MAIN_POPUP_BOARD_MUTATION);
-
   /* =============================
       블록 관리 로직
   ============================== */
@@ -93,7 +124,7 @@ export default function CreateMainPopupBoard() {
       type: 'image',
       file,
       previewUrl,
-      fileName: `[${orientation === 'landscape' ? '가로' : '세로'}] ${file.name}`,
+      fileName: file.name,
       isThumbnail: orientation === 'landscape',
       selected: false,
     };
@@ -107,7 +138,8 @@ export default function CreateMainPopupBoard() {
   /* =============================
       제출 로직 (중복 체크 포함)
   ============================== */
-  const onSubmit = async () => {
+  const onSubmit = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     const landscape = blocks.find((b) => b.id === 'landscape');
     const portrait = blocks.find((b) => b.id === 'portrait');
 
@@ -129,10 +161,10 @@ export default function CreateMainPopupBoard() {
           const isDuplicate = await checkFileExists(safeName);
           if (isDuplicate) {
             if (
-              !window.confirm(`'${item.block.file.name}' 파일이 이미 존재합니다. 덮어쓰시겠습니까?`)
+              !window.confirm(`'${safeName}' 파일이 이미 존재합니다. 덮어쓰시겠습니까?`)
             ) {
               setUploading(false);
-              return; // 업로드 중단
+              return; 
             }
           }
         }
@@ -155,8 +187,12 @@ export default function CreateMainPopupBoard() {
           input: {
             title: title.trim(),
             blocks: {
-              landscape: { type: 'IMAGE', url: landscapeUrl },
-              portrait: { type: 'IMAGE', url: portraitUrl },
+              landscape: { type: 'IMAGE', url: landscapeUrl, fileName: isImageBlock(landscape) && landscape.file ? landscape.file.name : '' },
+              portrait: { 
+                type: 'IMAGE', 
+                url: portraitUrl,
+                fileName: isImageBlock(portrait) && portrait.file ? portrait.file.name : ''
+              },
             },
           },
         },
@@ -165,6 +201,8 @@ export default function CreateMainPopupBoard() {
       if (result.data?.createMainPopupBoard?.ok) {
         alert('팝업이 등록되었습니다.');
         navigate('/admin/main-popup');
+      } else {
+        alert(`등록 실패: ${result.data?.createMainPopupBoard?.error || '알 수 없는 에러'}`);
       }
     } catch (error: any) {
       alert(`오류: ${error.message}`);
@@ -204,7 +242,6 @@ export default function CreateMainPopupBoard() {
           />
 
           <UploadControls>
-            {/* --- 가로형 이미지 --- */}
             <ToolbarButton
               type="button"
               $variant="landscape"
@@ -220,13 +257,11 @@ export default function CreateMainPopupBoard() {
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
                   addSpecificImage(e.target.files, 'landscape');
-                  // ✅ 핵심: 같은 파일을 다시 올릴 수 있도록 value 초기화
                   e.target.value = '';
                 }
               }}
             />
 
-            {/* --- 세로형 이미지 --- */}
             <ToolbarButton
               type="button"
               $variant="portrait"
@@ -242,7 +277,6 @@ export default function CreateMainPopupBoard() {
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
                   addSpecificImage(e.target.files, 'portrait');
-                  // ✅ 핵심: 같은 파일을 다시 올릴 수 있도록 value 초기화
                   e.target.value = '';
                 }
               }}
@@ -266,6 +300,7 @@ export default function CreateMainPopupBoard() {
       </TwoColumnLayout>
 
       <SubmitButton
+        type="button"
         onClick={onSubmit}
         disabled={loading || uploading}
       >

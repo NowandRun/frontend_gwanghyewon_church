@@ -4,10 +4,11 @@ import styled, { keyframes } from 'styled-components';
 type Props = {
   onAddText: () => void;
   onAddImage: (files: FileList) => void;
+  onAddVideo: () => void; // 🚀 추가
   $hasThumbnail?: boolean; // 선택적 추가
 };
 
-export default function ChurchAlbumBlockToolbar({ onAddText, onAddImage, $hasThumbnail }: Props) {
+export default function ChurchAlbumBlockToolbar({ onAddText, onAddImage,onAddVideo, $hasThumbnail }: Props) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   return (
@@ -24,6 +25,11 @@ export default function ChurchAlbumBlockToolbar({ onAddText, onAddImage, $hasThu
         onClick={() => fileInputRef.current?.click()}
       >
         🖼 이미지 추가
+      </ToolbarButton>
+
+      {/* 🚀 영상 버튼 추가 ($variant는 스타일에 따라 조정) */}
+      <ToolbarButton $variant="video" onClick={onAddVideo} style={{ background: '#ff0000' }}>
+        🎬 영상 추가
       </ToolbarButton>
 
       <input
@@ -87,7 +93,7 @@ const ToolbarWrapper = styled.div`
   animation: ${popIn} 0.35s ease;
 `;
 
-const ToolbarButton = styled.button<{ $variant: 'text' | 'image'; $hasThumbnail?: boolean }>`
+const ToolbarButton = styled.button<{ $variant: 'text' | 'image' |'video'; $hasThumbnail?: boolean }>`
   position: relative;
   overflow: hidden;
 

@@ -25,6 +25,8 @@ type Props = {
   onToggleSelect?: (id: string) => void;
   onRemoveSelected?: () => void;
   onReorder?: (activeId: string, overId: string) => void;
+
+  onChangeVideoUrl?: (id: string, newUrl: string) => void; // 🚀 추가
 };
 
 export default function AdminBoardBlockEditor({
@@ -36,6 +38,7 @@ export default function AdminBoardBlockEditor({
   onToggleSelect = () => {},
   onRemoveSelected = () => {},
   onReorder = () => {},
+  onChangeVideoUrl = () => {}, // 🚀 기본값 설정
 }: Props) {
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
@@ -100,6 +103,20 @@ export default function AdminBoardBlockEditor({
               );
             }
 
+            // 🚀 영상 블록 추가
+            if (block.type === 'video') {
+              return (
+                <SortableVideoBlock
+                  key={block.id}
+                  block={block}
+                  onRemove={() => onRemoveBlock(block.id)}
+                  onChangeUrl={(newUrl: string) => onChangeVideoUrl(block.id, newUrl)} // 🚀 전달
+                  selected={!!block.selected}
+                  onToggleSelect={() => onToggleSelect(block.id)}
+                />
+              );
+            }
+
             return null;
           })}
         </SortableContext>
@@ -139,6 +156,21 @@ function SortableImageBlock({
     transition,
   };
 
+  
+
+  // 🔥 URL에서 UUID를 제거하는 내부 함수 (컴포넌트 내부에 정의하거나 유틸로 분리)
+  const displayFileName = React.useMemo(() => {
+    if (!block.fileName) return 'image';
+    
+    // 만약 fileName에 여전히 S3 타임스탬프가 붙어있는 경우를 위해 한 번 더 정제
+    const decodedName = decodeURIComponent(block.fileName);
+    const underscoreIndex = decodedName.indexOf('_');
+    if (underscoreIndex !== -1 && /^\d+$/.test(decodedName.substring(0, underscoreIndex))) {
+      return decodedName.substring(underscoreIndex + 1);
+    }
+    return decodedName;
+  }, [block.fileName]);
+
   return (
     <ImageWrapper
       ref={setNodeRef}
@@ -161,7 +193,8 @@ function SortableImageBlock({
             ☰
           </DragHandle>
 
-          <FileName title={block.fileName || 'image'}>{block.fileName || 'image'}</FileName>
+          {/* 🔥 수정: 정제된 파일명 표시 */}
+          <FileName title={displayFileName}>{displayFileName}</FileName>
 
           {block.selected && <SelectedBadge>선택됨</SelectedBadge>}
         </ImageHeaderLeft>
@@ -204,6 +237,43 @@ function SortableImageBlock({
         }}
       />
     </ImageWrapper>
+  );
+}
+
+// 🚀 영상 블록 컴포넌트 추가
+function SortableVideoBlock({ block, onRemove, selected, onToggleSelect, onChangeUrl }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: block.id });
+  
+  const style = { 
+    transform: CSS.Transform.toString(transform), 
+    transition,
+    zIndex: transform ? 10 : 1 // 드래그 시 위로 올라오게
+  };
+
+  return (
+    <VideoWrapper ref={setNodeRef} style={style} $selected={selected}>
+      <Header onClick={onToggleSelect}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <DragHandle {...attributes} {...listeners}>☰</DragHandle>
+          <Label>🎥 영상 블록 (YouTube)</Label>
+          {block.selected && <SelectedBadge>선택됨</SelectedBadge>}
+        </div>
+        <DeleteBtn onClick={(e: any) => {
+          e.stopPropagation(); // 헤더 클릭 이벤트(선택) 방지
+          onRemove();
+        }}>삭제</DeleteBtn>
+      </Header>
+      <VideoContent>
+        <VideoInput 
+          type="text" 
+          value={block.url} 
+          placeholder="유튜브 주소를 입력하세요"
+          onClick={(e) => e.stopPropagation()} // 인풋 클릭 시 블록 선택 방지
+          onChange={(e) => onChangeUrl(e.target.value)} 
+        />
+        <VideoTip>유튜브 일반 주소 또는 Shorts 주소를 붙여넣으세요.</VideoTip>
+      </VideoContent>
+    </VideoWrapper>
   );
 }
 
@@ -484,4 +554,40 @@ const TextDeleteButton = styled.button`
 
 const TextContent = styled.div`
   padding: 14px;
+`;
+
+// 스타일은 기존 ImageWrapper/Header 등을 복사해서 사용하시면 됩니다.
+const VideoWrapper = styled(ImageWrapper)``;
+const Header = styled(ImageHeader)``;
+const Label = styled(BlockLabel)``;
+const DeleteBtn = styled(DeleteButton)``;
+const VideoContent = styled.div`  padding: 14px;
+  background: #ffffff; font-size: 12px; color: #666;`;
+
+
+
+const VideoInput = styled.input`
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+`;
+
+const VideoTip = styled.p`
+  margin-top: 8px;
+  font-size: 12px;
+  color: #6b7280;
 `;
