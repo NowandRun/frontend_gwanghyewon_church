@@ -39,10 +39,11 @@ RUN npm run build
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
-#EXPOSE 3000
-COPY --from=builder /app/dist .
-COPY ./conf/default.conf /etc/nginx/conf.d/default.conf 
+# 🌟 [수정] /app/dist를 /app/build로 변경하여 빌드 결과물을 올바르게 가져옵니다.
+COPY --from=builder /app/build .
 
 # Nginx 설정 파일 복사
+COPY ./conf/default.conf /etc/nginx/conf.d/default.conf 
+
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
