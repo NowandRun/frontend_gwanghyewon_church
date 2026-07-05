@@ -4,7 +4,7 @@ WORKDIR /app
 
 # package.json 및 package-lock.json 먼저 복사하고 종속성 설치
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # 소스 파일을 복사하고 빌드
 COPY . .
