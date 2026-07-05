@@ -4,7 +4,7 @@ WORKDIR /app
 
 # package.json 및 package-lock.json 먼저 복사하고 종속성 설치
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 # 소스 파일을 복사하고 빌드
 COPY . .
