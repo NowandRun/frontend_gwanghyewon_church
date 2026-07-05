@@ -27,6 +27,7 @@ export default function EditMainPopupBoard() {
   const { data: boardData, loading: boardLoading } = useQuery(FIND_MAIN_POPUP_BOARD_BY_ID_QUERY, {
     variables: { id: Number(id) },
     skip: !id,
+    fetchPolicy: 'network-only', 
   });
 
   const [editBoard, { loading: editLoading }] = useMutation(EDIT_MAIN_POPUP_BOARD);

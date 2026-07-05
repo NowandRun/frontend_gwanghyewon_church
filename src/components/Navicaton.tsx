@@ -164,7 +164,7 @@ export const HomeSecondNavItems = [
   {
     title: '예배안내',
     icon: <CalendarCheckIcon />,
-    href: '/info',
+    href: '/info/guide',
   },
   {
     title: '양육',
@@ -179,7 +179,7 @@ export const HomeSecondNavItems = [
   {
     title: '교회주보',
     icon: <FilesIcon />,
-    href: '/youth',
+    href: '/news/bulletin',
   },
   {
     title: '유튜브채널',
@@ -189,6 +189,6 @@ export const HomeSecondNavItems = [
   {
     title: '온라인행정',
     icon: <MonitorArrowUpIcon />,
-    href: '/group',
+    href: '/offering',
   },
 ];

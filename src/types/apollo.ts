@@ -13,13 +13,24 @@ export const isLoggedInAccessTokenVar = makeVar(Boolean(token)); // 초기값은
 
 export const authTokenVar = makeVar(token);
 
+// 브라우저가 접속한 현재 도메인 주소(Protocol + Host)를 기준으로 상대 경로를 잡습니다.
+// 예: http://localhost:3000 -> http://localhost:3000/graphql
+// 예: http://내홈서버IP:3000 -> http://내홈서버IP:3000/graphql
+const isClient = typeof window !== 'undefined';
+const host = isClient ? window.location.host : 'localhost:3000';
+const protocol = isClient ? window.location.protocol : 'http:';
+
+// 1. HTTP/HTTPS 자동 대응 상대 경로
+const GRAPHQL_URL = `${protocol}//${host}/graphql`;
+
+// 2. WS/WSS 자동 대응 상대 경로
+// http:// 면 ws:// 로, https:// 면 wss:// 로 자동 치환됩니다.
+const WS_URL = GRAPHQL_URL.replace(/^http/, 'ws');
+
 // Apollo Subscription을 사용하기 위한 웹소켓 통신
 const wsLink = new GraphQLWsLink(
   createClient({
-    url:
-      process.env.NODE_ENV === 'production'
-        ? 'wss://web-restaurants-backend-78a7ec1afcae.herokuapp.com/graphql'
-        : 'ws://localhost:4000/graphql',
+    url: WS_URL,
     connectionParams: {
       'x-jwt': authTokenVar() || '',
     },
@@ -29,10 +40,7 @@ const wsLink = new GraphQLWsLink(
 /* 'https://wavenexus.co.kr/graphql', */
 /* 'http://localhost:4000/graphql' */
 const httpLink = createHttpLink({
-  uri:
-    process.env.NODE_ENV === 'production'
-      ? 'https://web-restaurants-backend-78a7ec1afcae.herokuapp.com/graphql'
-      : 'http://localhost:4000/graphql',
+  uri: GRAPHQL_URL,
 });
 
 // link는 연결할 수 있는 것들을 말함(http, auth, web sockets 링크)

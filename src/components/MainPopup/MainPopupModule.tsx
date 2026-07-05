@@ -61,7 +61,7 @@ const PopupContainer = styled.div`
   animation: ${scaleIn} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* 모바일에서도 부모 너비를 그대로 따라가도록 설정 */
-  ${({ theme }) => theme.media.mobile} {
+  ${({ theme }) => theme.media?.mobile || '@media (max-width: 768px)'} {
     width: 100%;
     height: 70vh;
   }
@@ -69,16 +69,17 @@ const PopupContainer = styled.div`
 
 const ContentArea = styled.div`
   flex: 1;
-  /* overflow-y: auto; -> 꽉 채울 때는 스크롤이 필요 없으므로 제거 추천 */
   overflow: hidden; 
-  background: #000;
-  display: flex; /* 이미지를 중앙에 배치하기 위해 추가 */
+  background: #000; /* 빈 공간(레터박스)이 생길 때 노출될 배경색 */
+  display: flex; 
+  justify-content: center; /* 가로 중앙 정렬 추가 */
+  align-items: center;     /* 세로 중앙 정렬 추가 */
   
   img {
     width: 100%;
     height: 100%;
-    /* 핵심 수정: contain -> cover */
-    object-fit: cover; 
+    /* 핵심 수정: cover -> contain 으로 변경하여 이미지가 잘리지 않게 함 */
+    object-fit: contain; 
     display: block;
   }
 `;
