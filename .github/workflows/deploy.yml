@@ -2,7 +2,7 @@ name: Frontend Build and Deploy to Home Server
 
 on:
   push:
-    branches: ['main'] # main 브랜치에 코드가 push되거나 merge되면 실행
+    branches: ['master'] # main 브랜치에 코드가 push되거나 merge되면 실행
 
 jobs:
   build-and-deploy:
