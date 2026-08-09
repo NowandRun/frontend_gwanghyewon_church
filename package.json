@@ -113,5 +113,6 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
-  "homepage": "https://nowandrun.github.io/frontend_gwanghyewon_church/"
+  "homepage": "."
 }
+  /* "homepage": "https://nowandrun.github.io/frontend_gwanghyewon_church/" */
