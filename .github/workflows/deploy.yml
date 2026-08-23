@@ -34,7 +34,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/nowandrun/my-frontend:latest
+            ghcr.io/nowandrun/frontend_gwanghyewon_church:latest
           build-args: |
             REACT_APP_GRAPHQL_URI=${{ secrets.GRAPHQL_URI }}
             REACT_APP_YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}
