@@ -46,6 +46,8 @@ jobs:
             REACT_APP_YOUTUBE_SUNDAY_PRAISE_ID=${{ secrets.YOUTUBE_SUNDAY_PRAISE_ID }}
             REACT_APP_YOUTUBE_YOUTH_WORSHIP_ID=${{ secrets.YOUTUBE_YOUTH_WORSHIP_ID }}
             REACT_APP_KAKAO_MAP_KEY=${{ secrets.KAKAO_MAP_KEY }}
+            REACT_APP_GRAPHQL_URI=${{secrets.REACT_APP_GRAPHQL_URI}}
+            GRAPHQL_SCHEMA_URL=${{secrets.GRAPHQL_SCHEMA_URL}}
 
       # 4~5단계: 홈서버에 SSH로 원격 접속하여 새 이미지 Pull 및 컨테이너 재실행
       - name: Executing remote ssh commands to deploy
