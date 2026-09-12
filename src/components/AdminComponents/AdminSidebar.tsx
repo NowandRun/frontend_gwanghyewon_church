@@ -14,6 +14,7 @@ const AdminHeader: React.FC = () => {
         <Logo>광혜원순복음교회 관리자 사이트</Logo>
 
         <NavList>
+          <NavItem to="/admin/admin-board">관리자</NavItem>
           <NavItem to="/admin/church-info">교회소식</NavItem>
           <NavItem to="/admin/church-album">교우동정</NavItem>
           <NavItem to="/admin/church-bulletin">교회주보</NavItem>
