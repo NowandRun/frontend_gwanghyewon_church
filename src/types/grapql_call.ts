@@ -267,3 +267,17 @@ export const DELETE_MAIN_POPUP_BOARD = gql`
     }
   }
 `;
+
+// 1. GraphQL Mutation 정의
+export const GET_STORAGE_STATUS_MUTATION = gql`
+  mutation GetStorageStatus {
+    getStorageStatus {
+      usedBytes
+      maxBytes
+      remainingBytes
+      usedMB
+      maxGB
+      usagePercentage
+    }
+  }
+`;
