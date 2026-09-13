@@ -21,6 +21,7 @@ import CreateChurchBulletinBoard from '../pages/admin/Church-Bulletin/CreateChur
 import EditChurchBulletinBoard from '../pages/admin/Church-Bulletin/EditChurchBulletinBoard';
 import CreateMainPopupBoard from '../pages/admin/Main-Popup/CreateMainPopupBoard';
 import EditMainPopupBoard from '../pages/admin/Main-Popup/EditMainPopupBoard';
+import StorageGauge from '../pages/admin/Admin-Board-Page/AdminBoardPage';
 
 const generatedRoutes = generateRoutes(menuItems);
 
@@ -81,6 +82,14 @@ const router = createHashRouter([
               // 📌 메뉴 기반 자동 생성 라우트
               ...adminGeneratedRoutes,
 
+              // 📌 상세 편집/생성 페이지 (중복 제거 및 정리)
+              {
+                path: 'admin-board',
+                children: [
+                  { index: true, element: <StorageGauge /> }, // 👈 /admin/admin-board 바로 매핑
+                  { path: 'management', element: <StorageGauge /> },
+                ],
+              },
               {
                 path: 'church-info',
                 children: [
