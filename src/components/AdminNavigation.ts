@@ -4,8 +4,15 @@ import ChurchInformationBoard from '../pages/admin/Church-Information/FindAllChu
 import ChurchAlbumBoard from '../pages/admin/Church-Album/FindAllChurchAlbumBoard';
 import ChurchBulletinBoard from '../pages/admin/Church-Bulletin/FindAllChurchBulletinBoard';
 import MainPopupBoard from '../pages/admin/Main-Popup/FindAllMainPopupBoard';
+import StorageGauge from '../pages/admin/Admin-Board-Page/AdminBoardPage';
 
 export const adminMenuItems: MenuItem[] = [
+  {
+    label: 'Admin Board',
+    path: 'admin-board',
+    component: StorageGauge,
+    isAdmin: true,
+  },
   {
     label: 'Church Information',
     path: 'church-info',
