@@ -99,6 +99,7 @@ const UserInfo = styled(Link)`
   transition: background-color 0.2s ease;
   cursor: pointer;
 
+  background-color: red;
   &:hover {
     background-color: #2a2a40;
 
