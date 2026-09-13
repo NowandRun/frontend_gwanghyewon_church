@@ -85,7 +85,10 @@ const router = createHashRouter([
               // 📌 상세 편집/생성 페이지 (중복 제거 및 정리)
               {
                 path: 'admin-board',
-                children: [{ path: 'management', element: <StorageGauge /> }],
+                children: [
+                  { index: true, element: <StorageGauge /> }, // 👈 /admin/admin-board 바로 매핑
+                  { path: 'management', element: <StorageGauge /> },
+                ],
               },
               {
                 path: 'church-info',
