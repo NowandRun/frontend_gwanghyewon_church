@@ -7,7 +7,7 @@ dotenv.config();
 const config: CodegenConfig = {
   overwrite: true,
   // .env 파일에 작성된 REACT_APP_GRAPHQL_URI 또는 GRAPHQL_SCHEMA_URL 로드
-  schema: process.env.GRAPHQL_SCHEMA_URL || 'http://localhost:4000/graphql',
+  schema: process.env.GRAPHQL_SCHEMA_URL,
   documents: ['src/**/*.tsx'],
   ignoreNoDocuments: true,
   generates: {
