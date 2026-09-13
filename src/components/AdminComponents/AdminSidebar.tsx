@@ -40,7 +40,7 @@ export default AdminHeader;
 const HeaderWrapper = styled.header`
   width: 100%;
   height: 70px;
-  background-color: #1e1e2f;
+  background-color: red;
   color: #fff;
 
   display: flex;
@@ -99,7 +99,6 @@ const UserInfo = styled(Link)`
   transition: background-color 0.2s ease;
   cursor: pointer;
 
-  background-color: red;
   &:hover {
     background-color: #2a2a40;
 
