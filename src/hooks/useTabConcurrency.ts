@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export const PAGE_IDS = {
   CHURCH_INFO: '교회소식_편집',
   CHURCH_BULLETIN: '교회주보_편집',
-  CHURCH_ALBUM: '교회주보_편집',
+  CHURCH_ALBUM: '교회앨범_편집',
   CHURCH_MAIN_POPUP: '교회메인_팝업_편집',
 };
 
