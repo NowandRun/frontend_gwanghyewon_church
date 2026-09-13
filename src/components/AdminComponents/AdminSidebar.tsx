@@ -40,7 +40,7 @@ export default AdminHeader;
 const HeaderWrapper = styled.header`
   width: 100%;
   height: 70px;
-  background-color: red;
+  background-color: #d37e39;
   color: #fff;
 
   display: flex;
