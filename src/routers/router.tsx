@@ -21,7 +21,6 @@ import CreateChurchBulletinBoard from '../pages/admin/Church-Bulletin/CreateChur
 import EditChurchBulletinBoard from '../pages/admin/Church-Bulletin/EditChurchBulletinBoard';
 import CreateMainPopupBoard from '../pages/admin/Main-Popup/CreateMainPopupBoard';
 import EditMainPopupBoard from '../pages/admin/Main-Popup/EditMainPopupBoard';
-import StorageGauge from '../pages/admin/Admin-Board-Page/AdminBoardPage';
 
 const generatedRoutes = generateRoutes(menuItems);
 
