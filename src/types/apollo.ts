@@ -20,12 +20,13 @@ const isClient = typeof window !== 'undefined';
 const host = isClient ? window.location.host : 'localhost:3000';
 const protocol = isClient ? window.location.protocol : 'http:';
 
+const isLocal = isClient && window.location.hostname === 'localhost';
 // 1. HTTP/HTTPS 자동 대응 상대 경로
-const GRAPHQL_URL = `${protocol}//${host}/graphql`;
+const GRAPHQL_URL = isLocal ? 'http://localhost:4000/graphql' : `${protocol}//${host}/graphql`;
 
 // 2. WS/WSS 자동 대응 상대 경로
 // http:// 면 ws:// 로, https:// 면 wss:// 로 자동 치환됩니다.
-const WS_URL = GRAPHQL_URL.replace(/^http/, 'ws');
+const WS_URL = isLocal ? 'ws://localhost:4000/graphql' : GRAPHQL_URL.replace(/^http/, 'ws');
 
 // Apollo Subscription을 사용하기 위한 웹소켓 통신
 const wsLink = new GraphQLWsLink(
