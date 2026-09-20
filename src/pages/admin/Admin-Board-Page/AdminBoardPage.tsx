@@ -21,10 +21,8 @@ export default function StorageGauge() {
       setLoading(true);
       setError(false);
 
-      // 💡 백엔드 도메인/엔드포인트 주소에 맞게 수정해주세요. (예: /api/uploads/storage-status 또는 http://localhost:4000/uploads/storage-status)
       const response = await fetch('/uploads/storage-status', {
         headers: {
-          // 인증이 필요한 API라면 토큰을 함께 전송합니다.
           Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         },
       });
@@ -49,7 +47,7 @@ export default function StorageGauge() {
 
   if (loading) {
     return (
-      <div className="w-full p-5 rounded-xl bg-gray-50 animate-pulse h-28 border border-gray-200" />
+      <div className="w-full p-6 rounded-2xl bg-gray-50 animate-pulse h-40 border border-gray-200" />
     );
   }
 
@@ -67,59 +65,96 @@ export default function StorageGauge() {
     );
   }
 
-  const getBarColor = (percent: number): string => {
-    if (percent >= 90) return 'bg-red-500';
-    if (percent >= 75) return 'bg-amber-500';
-    return 'bg-emerald-500';
+  // 사용률에 따른 색상 설정
+  const getColorHex = (percent: number): string => {
+    if (percent >= 90) return '#ef4444'; // red-500
+    if (percent >= 75) return '#f59e0b'; // amber-500
+    return '#10b981'; // emerald-500
   };
 
+  const strokeColor = getColorHex(storage.usagePercentage);
+
+  // SVG 원형 게이지 계산
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius; // 둘레 (약 226.19)
+  const safePercentage = Math.min(Math.max(storage.usagePercentage, 0), 100);
+  const strokeDashoffset = circumference - (safePercentage / 100) * circumference;
+
   return (
-    <div className="w-full p-5 bg-white border border-gray-200 rounded-xl shadow-sm space-y-3">
-      <div className="flex items-center justify-between">
+    <div className="w-full p-6 bg-white border border-gray-200 rounded-2xl shadow-sm space-y-4">
+      {/* 헤더 부분 */}
+      <div className="flex items-center justify-between border-b border-gray-100 pb-3">
         <div className="flex items-center gap-2">
-          <span className="text-base font-semibold text-gray-800">📁 파일 저장 공간</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
-            최대 {storage.maxGB}GB
+          <span className="text-base font-semibold text-gray-800">📁 서버 저장 공간</span>
+          <span className="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+            최대 {storage.maxGB} GB
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-gray-700">
-            {storage.usagePercentage}% 사용 중
-          </span>
-          <button
-            onClick={fetchStorageStatus}
-            className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-            title="새로고침"
-          >
-            🔄
-          </button>
+        <button
+          onClick={fetchStorageStatus}
+          className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          title="새로고침"
+        >
+          🔄
+        </button>
+      </div>
+
+      {/* 원형 그래프 및 용량 정보 컨테이너 */}
+      <div className="flex items-center gap-6 pt-1">
+        {/* SVG 원형 그래프 */}
+        <div className="relative flex items-center justify-center shrink-0">
+          <svg className="w-24 h-24 transform -rotate-90">
+            {/* 배경 원 */}
+            <circle
+              cx="48"
+              cy="48"
+              r={radius}
+              className="text-gray-100"
+              strokeWidth="8"
+              stroke="currentColor"
+              fill="transparent"
+            />
+            {/* 데이터 진행 원 */}
+            <circle
+              cx="48"
+              cy="48"
+              r={radius}
+              stroke={strokeColor}
+              strokeWidth="8"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              fill="transparent"
+              className="transition-all duration-700 ease-out"
+            />
+          </svg>
+          {/* 중앙 퍼센트 텍스트 */}
+          <div className="absolute flex flex-col items-center justify-center text-center">
+            <span className="text-lg font-bold text-gray-800">{storage.usagePercentage}%</span>
+            <span className="text-[10px] text-gray-400 font-medium">사용 중</span>
+          </div>
+        </div>
+
+        {/* 오른쪽 상세 용량 텍스트 */}
+        <div className="flex-1 space-y-2 text-sm">
+          <div className="flex justify-between items-center bg-gray-50 p-2.5 rounded-xl">
+            <span className="text-gray-500 font-medium">사용량</span>
+            <span className="font-bold text-gray-800">{storage.usedMB} MB</span>
+          </div>
+          <div className="flex justify-between items-center bg-gray-50 p-2.5 rounded-xl">
+            <span className="text-gray-500 font-medium">남은 용량</span>
+            <span className="font-bold text-emerald-600">
+              {(storage.remainingBytes / (1024 * 1024 * 1024)).toFixed(2)} GB
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="w-full bg-gray-100 rounded-full h-3.5 overflow-hidden">
-        <div
-          className={`h-full transition-all duration-500 ease-out ${getBarColor(
-            storage.usagePercentage,
-          )}`}
-          style={{ width: `${Math.min(storage.usagePercentage, 100)}%` }}
-        />
-      </div>
-
-      <div className="flex items-center justify-between text-xs text-gray-500 pt-1">
-        <span>
-          사용량: <strong className="text-gray-700">{storage.usedMB} MB</strong>
-        </span>
-        <span>
-          남은 용량:{' '}
-          <strong className="text-gray-700">
-            {(storage.remainingBytes / (1024 * 1024 * 1024)).toFixed(2)} GB
-          </strong>
-        </span>
-      </div>
-
+      {/* 용량 부족 경고 메시지 */}
       {storage.usagePercentage >= 90 && (
-        <div className="mt-2 p-2.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium flex items-center justify-between">
-          <span>⚠️ 저장 공간이 부족합니다. 더 이상 파일이 업로드되지 않을 수 있습니다.</span>
+        <div className="mt-2 p-3 rounded-xl bg-red-50 text-red-600 text-xs font-medium flex items-center gap-2 border border-red-100">
+          <span>⚠️</span>
+          <span>저장 공간이 90% 이상 차서 파일 업로드가 실패할 수 있습니다.</span>
         </div>
       )}
     </div>
