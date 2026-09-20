@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
-import { useMutation } from '@apollo/client';
-import { GET_STORAGE_STATUS_MUTATION } from '../../../types/grapql_call';
+import React, { useEffect, useState, useCallback } from 'react';
 
-// GraphQL 응답 데이터 인터페이스
+// StorageGauge 컴포넌트
 interface StorageStatus {
   usedBytes: number;
   maxBytes: number;
@@ -12,20 +10,42 @@ interface StorageStatus {
   usagePercentage: number;
 }
 
-interface StorageStatusData {
-  getStorageStatus: StorageStatus;
-}
-
 export default function StorageGauge() {
-  const [getStorageStatus, { data, loading, error }] = useMutation<StorageStatusData>(
-    GET_STORAGE_STATUS_MUTATION,
-  );
+  const [storage, setStorage] = useState<StorageStatus | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+
+  // REST API 호출 함수
+  const fetchStorageStatus = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(false);
+
+      // 💡 백엔드 도메인/엔드포인트 주소에 맞게 수정해주세요. (예: /api/uploads/storage-status 또는 http://localhost:4000/uploads/storage-status)
+      const response = await fetch('/uploads/storage-status', {
+        headers: {
+          // 인증이 필요한 API라면 토큰을 함께 전송합니다.
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch storage status');
+      }
+
+      const data = await response.json();
+      setStorage(data);
+    } catch (err) {
+      console.error('Storage status fetch error:', err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    getStorageStatus();
-  }, [getStorageStatus]);
-
-  const storage = data?.getStorageStatus;
+    fetchStorageStatus();
+  }, [fetchStorageStatus]);
 
   if (loading) {
     return (
@@ -38,7 +58,7 @@ export default function StorageGauge() {
       <div className="w-full p-4 rounded-xl bg-red-50 text-sm text-red-500 border border-red-200 flex items-center justify-between">
         <span>저장 공간 정보를 불러올 수 없습니다.</span>
         <button
-          onClick={() => getStorageStatus()}
+          onClick={fetchStorageStatus}
           className="px-2.5 py-1 text-xs font-semibold bg-red-100 hover:bg-red-200 rounded text-red-700 transition-colors"
         >
           재시도
@@ -47,7 +67,6 @@ export default function StorageGauge() {
     );
   }
 
-  // 🚀 percent에 : number 타입을 지정하여 TS7006 에러 해결
   const getBarColor = (percent: number): string => {
     if (percent >= 90) return 'bg-red-500';
     if (percent >= 75) return 'bg-amber-500';
@@ -68,7 +87,7 @@ export default function StorageGauge() {
             {storage.usagePercentage}% 사용 중
           </span>
           <button
-            onClick={() => getStorageStatus()}
+            onClick={fetchStorageStatus}
             className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
             title="새로고침"
           >
