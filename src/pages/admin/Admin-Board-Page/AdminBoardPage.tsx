@@ -89,7 +89,7 @@ export default function StorageGauge() {
       <Header>
         <HeaderTitleGroup>
           <SubTitle>STORAGE MONITOR</SubTitle>
-          <Title>도넛 저장 용량 그래프</Title>
+          <Title>저장 용량 그래프</Title>
         </HeaderTitleGroup>
         <RefreshButton onClick={fetchStorageStatus}>
           <span>🔄</span>
