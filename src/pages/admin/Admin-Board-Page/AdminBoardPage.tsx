@@ -45,17 +45,19 @@ export default function StorageGauge() {
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto p-8 rounded-2xl bg-gray-50 animate-pulse h-64 border border-gray-200" />
+      <div className="max-w-4xl mx-auto my-8 p-10 bg-white rounded-3xl shadow-md border border-gray-100 flex items-center justify-center h-80">
+        <span className="text-gray-400 font-medium">저장 공간 정보 로딩 중...</span>
+      </div>
     );
   }
 
   if (error || !storage) {
     return (
-      <div className="max-w-2xl mx-auto p-6 rounded-xl bg-red-50 text-sm text-red-500 border border-red-200 flex items-center justify-between">
+      <div className="max-w-4xl mx-auto my-8 p-6 bg-red-50 text-red-500 rounded-2xl border border-red-200 flex items-center justify-between">
         <span>저장 공간 정보를 불러올 수 없습니다.</span>
         <button
           onClick={fetchStorageStatus}
-          className="px-3 py-1.5 text-xs font-semibold bg-red-100 hover:bg-red-200 rounded-lg text-red-700 transition-colors"
+          className="px-4 py-2 text-xs font-bold bg-red-100 hover:bg-red-200 rounded-xl text-red-700 transition-all"
         >
           재시도
         </button>
@@ -63,107 +65,124 @@ export default function StorageGauge() {
     );
   }
 
-  // 색상 설정
-  const getColorHex = (percent: number): string => {
-    if (percent >= 90) return '#ef4444'; // red-500
-    if (percent >= 75) return '#f59e0b'; // amber-500
-    return '#3b82f6'; // blue-500 (메인 주황색/관리자 테마와 잘 어울리는 블루)
-  };
-
-  const strokeColor = getColorHex(storage.usagePercentage);
-
-  // SVG 원형 게이지 값 계산 (크기 176px, 반지름 70)
-  const radius = 70;
-  const circumference = 2 * Math.PI * radius; // 약 439.82
+  // 꽉 찬 도넛 계산 (크기 280px, 반지름 90, 두께 50)
+  const size = 280;
+  const strokeWidth = 50; // 👈 굵고 탄탄한 도넛 두께
+  const radius = (size - strokeWidth) / 2; // 115
+  const circumference = 2 * Math.PI * radius; // 둘레
   const safePercentage = Math.min(Math.max(storage.usagePercentage, 0), 100);
   const strokeDashoffset = circumference - (safePercentage / 100) * circumference;
 
+  // 상태별 그래프 색상 (예시 이미지의 메인 레드/오렌지 포인트 컬러 반영)
+  const getChartColor = (percent: number) => {
+    if (percent >= 90) return '#ef4444'; // Red
+    if (percent >= 75) return '#f97316'; // Orange
+    return '#ff4d4d'; // 예시 이미지 스타일의 비비드 레드/핑키 계열
+  };
+
+  const chartColor = getChartColor(storage.usagePercentage);
+
   return (
-    // 📌 max-w-2xl mx-auto 로 웹 화면 중앙 정렬
-    <div className="max-w-2xl mx-auto p-8 bg-white border border-gray-100 rounded-2xl shadow-lg space-y-6">
-      {/* 헤더 */}
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-2.5">
-          <span className="text-xl">📁</span>
-          <h3 className="text-lg font-bold text-gray-800">서버 파일 저장 공간</h3>
+    <div className="max-w-4xl mx-auto my-8 p-8 sm:p-10 bg-white rounded-3xl shadow-xl border border-gray-100">
+      {/* 상단 헤더 & 새로고침 버튼 */}
+      <div className="flex items-center justify-between pb-6 border-b border-gray-100 mb-8">
+        <div>
+          <span className="text-xs font-extrabold text-red-500 uppercase tracking-wider">
+            STORAGE MONITOR
+          </span>
+          <h2 className="text-2xl font-black text-gray-900 tracking-tight mt-0.5">
+            도넛 저장 용량 그래프
+          </h2>
         </div>
         <button
           onClick={fetchStorageStatus}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
-          title="새로고침"
+          className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all"
         >
           <span>🔄</span>
           <span>새로고침</span>
         </button>
       </div>
 
-      {/* 메인 콘텐츠 (좌: 원형 그래프 / 우: 용량 정보) */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-10 py-2">
-        {/* 1. 크고 두꺼워진 SVG 원형 그래프 */}
-        <div className="relative flex items-center justify-center shrink-0">
-          <svg className="w-44 h-44 transform -rotate-90">
-            {/* 배경 원 */}
-            <circle
-              cx="88"
-              cy="88"
-              r={radius}
-              className="text-gray-100"
-              strokeWidth="14" // 👈 선 두께를 14로 두껍게 변경
-              stroke="currentColor"
-              fill="transparent"
-            />
-            {/* 데이터 슬라이더 원 */}
-            <circle
-              cx="88"
-              cy="88"
-              r={radius}
-              stroke={strokeColor}
-              strokeWidth="14" // 👈 선 두께 동일하게 설정
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-              fill="transparent"
-              className="transition-all duration-1000 ease-out"
-            />
-          </svg>
-
-          {/* 원 중앙 퍼센트 표시 */}
-          <div className="absolute flex flex-col items-center justify-center text-center">
-            <span className="text-3xl font-extrabold text-gray-800">
-              {storage.usagePercentage}%
-            </span>
-            <span className="text-xs font-semibold text-gray-400 mt-0.5">사용 중</span>
+      {/* 메인 콘텐츠 (3단 레이아웃: 범례 - 굵은 도넛 차트 - 용량 세부 수치) */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-8 py-4">
+        {/* 1. 좌측 범례 (Example 1 디자인 참고) */}
+        <div className="w-full md:w-1/4 space-y-4">
+          <h3 className="text-lg font-extrabold text-gray-800">사용 현황 범례</h3>
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-3">
+              <span
+                className="w-4 h-4 rounded-md inline-block shadow-sm"
+                style={{ backgroundColor: chartColor }}
+              />
+              <span className="text-sm font-bold text-gray-700">사용 중 공간</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="w-4 h-4 rounded-md bg-gray-100 border border-gray-200 inline-block" />
+              <span className="text-sm font-bold text-gray-400">여유 공간</span>
+            </div>
           </div>
         </div>
 
-        {/* 2. 그래프 우측 상세 정보 박스 */}
-        <div className="flex-1 w-full space-y-3">
-          <div className="flex justify-between items-center p-3.5 bg-gray-50 rounded-xl border border-gray-100">
-            <span className="text-sm font-medium text-gray-500">전체 저장 용량</span>
-            <span className="text-base font-bold text-gray-800">{storage.maxGB} GB</span>
+        {/* 2. 중앙 대형 굵은 도넛 그래프 */}
+        <div className="relative flex items-center justify-center shrink-0 my-4 md:my-0">
+          <svg
+            width={size}
+            height={size}
+            className="transform -rotate-90"
+          >
+            {/* 배경 도넛 (빈 공간) */}
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke="#f3f4f6" // gray-100
+              strokeWidth={strokeWidth}
+              fill="transparent"
+            />
+            {/* 채워지는 도넛 (사용량) */}
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke={chartColor}
+              strokeWidth={strokeWidth}
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="butt" // 단면을 깔끔하게 채움
+              fill="transparent"
+              style={{ transition: 'stroke-dashoffset 1s ease-in-out' }}
+            />
+          </svg>
+
+          {/* 도넛 중앙 텍스트 */}
+          <div className="absolute flex flex-col items-center justify-center text-center">
+            <span className="text-4xl font-black text-gray-900 tracking-tight">
+              {storage.usagePercentage}%
+            </span>
+            <span className="text-sm font-bold text-gray-500 mt-1">사용 중</span>
+          </div>
+        </div>
+
+        {/* 3. 우측 용량 카드 상세 */}
+        <div className="w-full md:w-1/3 space-y-3">
+          <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex justify-between items-center">
+            <span className="text-xs font-bold text-gray-500">전체 용량</span>
+            <span className="text-base font-black text-gray-800">{storage.maxGB} GB</span>
           </div>
 
-          <div className="flex justify-between items-center p-3.5 bg-gray-50 rounded-xl border border-gray-100">
-            <span className="text-sm font-medium text-gray-500">현재 사용량</span>
-            <span className="text-base font-bold text-blue-600">{storage.usedMB} MB</span>
+          <div className="p-4 bg-red-50/50 rounded-2xl border border-red-100 flex justify-between items-center">
+            <span className="text-xs font-bold text-red-600">현재 사용량</span>
+            <span className="text-base font-black text-red-600">{storage.usedMB} MB</span>
           </div>
 
-          <div className="flex justify-between items-center p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-100">
-            <span className="text-sm font-medium text-emerald-700">남은 용량</span>
-            <span className="text-base font-bold text-emerald-600">
+          <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100 flex justify-between items-center">
+            <span className="text-xs font-bold text-emerald-600">남은 용량</span>
+            <span className="text-base font-black text-emerald-600">
               {(storage.remainingBytes / (1024 * 1024 * 1024)).toFixed(2)} GB
             </span>
           </div>
         </div>
       </div>
-
-      {/* 90% 이상 경고 안내 */}
-      {storage.usagePercentage >= 90 && (
-        <div className="p-3.5 rounded-xl bg-red-50 text-red-600 text-xs font-semibold flex items-center gap-2 border border-red-200">
-          <span>⚠️</span>
-          <span>저장 공간이 부족합니다! 더 이상 파일이 업로드되지 않을 수 있습니다.</span>
-        </div>
-      )}
     </div>
   );
 }
